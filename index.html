@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,58 +11,74 @@
     <style>
 :root {
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    --border-radius-xl: 24px;
-    --border-radius-lg: 20px;
-    --border-radius-md: 16px;
-    --border-radius-sm: 12px;
+    --border-radius-xl: 28px;
+    --border-radius-lg: 24px;
+    --border-radius-md: 20px;
+    --border-radius-sm: 16px;
     --transition-speed-fast: 0.15s;
     --transition-speed-normal: 0.25s;
     --transition-speed-slow: 0.35s;
     --transition-easing: cubic-bezier(0.2, 0.0, 0.2, 1.0);
 
-    --bg-gradient-start: #0a1525;
-    --bg-gradient-mid: #111936;
-    --bg-gradient-end: #0c1628;
-    --text-primary: #f3f4f6;
-    --text-secondary: #d1d5db;
-    --text-placeholder: #9ca3af;
+    /* Enhanced background gradient for depth - slightly darker base */
+    --bg-gradient-start: #040913;
+    --bg-gradient-mid: #0a1022;
+    --bg-gradient-end: #060c1a;
+
+    --text-primary: #ffffff;
+    --text-secondary: #e8eef5; /* Slightly brighter for contrast */
+    --text-placeholder: #9fb0c5; /* Adjusted for clarity */
     --text-on-accent: #ffffff;
 
-    --accent-color: #6c8eff;
-    --accent-color-rgb: 108, 142, 255;
-    --accent-bg-subtle: rgba(var(--accent-color-rgb), 0.12);
-    --accent-bg-active: rgba(var(--accent-color-rgb), 0.22);
+    --accent-color: #55a2ff; /* Slightly brighter accent */
+    --accent-color-rgb: 85, 162, 255;
+    --accent-bg-subtle: rgba(var(--accent-color-rgb), 0.18);
+    --accent-bg-active: rgba(var(--accent-color-rgb), 0.28);
 
-    --glass-blur-main: 24px;
-    --glass-blur-interactive: 20px;
-    --glass-blur-card: 18px;
+    /* MAX LEVEL Dramatic glass effect */
+    --glass-blur-main: 55px;        /* Increased significantly */
+    --glass-blur-interactive: 45px; /* Increased */
+    --glass-blur-card: 40px;        /* Increased */
 
-    --glass-bg-main: rgba(20, 30, 52, 0.8);
-    --glass-border-main: rgba(148, 163, 184, 0.25);
-    --glass-border-main-highlight: rgba(178, 193, 214, 0.3);
-    --glass-bg-interactive: rgba(30, 41, 59, 0.8);
-    --glass-bg-interactive-hover: rgba(44, 55, 74, 0.9);
-    --glass-border-interactive: rgba(148, 163, 184, 0.3);
+    /* More translucent backgrounds with stronger edge definition */
+    --glass-bg-main: rgba(20, 30, 52, 0.28);  /* More translucent, subtle blue tint */
+    --glass-border-main: rgba(255, 255, 255, 0.04); /* Thinner, more subtle */
+    --glass-border-main-highlight: rgba(255, 255, 255, 0.09); /* Sharper edge highlight */
+    
+    --glass-bg-interactive: rgba(28, 39, 62, 0.22); /* More translucent */
+    --glass-bg-interactive-hover: rgba(38, 52, 78, 0.42); /* More contrast on hover */
+    --glass-border-interactive: rgba(255, 255, 255, 0.05); /* Thinner */
     --glass-border-interactive-focus: var(--accent-color);
-    --glass-bg-card: rgba(25, 38, 58, 0.78);
-    --glass-bg-card-hover: rgba(33, 47, 68, 0.9);
-    --glass-border-card: rgba(148, 163, 184, 0.22);
+    
+    --glass-bg-card: rgba(22, 32, 55, 0.20); /* Even more translucent for cards */
+    --glass-bg-card-hover: rgba(32, 45, 70, 0.38);
+    --glass-border-card: rgba(255, 255, 255, 0.03); /* Very subtle card border */
 
-    --tag-paid-bg: rgba(250, 204, 21, 0.15);
-    --tag-paid-border: rgba(250, 204, 21, 0.25);
-    --tag-paid-text: #facc15;
-    --tag-free-bg: rgba(34, 197, 94, 0.15);
-    --tag-free-border: rgba(34, 197, 94, 0.25);
-    --tag-free-text: #22c55e;
+    /* Glass Sheen Gradients for light reflection effect */
+    --glass-sheen-main: linear-gradient(155deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 30%, rgba(255,255,255,0) 55%, rgba(255,255,255,0.06) 100%);
+    --glass-sheen-interactive: linear-gradient(150deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 40%, rgba(255,255,255,0) 65%, rgba(255,255,255,0.04) 100%);
+    --glass-sheen-card: linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.02) 35%, rgba(255,255,255,0) 60%, rgba(255,255,255,0.05) 100%);
 
-    --shadow-color-soft: rgba(0, 0, 0, 0.3);
-    --shadow-color-medium: rgba(0, 0, 0, 0.4);
-    --shadow-color-strong: rgba(0, 0, 0, 0.5);
-    --shadow-primary: 0 8px 30px rgba(var(--accent-color-rgb), 0.18);
 
-    --scrollbar-thumb: rgba(255, 255, 255, 0.18);
-    --scrollbar-track: rgba(255, 255, 255, 0.05);
-    --select-option-bg: rgba(15, 23, 42, 0.98);
+    --tag-paid-bg: rgba(250, 204, 21, 0.18);
+    --tag-paid-border: rgba(250, 204, 21, 0.3);
+    --tag-paid-text: #fde047; /* Brighter yellow */
+    --tag-free-bg: rgba(34, 197, 94, 0.18);
+    --tag-free-border: rgba(34, 197, 94, 0.3);
+    --tag-free-text: #4ade80; /* Brighter green */
+
+    /* Enhanced shadow system - Deeper, more atmospheric */
+    --shadow-color-soft: rgba(0, 0, 0, 0.55); /* Darker */
+    --shadow-color-medium: rgba(0, 0, 0, 0.65); /* Darker */
+    --shadow-color-strong: rgba(0, 0, 0, 0.75); /* Darker */
+    --shadow-color-glow: rgba(var(--accent-color-rgb), 0.22); /* More prominent glow */
+    --shadow-primary: 0 12px 40px var(--shadow-color-glow), /* Larger glow */
+                     0 18px 55px -22px var(--shadow-color-medium); /* Deeper main shadow */
+
+    /* Refined scroll bars for a sleeker look */
+    --scrollbar-thumb: rgba(255, 255, 255, 0.28);
+    --scrollbar-track: rgba(255, 255, 255, 0.04);
+    --select-option-bg: rgba(12, 18, 35, 0.97); /* Darker, more opaque dropdown */
     --select-option-text: var(--text-primary);
 }
 
@@ -129,7 +147,7 @@ body::-webkit-scrollbar-thumb:hover {
     font-size: 2.5rem;
     font-weight: 700;
     color: var(--text-primary);
-    text-shadow: 0 2px 4px var(--shadow-color-soft);
+    text-shadow: 0 3px 6px var(--shadow-color-soft); /* Enhanced text shadow */
     letter-spacing: -0.025em;
     margin-bottom: 0.25rem;
     flex-shrink: 0;
@@ -156,10 +174,12 @@ body::-webkit-scrollbar-thumb:hover {
     -webkit-backdrop-filter: blur(var(--glass-blur-main));
     border: 1px solid var(--glass-border-main);
     border-radius: var(--border-radius-xl);
-    box-shadow: 0 0 0 1px var(--glass-border-main-highlight),
-                0 20px 50px -12px var(--shadow-color-medium),
-                0 12px 25px -8px var(--shadow-color-soft);
-    padding: 2.25rem;
+    box-shadow: 0 0 0 1px var(--glass-border-main-highlight), /* Sharp edge highlight */
+                0 30px 75px -25px var(--shadow-color-strong), /* Deeper, larger shadow */
+                0 18px 40px -15px var(--shadow-color-medium),
+                inset 0 1.5px 2px rgba(255, 255, 255, 0.08), /* Inner top highlight */
+                0 0 60px -10px var(--shadow-color-glow); /* Wider glow */
+    padding: 2.5rem;
     transition: background var(--transition-speed-normal) var(--transition-easing),
                 border-color var(--transition-speed-normal) var(--transition-easing),
                 box-shadow var(--transition-speed-normal) var(--transition-easing);
@@ -176,14 +196,10 @@ body::-webkit-scrollbar-thumb:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(145deg,
-                rgba(255,255,255,0.06) 0%,
-                rgba(255,255,255,0.01) 40%,
-                rgba(255,255,255,0) 70%,
-                rgba(255,255,255,0.02) 100%);
+    background: var(--glass-sheen-main); /* Using sheen variable */
     border-radius: calc(var(--border-radius-xl) - 1px);
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.85; /* Slightly more visible sheen */
     transition: opacity var(--transition-speed-normal) var(--transition-easing), background var(--transition-speed-normal) var(--transition-easing);
 }
 
@@ -191,35 +207,49 @@ body::-webkit-scrollbar-thumb:hover {
 .search-input-wrapper { position: relative; width: 100%; }
 .search-input {
     width: 100%;
-    height: 60px;
+    height: 64px;
     background: var(--glass-bg-interactive);
     backdrop-filter: blur(var(--glass-blur-interactive));
     -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
     border: 1px solid var(--glass-border-interactive);
     border-radius: var(--border-radius-lg);
     padding: 0 56px 0 56px;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
     color: var(--text-primary);
     outline: none;
-    transition: background var(--transition-speed-fast) var(--transition-easing),
-                border-color var(--transition-speed-fast) var(--transition-easing),
-                box-shadow var(--transition-speed-fast) var(--transition-easing),
-                color var(--transition-speed-fast) var(--transition-easing);
-    box-shadow: 0 5px 15px -5px var(--shadow-color-soft),
-                inset 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2.5px 5px rgba(0, 0, 0, 0.22), /* Stronger inset */
+                0 0 0 0.5px rgba(255, 255, 255, 0.08), /* Subtle edge */
+                0 6px 16px rgba(0, 0, 0, 0.25); /* Softer outer shadow */
+    transition: all var(--transition-speed-fast) var(--transition-easing);
 }
+
+.search-input::before { /* Sheen for input */
+    content: '';
+    position: absolute;
+    top: 1px; left: 1px; right: 1px; bottom: 1px; /* Inset slightly */
+    border-radius: calc(var(--border-radius-lg) - 2px);
+    background: var(--glass-sheen-interactive);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: -1; /* Behind text content */
+}
+
 .search-input::placeholder {
     color: var(--text-placeholder);
     font-weight: 400;
-    opacity: 0.8;
+    opacity: 0.85;
     transition: color var(--transition-speed-fast) var(--transition-easing);
 }
 .search-input:focus {
     border-color: var(--glass-border-interactive-focus);
     background: var(--glass-bg-interactive-hover);
-    box-shadow: 0 0 0 3.5px rgba(var(--accent-color-rgb), 0.25),
-                0 6px 18px -4px var(--shadow-color-soft),
-                inset 0 1px 2px rgba(0,0,0,0.03);
+    box-shadow: 0 0 0 3.5px rgba(var(--accent-color-rgb), 0.35), /* More visible focus ring */
+                0 10px 28px -8px var(--shadow-color-medium),
+                0 5px 10px -3px var(--shadow-color-glow),
+                inset 0 2px 4px rgba(0, 0, 0, 0.12);
+    transform: translateY(-1.5px); /* Slightly more lift */
 }
 
 .search-icon-svg {
@@ -249,7 +279,7 @@ body::-webkit-scrollbar-thumb:hover {
     transition: background-color var(--transition-speed-fast);
 }
 .clear-btn:hover {
-    background-color: rgba(var(--accent-color-rgb), 0.12);
+    background-color: rgba(var(--accent-color-rgb), 0.15); /* Slightly stronger hover */
 }
 .clear-btn svg {
     width: 20px;
@@ -281,22 +311,36 @@ body::-webkit-scrollbar-thumb:hover {
     color: var(--text-secondary);
     font-size: 0.95rem;
     font-weight: 500;
-    box-shadow: 0 5px 12px -5px var(--shadow-color-soft);
+    box-shadow: 0 6px 14px -6px var(--shadow-color-soft), inset 0 1px 1px rgba(255,255,255,0.05); /* Added subtle inset */
+    position: relative; /* For pseudo-element sheen */
+    overflow: hidden; /* To contain sheen */
 }
+.filter-btn::before { /* Sheen for filter buttons */
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--glass-sheen-interactive);
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity var(--transition-speed-fast) var(--transition-easing);
+}
+.filter-btn:hover::before { opacity: 0.8; }
+
 .filter-btn:hover {
     background: var(--glass-bg-interactive-hover);
     color: var(--text-primary);
-    border-color: rgba(var(--accent-color-rgb), 0.35);
-    transform: translateY(-2.5px);
-    box-shadow: 0 8px 18px -4px var(--shadow-color-medium);
+    border-color: rgba(var(--accent-color-rgb), 0.45); /* Stronger hover border */
+    transform: translateY(-3px); /* More lift */
+    box-shadow: 0 9px 20px -5px var(--shadow-color-medium), inset 0 1px 1.5px rgba(255,255,255,0.07);
 }
 .filter-btn.active {
     background: var(--accent-color);
     border-color: var(--accent-color);
     color: var(--text-on-accent);
-    box-shadow: 0 10px 25px -6px rgba(var(--accent-color-rgb), 0.5),
-                0 6px 12px -4px rgba(var(--accent-color-rgb), 0.3);
-    transform: translateY(-2.5px);
+    box-shadow: 0 12px 28px -7px rgba(var(--accent-color-rgb), 0.6), /* Stronger active shadow */
+                0 7px 15px -5px rgba(var(--accent-color-rgb), 0.4),
+                inset 0 1.5px 3px rgba(255,255,255,0.25); /* More pronounced inset */
+    transform: translateY(-3px);
 }
 .filter-btn.active .filter-icon-svg { fill: var(--text-on-accent); }
 .filter-btn .filter-icon-svg {
@@ -308,7 +352,7 @@ body::-webkit-scrollbar-thumb:hover {
 .filter-btn:hover .filter-icon-svg { fill: var(--text-primary); }
 
 #secondary-filters-container {
-    border-top: 1px solid var(--glass-border-main);
+    border-top: 1px solid var(--glass-border-main); /* Consistent with main card border */
     display: flex;
     flex-wrap: wrap;
     gap: 1.75rem;
@@ -352,7 +396,7 @@ body::-webkit-scrollbar-thumb:hover {
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--glass-border-interactive);
     background: var(--glass-bg-interactive);
-    backdrop-filter: blur(var(--glass-blur-interactive));
+    backdrop-filter: blur(var(--glass-blur-interactive)); /* Same blur as other interactive elements */
     -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
     color: var(--text-primary);
     font-size: 0.95rem;
@@ -361,13 +405,26 @@ body::-webkit-scrollbar-thumb:hover {
                 border-color var(--transition-speed-fast) var(--transition-easing),
                 box-shadow var(--transition-speed-fast) var(--transition-easing),
                 color var(--transition-speed-fast) var(--transition-easing);
-    box-shadow: 0 5px 12px -5px var(--shadow-color-soft);
+    box-shadow: 0 5px 14px -5px var(--shadow-color-soft), inset 0 1px 1px rgba(255,255,255,0.05); /* Consistent shadow & inset */
+    position: relative;
+    overflow: hidden;
 }
+.filter-group select::before, .filter-group input[type="number"]::before { /* Sheen */
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--glass-sheen-interactive);
+    opacity: 0.5;
+    pointer-events: none;
+    border-radius: inherit;
+}
+
 .filter-group select:focus, .filter-group input[type="number"]:focus {
     border-color: var(--glass-border-interactive-focus);
     background: var(--glass-bg-interactive-hover);
-    box-shadow: 0 0 0 3.5px rgba(var(--accent-color-rgb), 0.2),
-                0 5px 12px -3px var(--shadow-color-soft);
+    box-shadow: 0 0 0 3.5px rgba(var(--accent-color-rgb), 0.3), /* Slightly softer focus ring */
+                0 6px 15px -4px var(--shadow-color-soft),
+                inset 0 1px 1.5px rgba(255,255,255,0.07);
 }
 .filter-group select option {
     background-color: var(--select-option-bg);
@@ -412,8 +469,8 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .did-you-mean .suggestion-list a:hover {
     background-color: var(--accent-bg-active);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.18);
+    transform: translateY(-2.5px); /* More lift */
+    box-shadow: 0 5px 12px rgba(var(--accent-color-rgb), 0.22); /* Stronger shadow */
 }
 
 .result-item {
@@ -424,8 +481,9 @@ body::-webkit-scrollbar-thumb:hover {
     border-radius: var(--border-radius-lg);
     padding: 1.5rem 1.75rem;
     margin-bottom: 1.5rem;
-    box-shadow: 0 14px 36px -10px var(--shadow-color-medium),
-                0 6px 15px -5px var(--shadow-color-soft);
+    box-shadow: 0 18px 40px -14px var(--shadow-color-medium), /* Deeper, softer card shadow */
+                0 9px 18px -8px var(--shadow-color-soft),
+                inset 0 1px 1.5px rgba(255,255,255,0.06); /* Inner top highlight for card */
     transition: background var(--transition-speed-normal) var(--transition-easing),
                 border-color var(--transition-speed-normal) var(--transition-easing),
                 box-shadow var(--transition-speed-normal) var(--transition-easing),
@@ -443,13 +501,10 @@ body::-webkit-scrollbar-thumb:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(140deg,
-                rgba(255,255,255,0.04) 0%,
-                rgba(255,255,255,0) 55%,
-                rgba(255,255,255,0.01) 100%);
+    background: var(--glass-sheen-card); /* Using card sheen variable */
     border-radius: calc(var(--border-radius-lg) - 1px);
     pointer-events: none;
-    opacity: 0.6;
+    opacity: 0.75; /* Balanced sheen opacity */
     transition: opacity var(--transition-speed-normal) var(--transition-easing), background var(--transition-speed-normal) var(--transition-easing);
 }
 
@@ -457,7 +512,7 @@ body::-webkit-scrollbar-thumb:hover {
 @keyframes resultFadeIn {
     from {
         opacity: 0;
-        transform: translateY(18px) scale(0.98);
+        transform: translateY(20px) scale(0.97); /* Slightly more pronounced entry */
     }
     to {
         opacity: 1;
@@ -466,12 +521,17 @@ body::-webkit-scrollbar-thumb:hover {
 }
 .result-item:hover {
     background: var(--glass-bg-card-hover);
-    transform: translateY(-6px);
-    box-shadow: 0 18px 42px -8px var(--shadow-color-medium),
-                0 8px 20px -6px var(--shadow-color-soft),
-                0 0 0 1.5px rgba(var(--accent-color-rgb), 0.35);
-    border-color: rgba(var(--accent-color-rgb), 0.4);
+    transform: translateY(-7px); /* More lift */
+    box-shadow: 0 22px 48px -10px var(--shadow-color-medium), /* Stronger hover shadow */
+                0 10px 24px -7px var(--shadow-color-soft),
+                0 0 0 2px rgba(var(--accent-color-rgb), 0.4), /* Accent border highlight */
+                inset 0 1.5px 2.5px rgba(255,255,255,0.1); /* Enhanced inner highlight on hover */
+    border-color: rgba(var(--accent-color-rgb), 0.5); /* Brighter border on hover */
 }
+.result-item:hover::before {
+    opacity: 0.9; /* Intensify sheen on hover */
+}
+
 
 .result-header {
     display: flex;
@@ -493,7 +553,7 @@ body::-webkit-scrollbar-thumb:hover {
     color: var(--text-primary);
     padding: 3px 6px;
     border-radius: 5px;
-    box-shadow: 0 1px 2px rgba(var(--accent-color-rgb), 0.15);
+    box-shadow: 0 1.5px 3px rgba(var(--accent-color-rgb), 0.2); /* Refined mark shadow */
     transition: background-color var(--transition-speed-normal) var(--transition-easing), color var(--transition-speed-normal) var(--transition-easing);
 }
 .item-type-tag {
@@ -505,7 +565,7 @@ body::-webkit-scrollbar-thumb:hover {
     white-space: nowrap;
     letter-spacing: 0.6px;
     border: 1px solid;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2.5px 7px rgba(0, 0, 0, 0.12); /* Slightly stronger tag shadow */
     transition: background var(--transition-speed-normal) var(--transition-easing),
                 border-color var(--transition-speed-normal) var(--transition-easing),
                 color var(--transition-speed-normal) var(--transition-easing);
@@ -553,16 +613,16 @@ body::-webkit-scrollbar-thumb:hover {
     font-size: 0.85rem;
     padding: 5px 12px;
     border-radius: var(--border-radius-md);
-    background: rgba(var(--accent-color-rgb), 0.08);
+    background: rgba(var(--accent-color-rgb), 0.1); /* Slightly adjusted bg */
     color: var(--text-secondary);
-    border: 1px solid rgba(var(--accent-color-rgb), 0.14);
+    border: 1px solid rgba(var(--accent-color-rgb), 0.18); /* Slightly stronger border */
     transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(var(--accent-color-rgb), 0.08);
+    box-shadow: 0 2.5px 5px rgba(var(--accent-color-rgb), 0.1); /* Refined shadow */
 }
 .result-info-tag:hover {
-    background: rgba(var(--accent-color-rgb), 0.12);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(var(--accent-color-rgb), 0.15);
+    background: rgba(var(--accent-color-rgb), 0.15);
+    transform: translateY(-2.5px);
+    box-shadow: 0 5px 10px rgba(var(--accent-color-rgb), 0.18);
 }
 .result-info-tag mark {
     background-color: transparent;
@@ -580,14 +640,16 @@ body::-webkit-scrollbar-thumb:hover {
     transition: color var(--transition-speed-normal) var(--transition-easing);
 }
 
-@keyframes subtleGlow {
+@keyframes subtleGlow { /* Enhanced glow for active filter */
     0%, 100% {
-        box-shadow: 0 10px 25px -6px rgba(var(--accent-color-rgb), 0.5),
-                   0 6px 12px -4px rgba(var(--accent-color-rgb), 0.3);
+        box-shadow: 0 12px 28px -7px rgba(var(--accent-color-rgb), 0.6), 
+                   0 7px 15px -5px rgba(var(--accent-color-rgb), 0.4),
+                   inset 0 1.5px 3px rgba(255,255,255,0.25);
     }
     50% {
-        box-shadow: 0 10px 33px -4px rgba(var(--accent-color-rgb), 0.6),
-                   0 6px 15px -2px rgba(var(--accent-color-rgb), 0.35);
+        box-shadow: 0 12px 35px -5px rgba(var(--accent-color-rgb), 0.7), /* Brighter glow */
+                   0 7px 18px -3px rgba(var(--accent-color-rgb), 0.45),
+                   inset 0 1.5px 3.5px rgba(255,255,255,0.3);
     }
 }
 
@@ -679,8 +741,13 @@ body::-webkit-scrollbar-thumb:hover {
         const baseFuseOptions = {
             includeScore: true,
             includeMatches: true,
-            minMatchCharLength: 1,
+            minMatchCharLength: 2,
             useExtendedSearch: true,
+            ignoreLocation: true,
+            fieldNormWeight: 1.5,
+            distance: 100,
+            threshold: 0.3,
+            shouldSort: true,
         };
 
         function normalizeAllData() {
@@ -959,9 +1026,20 @@ body::-webkit-scrollbar-thumb:hover {
 
                 if (lenientFilteredResults.length > 0) {
                     const uniqueSuggestions = new Set();
-                    lenientFilteredResults.sort((a, b) => a.score - b.score);
+                    
+                    // Enhanced sorting with relevance score
+                    lenientFilteredResults.sort((a, b) => {
+                        // Prioritize closer matches
+                        const scoreDiff = a.score - b.score;
+                        if (Math.abs(scoreDiff) > 0.1) return scoreDiff;
+                        
+                        // If scores are similar, prioritize shorter terms
+                        const aName = currentFilterType === 'all' ? a.item.search_name : a.item[nameKeyForSuggestion];
+                        const bName = currentFilterType === 'all' ? b.item.search_name : b.item[nameKeyForSuggestion];
+                        return aName.length - bName.length;
+                    });
 
-                    lenientFilteredResults.slice(0, 5).forEach(res => {
+                    lenientFilteredResults.slice(0, 8).forEach(res => { // Increased to 8 for better suggestions
                         if (uniqueSuggestions.size >= 5) return;
 
                         let suggestedTerm;
