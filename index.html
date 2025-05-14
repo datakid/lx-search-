@@ -17,103 +17,65 @@
     --transition-speed-normal: 0.25s;
     --transition-speed-slow: 0.35s;
     --transition-easing: cubic-bezier(0.2, 0.0, 0.2, 1.0);
-    
-    --light-bg-gradient-start: #e8f0ff;
-    --light-bg-gradient-mid: #f5f0ff;
-    --light-bg-gradient-end: #f0fbff;
+
     --dark-bg-gradient-start: #0a1525;
     --dark-bg-gradient-mid: #111936;
     --dark-bg-gradient-end: #0c1628;
 }
 
 body {
-    --bg-gradient-start: var(--light-bg-gradient-start);
-    --bg-gradient-mid: var(--light-bg-gradient-mid);
-    --bg-gradient-end: var(--light-bg-gradient-end);
-    --text-primary: #111827;
-    --text-secondary: #374151;
-    --text-placeholder: #6b7280;
-    --text-on-accent: #ffffff;
-    
-    --accent-color: #4361ee;
-    --accent-color-rgb: 67, 97, 238;
-    --accent-bg-subtle: rgba(var(--accent-color-rgb), 0.08);
-    --accent-bg-active: rgba(var(--accent-color-rgb), 0.15);
-    
-    --glass-blur-main: 20px;
-    --glass-blur-interactive: 16px;
-    --glass-blur-card: 14px;
-    
-    --glass-bg-main: rgba(255, 255, 255, 0.7);
-    --glass-border-main: rgba(255, 255, 255, 0.35);
-    --glass-bg-interactive: rgba(255, 255, 255, 0.8);
-    --glass-bg-interactive-hover: rgba(255, 255, 255, 0.9);
-    --glass-border-interactive: rgba(255, 255, 255, 0.25);
-    --glass-border-interactive-focus: var(--accent-color);
-    --glass-bg-card: rgba(255, 255, 255, 0.75);
-    --glass-bg-card-hover: rgba(255, 255, 255, 0.9);
-    --glass-border-card: rgba(255, 255, 255, 0.3);
-    
-    --tag-paid-bg: #fff8e6;
-    --tag-paid-border: #ffebc2;
-    --tag-paid-text: #8a6310;
-    --tag-free-bg: #e6f7ef;
-    --tag-free-border: #c2edd9;
-    --tag-free-text: #0d6d2d;
-    
-    --shadow-color-soft: rgba(15, 23, 42, 0.08);
-    --shadow-color-medium: rgba(15, 23, 42, 0.12);
-    --shadow-color-strong: rgba(15, 23, 42, 0.18);
-    --shadow-primary: 0 8px 30px rgba(var(--accent-color-rgb), 0.12);
-    
-    --scrollbar-thumb: rgba(0, 0, 0, 0.12);
-    --scrollbar-track: rgba(0, 0, 0, 0.04);
-    --select-option-bg: rgba(255, 255, 255, 0.98);
-    --select-option-text: var(--text-primary);
-}
-
-body.dark-mode {
     --bg-gradient-start: var(--dark-bg-gradient-start);
     --bg-gradient-mid: var(--dark-bg-gradient-mid);
     --bg-gradient-end: var(--dark-bg-gradient-end);
     --text-primary: #f3f4f6;
     --text-secondary: #d1d5db;
     --text-placeholder: #9ca3af;
-    
+    --text-on-accent: #ffffff;
+
     --accent-color: #6c8eff;
     --accent-color-rgb: 108, 142, 255;
     --accent-bg-subtle: rgba(var(--accent-color-rgb), 0.12);
     --accent-bg-active: rgba(var(--accent-color-rgb), 0.22);
-    
+
     --glass-blur-main: 20px;
     --glass-blur-interactive: 16px;
     --glass-blur-card: 14px;
-    
+
     --glass-bg-main: rgba(15, 23, 42, 0.5);
     --glass-border-main: rgba(148, 163, 184, 0.2);
     --glass-bg-interactive: rgba(30, 41, 59, 0.65);
     --glass-bg-interactive-hover: rgba(44, 55, 74, 0.8);
     --glass-border-interactive: rgba(148, 163, 184, 0.25);
+    --glass-border-interactive-focus: var(--accent-color);
     --glass-bg-card: rgba(22, 33, 50, 0.7);
     --glass-bg-card-hover: rgba(30, 41, 59, 0.85);
     --glass-border-card: rgba(255, 255, 255, 0.15);
-    
+
     --tag-paid-bg: rgba(250, 204, 21, 0.15);
     --tag-paid-border: rgba(250, 204, 21, 0.25);
     --tag-paid-text: #facc15;
     --tag-free-bg: rgba(34, 197, 94, 0.15);
     --tag-free-border: rgba(34, 197, 94, 0.25);
     --tag-free-text: #22c55e;
-    
+
     --shadow-color-soft: rgba(0, 0, 0, 0.3);
     --shadow-color-medium: rgba(0, 0, 0, 0.4);
     --shadow-color-strong: rgba(0, 0, 0, 0.5);
     --shadow-primary: 0 8px 30px rgba(var(--accent-color-rgb), 0.2);
-    
+
     --scrollbar-thumb: rgba(255, 255, 255, 0.15);
     --scrollbar-track: rgba(255, 255, 255, 0.04);
     --select-option-bg: rgba(15, 23, 42, 0.98);
     --select-option-text: var(--text-primary);
+
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
+    background-size: 300% 300%;
+    animation: gradientBG 45s ease infinite alternate;
+    color: var(--text-primary);
+    line-height: 1.65;
+    letter-spacing: -0.01em;
+    font-size: 16px;
 }
 
 * {
@@ -123,19 +85,6 @@ body.dark-mode {
     font-family: var(--font-primary);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-    min-height: 100vh;
-    background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-mid), var(--bg-gradient-end));
-    background-size: 300% 300%;
-    animation: gradientBG 45s ease infinite alternate;
-    color: var(--text-primary);
-    transition: background var(--transition-speed-slow) var(--transition-easing), 
-                color var(--transition-speed-slow) var(--transition-easing);
-    line-height: 1.65;
-    letter-spacing: -0.01em;
-    font-size: 16px;
 }
 
 @keyframes gradientBG {
@@ -180,38 +129,6 @@ body {
     border-radius: 2px;
 }
 
-.theme-toggle-button {
-    position: fixed;
-    top: 24px;
-    right: 24px;
-    background: var(--glass-bg-interactive);
-    backdrop-filter: blur(var(--glass-blur-interactive));
-    -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
-    border: 1px solid var(--glass-border-interactive);
-    color: var(--text-secondary);
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 16px -2px var(--shadow-color-medium),
-                0 1px 3px var(--shadow-color-soft);
-    transition: all var(--transition-speed-normal) var(--transition-easing);
-    z-index: 1000;
-}
-.theme-toggle-button:hover {
-    background: var(--glass-bg-interactive-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px -3px var(--shadow-color-medium),
-                0 2px 4px var(--shadow-color-soft);
-}
-.theme-toggle-button svg { width: 22px; height: 22px; }
-.moon-icon { display: none; }
-body.dark-mode .sun-icon { display: none; }
-body.dark-mode .moon-icon { display: block; }
-
 .main-search-card {
     background: var(--glass-bg-main);
     backdrop-filter: blur(var(--glass-blur-main));
@@ -238,9 +155,9 @@ body.dark-mode .moon-icon { display: block; }
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-                rgba(255,255,255,0.18) 0%, 
-                rgba(255,255,255,0) 50%, 
+    background: linear-gradient(135deg,
+                rgba(255,255,255,0.18) 0%,
+                rgba(255,255,255,0) 50%,
                 rgba(255,255,255,0.05) 100%);
     border-radius: calc(var(--border-radius-xl) - 1px);
     pointer-events: none;
@@ -262,8 +179,8 @@ body.dark-mode .moon-icon { display: block; }
     transition: all var(--transition-speed-fast) var(--transition-easing);
     box-shadow: 0 4px 12px -4px var(--shadow-color-soft);
 }
-.search-input::placeholder { 
-    color: var(--text-placeholder); 
+.search-input::placeholder {
+    color: var(--text-placeholder);
     font-weight: 400;
     opacity: 0.8;
 }
@@ -275,26 +192,26 @@ body.dark-mode .moon-icon { display: block; }
 }
 
 .search-icon-svg {
-    position: absolute; 
-    width: 22px; 
-    height: 22px; 
-    left: 20px; 
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 20px;
     top: 50%;
-    transform: translateY(-50%); 
-    color: var(--text-secondary); 
+    transform: translateY(-50%);
+    color: var(--text-secondary);
     pointer-events: none;
 }
 .clear-btn {
-    position: absolute; 
-    right: 16px; 
-    top: 50%; 
+    position: absolute;
+    right: 16px;
+    top: 50%;
     transform: translateY(-50%);
-    background: none; 
-    border: none; 
-    cursor: pointer; 
+    background: none;
+    border: none;
+    cursor: pointer;
     display: none;
-    padding: 8px; 
-    width: 36px; 
+    padding: 8px;
+    width: 36px;
     height: 36px;
     border-radius: 50%;
     transition: background-color var(--transition-speed-fast);
@@ -302,19 +219,19 @@ body.dark-mode .moon-icon { display: block; }
 .clear-btn:hover {
     background-color: rgba(var(--accent-color-rgb), 0.12);
 }
-.clear-btn svg { 
-    width: 20px; 
-    height: 20px; 
-    stroke: var(--text-secondary); 
-    transition: stroke var(--transition-speed-fast); 
+.clear-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text-secondary);
+    transition: stroke var(--transition-speed-fast);
 }
 .clear-btn:hover svg { stroke: var(--text-primary); }
 
 .primary-filters {
-    display: flex; 
-    justify-content: center; 
-    gap: 10px; 
-    margin-top: 1.5rem; 
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 1.5rem;
     flex-wrap: wrap;
 }
 .filter-btn {
@@ -323,38 +240,38 @@ body.dark-mode .moon-icon { display: block; }
     -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
     border: 1px solid var(--glass-border-interactive);
     border-radius: var(--border-radius-lg);
-    padding: 10px 16px; 
-    display: flex; 
-    align-items: center; 
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
     gap: 8px;
-    cursor: pointer; 
+    cursor: pointer;
     transition: all var(--transition-speed-fast) var(--transition-easing);
-    color: var(--text-secondary); 
-    font-size: 0.9rem; 
+    color: var(--text-secondary);
+    font-size: 0.9rem;
     font-weight: 500;
     box-shadow: 0 4px 10px -4px var(--shadow-color-soft);
 }
 .filter-btn:hover {
-    background: var(--glass-bg-interactive-hover); 
+    background: var(--glass-bg-interactive-hover);
     color: var(--text-primary);
-    border-color: rgba(var(--accent-color-rgb), 0.3); 
+    border-color: rgba(var(--accent-color-rgb), 0.3);
     transform: translateY(-2px);
     box-shadow: 0 6px 14px -2px var(--shadow-color-medium);
 }
 .filter-btn.active {
-    background: var(--accent-color); 
+    background: var(--accent-color);
     border-color: var(--accent-color);
-    color: var(--text-on-accent); 
+    color: var(--text-on-accent);
     box-shadow: 0 8px 20px -4px rgba(var(--accent-color-rgb), 0.4),
                 0 4px 8px -2px rgba(var(--accent-color-rgb), 0.2);
     transform: translateY(-2px);
 }
 .filter-btn.active .filter-icon-svg { fill: var(--text-on-accent); }
-.filter-btn .filter-icon-svg { 
-    width: 18px; 
-    height: 18px; 
-    fill: var(--text-secondary); 
-    transition: fill var(--transition-speed-fast); 
+.filter-btn .filter-icon-svg {
+    width: 18px;
+    height: 18px;
+    fill: var(--text-secondary);
+    transition: fill var(--transition-speed-fast);
 }
 .filter-btn:hover .filter-icon-svg { fill: var(--text-primary); }
 
@@ -384,28 +301,28 @@ body.dark-mode .moon-icon { display: block; }
     padding-top: 1.25rem;
 }
 
-.filter-group { 
-    display: flex; 
-    flex-direction: column; 
-    flex-grow: 1; 
-    min-width: 180px; 
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 180px;
 }
-.filter-group label { 
-    font-size: 0.85rem; 
-    margin-bottom: 0.5rem; 
-    color: var(--text-secondary); 
-    font-weight: 500; 
+.filter-group label {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-weight: 500;
     letter-spacing: 0.02em;
 }
 .filter-group select, .filter-group input[type="number"] {
-    padding: 10px 14px; 
+    padding: 10px 14px;
     border-radius: var(--border-radius-lg);
     border: 1px solid var(--glass-border-interactive);
     background: var(--glass-bg-interactive);
     backdrop-filter: blur(var(--glass-blur-interactive));
     -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
-    color: var(--text-primary); 
-    font-size: 0.9rem; 
+    color: var(--text-primary);
+    font-size: 0.9rem;
     outline: none;
     transition: all var(--transition-speed-fast) var(--transition-easing);
     box-shadow: 0 4px 10px -4px var(--shadow-color-soft);
@@ -421,12 +338,12 @@ body.dark-mode .moon-icon { display: block; }
     color: var(--select-option-text);
     padding: 10px;
 }
-.filters-disabled-message { 
-    width: 100%; 
-    text-align: center; 
-    color: var(--text-secondary); 
-    font-style: italic; 
-    padding: 10px 0; 
+.filters-disabled-message {
+    width: 100%;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 10px 0;
 }
 
 .results-section {
@@ -439,45 +356,45 @@ body.dark-mode .moon-icon { display: block; }
     scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 .results-section::-webkit-scrollbar { width: 6px; }
-.results-section::-webkit-scrollbar-track { 
-    background: var(--scrollbar-track); 
+.results-section::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
     border-radius: 3px;
     margin: 3px;
 }
-.results-section::-webkit-scrollbar-thumb { 
-    background: var(--scrollbar-thumb); 
+.results-section::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
     border-radius: 3px;
 }
-.results-section::-webkit-scrollbar-thumb:hover { 
-    background: var(--accent-color); 
-    opacity: 0.8; 
+.results-section::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+    opacity: 0.8;
 }
 
 .did-you-mean-outer { padding: 0.5rem 0.25rem; }
 .did-you-mean {
-    font-size: 0.9rem; 
+    font-size: 0.9rem;
     color: var(--text-secondary);
-    margin-bottom: 1.25rem; 
+    margin-bottom: 1.25rem;
     line-height: 1.6;
 }
 .did-you-mean .suggestion-list a {
-    text-decoration: none; 
-    font-weight: 500; 
+    text-decoration: none;
+    font-weight: 500;
     color: var(--accent-color);
-    padding: 4px 10px; 
-    margin-right: 8px; 
-    margin-bottom: 8px; 
+    padding: 4px 10px;
+    margin-right: 8px;
+    margin-bottom: 8px;
     display: inline-block;
-    border-radius: var(--border-radius-md); 
+    border-radius: var(--border-radius-md);
     background-color: var(--accent-bg-subtle);
-    transition: background-color var(--transition-speed-fast), 
-                color var(--transition-speed-fast), 
+    transition: background-color var(--transition-speed-fast),
+                color var(--transition-speed-fast),
                 transform var(--transition-speed-fast),
                 box-shadow var(--transition-speed-fast);
 }
-.did-you-mean .suggestion-list a:hover { 
-    background-color: var(--accent-bg-active); 
-    transform: translateY(-2px); 
+.did-you-mean .suggestion-list a:hover {
+    background-color: var(--accent-bg-active);
+    transform: translateY(-2px);
     box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.18);
 }
 
@@ -487,7 +404,7 @@ body.dark-mode .moon-icon { display: block; }
     -webkit-backdrop-filter: blur(var(--glass-blur-card));
     border: 1px solid var(--glass-border-card);
     border-radius: var(--border-radius-lg);
-    padding: 1.25rem 1.5rem; 
+    padding: 1.25rem 1.5rem;
     margin-bottom: 1.25rem;
     box-shadow: 0 10px 30px -6px var(--shadow-color-medium),
                 0 4px 10px -2px var(--shadow-color-soft);
@@ -505,23 +422,23 @@ body.dark-mode .moon-icon { display: block; }
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(135deg, 
-                rgba(255,255,255,0.12) 0%, 
-                rgba(255,255,255,0) 60%, 
+    background: linear-gradient(135deg,
+                rgba(255,255,255,0.12) 0%,
+                rgba(255,255,255,0) 60%,
                 rgba(255,255,255,0.05) 100%);
     border-radius: calc(var(--border-radius-lg) - 1px);
     pointer-events: none;
 }
 
-@keyframes resultFadeIn { 
-    from { 
-        opacity: 0; 
-        transform: translateY(18px) scale(0.98); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateY(0) scale(1); 
-    } 
+@keyframes resultFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 .result-item:hover {
     background: var(--glass-bg-card-hover);
@@ -532,77 +449,77 @@ body.dark-mode .moon-icon { display: block; }
     border-color: rgba(var(--accent-color-rgb), 0.3);
 }
 
-.result-header { 
-    display: flex; 
-    justify-content: space-between; 
-    align-items: flex-start; 
-    margin-bottom: 0.75rem; 
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
 }
 .result-title {
-    font-weight: 600; 
-    color: var(--text-primary); 
+    font-weight: 600;
+    color: var(--text-primary);
     font-size: 1.15rem;
-    line-height: 1.4; 
-    flex-grow: 1; 
+    line-height: 1.4;
+    flex-grow: 1;
     padding-right: 1rem;
 }
 .result-title mark {
-    background-color: var(--accent-bg-active); 
+    background-color: var(--accent-bg-active);
     color: var(--text-primary);
-    padding: 2px 5px; 
+    padding: 2px 5px;
     border-radius: 4px;
     box-shadow: 0 1px 2px rgba(var(--accent-color-rgb), 0.15);
 }
 .item-type-tag {
-    font-size: 0.7rem; 
-    font-weight: 600; 
+    font-size: 0.7rem;
+    font-weight: 600;
     padding: 4px 12px;
-    border-radius: var(--border-radius-md); 
+    border-radius: var(--border-radius-md);
     text-transform: uppercase;
-    white-space: nowrap; 
-    letter-spacing: 0.6px; 
+    white-space: nowrap;
+    letter-spacing: 0.6px;
     border: 1px solid;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
-.item-type-tag.paid { 
-    background: var(--tag-paid-bg); 
-    border-color: var(--tag-paid-border); 
-    color: var(--tag-paid-text); 
+.item-type-tag.paid {
+    background: var(--tag-paid-bg);
+    border-color: var(--tag-paid-border);
+    color: var(--tag-paid-text);
 }
-.item-type-tag.free { 
-    background: var(--tag-free-bg); 
-    border-color: var(--tag-free-border); 
-    color: var(--tag-free-text); 
+.item-type-tag.free {
+    background: var(--tag-free-bg);
+    border-color: var(--tag-free-border);
+    color: var(--tag-free-text);
 }
-        
-.result-details { 
-    font-size: 0.95rem; 
-    color: var(--text-secondary); 
-    line-height: 1.6; 
+
+.result-details {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
 }
 .result-details p { margin-bottom: 0.5rem; }
 .result-details p:last-child { margin-bottom: 0; }
-.result-details p strong { 
-    color: var(--text-primary); 
-    font-weight: 500; 
-    margin-right: 0.35rem; 
+.result-details p strong {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-right: 0.35rem;
 }
 .result-details mark {
-    background-color: var(--accent-bg-subtle); 
+    background-color: var(--accent-bg-subtle);
     color: var(--text-primary);
-    padding: 2px 4px; 
+    padding: 2px 4px;
     border-radius: 3px;
 }
 
-.result-tags-container { 
-    margin-top: 1rem; 
-    display: flex; 
-    flex-wrap: wrap; 
-    gap: 8px; 
+.result-tags-container {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 .result-info-tag {
-    font-size: 0.8rem; 
-    padding: 4px 10px; 
+    font-size: 0.8rem;
+    padding: 4px 10px;
     border-radius: var(--border-radius-md);
     background: rgba(var(--accent-color-rgb), 0.08);
     color: var(--text-secondary);
@@ -615,26 +532,26 @@ body.dark-mode .moon-icon { display: block; }
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(var(--accent-color-rgb), 0.15);
 }
-.result-info-tag mark { 
-    background-color: transparent; 
-    color: var(--text-primary); 
-    font-weight: 500; 
-    padding: 0; 
+.result-info-tag mark {
+    background-color: transparent;
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: 0;
 }
 
-.no-results { 
-    text-align: center; 
-    padding: 2rem 0; 
-    color: var(--text-secondary); 
-    font-size: 1.1rem; 
+.no-results {
+    text-align: center;
+    padding: 2rem 0;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
 }
 
 @keyframes subtleGlow {
-    0%, 100% { 
+    0%, 100% {
         box-shadow: 0 8px 20px -4px rgba(var(--accent-color-rgb), 0.4),
                    0 4px 8px -2px rgba(var(--accent-color-rgb), 0.2);
     }
-    50% { 
+    50% {
         box-shadow: 0 8px 28px 0px rgba(var(--accent-color-rgb), 0.5),
                    0 4px 10px 0px rgba(var(--accent-color-rgb), 0.25);
     }
@@ -649,9 +566,9 @@ body.dark-mode .moon-icon { display: block; }
     .title { font-size: 2rem; }
     .main-search-card { padding: 1.5rem; }
     .primary-filters { margin-top: 1.25rem; }
-    #secondary-filters-container.visible { 
-        margin-top: 1rem; 
-        padding-top: 1rem; 
+    #secondary-filters-container.visible {
+        margin-top: 1rem;
+        padding-top: 1rem;
     }
 }
 
@@ -674,73 +591,66 @@ body.dark-mode .moon-icon { display: block; }
         padding: 1rem 0.75rem;
         gap: 0.75rem;
     }
-    
+
     .title {
         font-size: 1.5rem;
     }
-    
+
     .title::after {
         width: 50px;
     }
-    
-    .theme-toggle-button {
-        top: 16px;
-        right: 16px;
-        width: 40px;
-        height: 40px;
-    }
-    
+
     .main-search-card {
         padding: 1rem;
         border-radius: var(--border-radius-lg);
     }
-    
+
     .search-input {
         height: 46px;
         font-size: 1rem;
         padding: 0 50px 0 50px;
     }
-    
+
     .search-icon-svg {
         width: 20px;
         height: 20px;
         left: 16px;
     }
-    
+
     .primary-filters {
         margin-top: 0.75rem;
         gap: 8px;
     }
-    
+
     .filter-btn {
         padding: 8px 12px;
         font-size: 0.85rem;
     }
-    
+
     .filter-btn .filter-icon-svg {
         width: 16px;
         height: 16px;
     }
-    
+
     #secondary-filters-container.visible {
         margin-top: 0.75rem;
         padding-top: 0.75rem;
     }
-    
+
     .filter-group {
         min-width: 180px;
     }
-    
+
     .result-item {
         padding: 1rem;
         margin-bottom: 0.75rem;
         border-radius: var(--border-radius-md);
     }
-    
+
     .result-title {
         font-size: 1.05rem;
     }
-    
+
     .result-details {
         font-size: 0.9rem;
     }
@@ -751,145 +661,133 @@ body.dark-mode .moon-icon { display: block; }
         padding: 0.75rem 0.5rem;
         gap: 0.5rem;
     }
-    
+
     .title {
         font-size: 1.35rem;
     }
-    
+
     .title::after {
         width: 40px;
         height: 2px;
         bottom: -3px;
     }
-    
-    .theme-toggle-button {
-        top: 12px;
-        right: 12px;
-        width: 36px;
-        height: 36px;
-    }
-    
-    .theme-toggle-button svg {
-        width: 18px;
-        height: 18px;
-    }
-    
+
     .main-search-card {
         padding: 0.75rem;
         border-radius: var(--border-radius-md);
     }
-    
+
     .search-input {
         height: 42px;
         font-size: 0.95rem;
         padding: 0 42px 0 42px;
         border-radius: var(--border-radius-md);
     }
-    
+
     .search-icon-svg {
         width: 18px;
         height: 18px;
         left: 14px;
     }
-    
+
     .clear-btn {
         right: 12px;
         width: 32px;
         height: 32px;
     }
-    
+
     .clear-btn svg {
         width: 18px;
         height: 18px;
     }
-    
+
     .primary-filters {
         margin-top: 0.6rem;
         gap: 6px;
     }
-    
+
     .filter-btn {
         padding: 6px 10px;
         font-size: 0.8rem;
         border-radius: var(--border-radius-md);
     }
-    
+
     .filter-btn .filter-icon-svg {
         width: 14px;
         height: 14px;
     }
-    
+
     #secondary-filters-container.visible {
         margin-top: 0.6rem;
         padding-top: 0.6rem;
         gap: 0.8rem;
     }
-    
+
     .filter-group {
         min-width: 100%;
     }
-    
+
     .filter-group label {
         font-size: 0.8rem;
         margin-bottom: 0.4rem;
     }
-    
+
     .filter-group select, .filter-group input[type="number"] {
         padding: 8px 12px;
         font-size: 0.85rem;
         border-radius: var(--border-radius-md);
     }
-    
+
     .result-item {
         padding: 0.85rem;
         margin-bottom: 0.6rem;
         border-radius: var(--border-radius-sm);
     }
-    
+
     .result-header {
         margin-bottom: 0.5rem;
         flex-direction: column;
         gap: 0.5rem;
     }
-    
+
     .result-title {
         font-size: 1rem;
         padding-right: 0;
     }
-    
+
     .item-type-tag {
         font-size: 0.65rem;
         padding: 3px 10px;
         align-self: flex-start;
     }
-    
+
     .result-details {
         font-size: 0.85rem;
         line-height: 1.5;
     }
-    
+
     .result-tags-container {
         margin-top: 0.75rem;
         gap: 6px;
     }
-    
+
     .result-info-tag {
         font-size: 0.75rem;
         padding: 3px 8px;
     }
-    
+
     .did-you-mean {
         font-size: 0.85rem;
         margin-bottom: 1rem;
     }
-    
+
     .did-you-mean .suggestion-list a {
         padding: 3px 8px;
         margin-right: 6px;
         margin-bottom: 6px;
         font-size: 0.8rem;
     }
-    
+
     .no-results {
         padding: 1.5rem 0;
         font-size: 1rem;
@@ -900,29 +798,29 @@ body.dark-mode .moon-icon { display: block; }
     .title {
         font-size: 1.25rem;
     }
-    
+
     .search-input {
         height: 40px;
         font-size: 0.9rem;
     }
-    
+
     .primary-filters {
         justify-content: space-between;
     }
-    
+
     .filter-btn {
         padding: 5px 8px;
         font-size: 0.75rem;
     }
-    
+
     .result-title {
         font-size: 0.95rem;
     }
-    
+
     .result-details {
         font-size: 0.8rem;
     }
-    
+
     .result-info-tag {
         font-size: 0.7rem;
         padding: 2px 6px;
@@ -934,40 +832,40 @@ body.dark-mode .moon-icon { display: block; }
         padding: 0.5rem;
         gap: 0.4rem;
     }
-    
+
     .title {
         font-size: 1.25rem;
         margin-bottom: 0;
     }
-    
+
     .title::after {
         bottom: -2px;
         height: 2px;
         width: 40px;
     }
-    
+
     .main-search-card {
         padding: 0.75rem;
     }
-    
+
     .search-input {
         height: 38px;
     }
-    
+
     .primary-filters {
         margin-top: 0.5rem;
     }
-    
+
     #secondary-filters-container.visible {
         margin-top: 0.5rem;
         padding-top: 0.5rem;
     }
-    
+
     .result-item {
         padding: 0.75rem;
         margin-bottom: 0.5rem;
     }
-    
+
     .filter-group {
         min-width: calc(50% - 0.4rem);
     }
@@ -983,7 +881,7 @@ body.dark-mode .moon-icon { display: block; }
     html {
         font-size: 18px;
     }
-    
+
     .search-hub-container {
         max-width: 1000px;
     }
@@ -994,19 +892,18 @@ body.dark-mode .moon-icon { display: block; }
         background: none !important;
         color: #000 !important;
     }
-    
+
     .search-hub-container {
         padding: 0;
         height: auto;
     }
-    
-    .theme-toggle-button,
+
     .primary-filters,
     #secondary-filters-container,
     .clear-btn {
         display: none !important;
     }
-    
+
     .main-search-card,
     .result-item {
         background: none !important;
@@ -1015,11 +912,11 @@ body.dark-mode .moon-icon { display: block; }
         border: 1px solid #ddd !important;
         break-inside: avoid;
     }
-    
+
     .title::after {
         background: #000 !important;
     }
-    
+
     .results-section {
         overflow: visible;
     }
@@ -1027,15 +924,6 @@ body.dark-mode .moon-icon { display: block; }
     </style>
 </head>
 <body>
-    <button class="theme-toggle-button" id="theme-toggle" aria-label="Toggle theme">
-        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-        </svg>
-        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-        </svg>
-    </button>
-
     <div class="search-hub-container">
         <h1 class="title">Lx Search a1</h1>
         <div class="main-search-card">
@@ -1063,10 +951,10 @@ body.dark-mode .moon-icon { display: block; }
             <div id="secondary-filters-container"></div>
         </div>
         <div class="results-section" id="results-section"></div>
-    </div> 
+    </div>
 
     <script>
-
+ 
            const paidItems = [
             {name: "Amaryl 1", unit: "30 Tab", price: 11.5, company: "شراء موحد"},{name: "Amaryl 2", unit: "30 Tab", price: 27, company: "شراء موحد"},{name: "Amaryl 3", unit: "30 Tab", price: 30, company: "شراء موحد"},{name: "Amaryl 4", unit: "30 Tab", price: 37.5, company: "شراء موحد"},{name: "Amaryl M", unit: "30 Tab", price: 26.5, company: "شراء موحد"},{name: "Apidra قوي عاملة", unit: "Penfill", price: 44, company: "شراء موحد"},{name: "Apidra طلاب", unit: "Penfill", price: 20, company: "شراء موحد"},{name: "Atacand 16", unit: "14 Tab", price: 38.5, company: "شراء موحد"},{name: "Atacand 16 plus", unit: "14 Tab", price: 42, company: "شراء موحد"},{name: "Atacand 8", unit: "14 Tab", price: 27, company: "شراء موحد"},{name: "Atozet 10 / 10", unit: "10 Tab", price: 96, company: "شراء موحد"},{name: "Atozet 20 / 10", unit: "10 Tab", price: 110, company: "شراء موحد"},{name: "Brilique 60", unit: "56 Tab", price: 100, company: "ايرادات هيئة"},{name: "Brilique 90", unit: "56 Tab", price: 100, company: "ايرادات هيئة"},{name: "Campto", unit: "Vial", price: 60, company: "شراء موحد"},{name: "Cardura 1", unit: "21 Tab", price: 23, company: "شراء موحد"},{name: "Cardura 4", unit: "14 Tab", price: 31, company: "شراء موحد"},{name: "Carnvita forte", unit: "30 Tab", price: 20, company: "شراء موحد"},{name: "Celebrex 200", unit: "10 Tab", price: 51.5, company: "شراء موحد"},{name: "Concor 2.5", unit: "30 Tab", price: 10, company: "شراء موحد"},{name: "Concor 5", unit: "30 Tab", price: 26, company: "شراء موحد"},{name: "Cosopt", unit: "Bottle", price: 52, company: "شراء موحد"},{name: "Coveram 10 /10", unit: "15 Tab", price: 65, company: "شراء موحد"},{name: "Coveram 5 / 5", unit: "15 Tab", price: 48, company: "شراء موحد"},{name: "Coversyl 10 plus", unit: "15 Tab", price: 20, company: "شراء موحد"},{name: "Coversyl 5", unit: "30 Tab", price: 53, company: "شراء موحد"},{name: "Coversyl 5 plus", unit: "15 Tab", price: 30.5, company: "شراء موحد"},{name: "Cozaar 50", unit: "7 Tab", price: 22.25, company: "شراء موحد"},{name: "Crestor 10", unit: "28 Tab", price: 118, company: "شراء موحد"},{name: "Crestor 20", unit: "14 Tab", price: 96, company: "شراء موحد"},{name: "Crestor 5", unit: "7 Tab", price: 18, company: "شراء موحد"},{name: "Daflon 500", unit: "30 Tab", price: 30, company: "شراء موحد"},{name: "Daivobet", unit: "Tube", price: 20, company: "شراء موحد"},{name: "Depakine Ch 500", unit: "30 Tab", price: 45, company: "شراء موحد"},{name: "Depakine Syrup", unit: "Bottle", price: 16, company: "شراء موحد"},{name: "Diamicron 30 Mr", unit: "30 Tab", price: 16, company: "شراء موحد"},{name: "Diamicron 60 Mr", unit: "30 Tab", price: 20, company: "شراء موحد"},{name: "Diamicron 80", unit: "20 Tab", price: 9, company: "شراء موحد"},{name: "Dorofen", unit: "30 Cap", price: 10, company: "شراء موحد"},{name: "Dostinex", unit: "2 Tab", price: 54.25, company: "شراء موحد"},{name: "Eliquis 2.5", unit: "20 Tab", price: 50, company: "ايرادات هيئة"},{name: "Eliquis 5", unit: "20 Tab", price: 50, company: "ايرادات هيئة"},{name: "Eloxatin 100", unit: "Vial", price: 800, company: "شراء موحد"},{name: "Eloxatin 50", unit: "Vial", price: 500, company: "شراء موحد"},{name: "Entresto 100", unit: "28 Tab", price: 50, company: "ايرادات هيئة"},{name: "Entresto 200", unit: "28 Tab", price: 50, company: "ايرادات هيئة"},{name: "Entresto 50", unit: "28 Tab", price: 50, company: "ايرادات هيئة"},{name: "Etodolac 600", unit: "10 Tab", price: 15.5, company: "شراء موحد"},{name: "Exforge Hct 160 / 10 / 25", unit: "14 Tab", price: 70.5, company: "شراء موحد"},{name: "Exforge Hct 160 / 5 /12.5", unit: "14 Tab", price: 73.5, company: "شراء موحد"},{name: "Femara 2.5", unit: "30 Tab", price: 52.59, company: "شراء موحد"},{name: "Flagyl 250", unit: "20 Tab", price: 5.5, company: "شراء موحد"},{name: "Foradil", unit: "30 Cap", price: 75, company: "شراء موحد"},{name: "Forxiga 10", unit: "28 Tab", price: 222, company: "شراء موحد"},{name: "Forxiga 5", unit: "28 Tab", price: 234, company: "شراء موحد"},{name: "Galvus 50", unit: "28 Tab", price: 65, company: "شراء موحد"},{name: "Galvus Met 50 / 1000", unit: "30 Tab", price: 86.5, company: "شراء موحد"},{name: "Galvus Met 50 / 850", unit: "30 Tab", price: 79.5, company: "شراء موحد"},{name: "Genuphil", unit: "50 Tab", price: 20, company: "شراء موحد"},{name: "Glucophage 1000", unit: "30 Tab", price: 12.5, company: "شراء موحد"},{name: "Glucophage 500", unit: "50 Tab", price: 14.5, company: "شراء موحد"},{name: "Glucophage Xr 1000", unit: "30 Tab", price: 42.5, company: "شراء موحد"},{name: "Glucovance 5 / 500", unit: "30 Tab", price: 26.5, company: "شراء موحد"},{name: "Glucovance 5 /1000", unit: "30 Tab", price: 20, company: "شراء موحد"},{name: "Humalog 100 pen قوي عاملة", unit: "Pen", price: 52.87, company: "شراء موحد"},{name: "Humalog 100 penfill قوي عاملة", unit: "Penfill", price: 48, company: "شراء موحد"},{name: "Humalog Mix 25 قوي عاملة", unit: "Pen", price: 60, company: "شراء موحد"},{name: "Humalog Mix 25 طلاب", unit: "Pen", price: 20, company: "شراء موحد"},{name: "Humalog Mix 50 قوي عاملة", unit: "Pen", price: 60, company: "شراء موحد"},{name: "Humalog Mix 50 طلاب", unit: "Pen", price: 20, company: "شراء موحد"},{name: "Hyzaar 50", unit: "7 Tab", price: 22, company: "شراء موحد"},{name: "Isoptin 80", unit: "30 Tab", price: 6.5, company: "شراء موحد"},{name: "Januvia 100", unit: "28 Tab", price: 193, company: "شراء موحد"},{name: "Januvia 50", unit: "28 Tab", price: 165, company: "شراء موحد"},{name: "Jaunamet 50 / 1000", unit: "56 Tab", price: 195, company: "شراء موحد"},{name: "Jaunamet 50 / 500", unit: "56 Tab", price: 204, company: "شراء موحد"},{name: "Jaunamet 50 / 850", unit: "56 Tab", price: 175, company: "شراء موحد"},{name: "Lasilactone 50 / 20", unit: "30 Tab", price: 8, company: "شراء موحد"},{name: "Lantus", unit: "Penfill", price: 20, company: "ايرادات هيئة"},{name: "Lasix 40", unit: "24 Tab", price: 9, company: "شراء موحد"},{name: "Lipanthyl 300", unit: "30 Tab", price: 26, company: "شراء موحد"},{name: "Lipitor 10", unit: "7 Tab", price: 28.5, company: "شراء موحد"},{name: "Lipitor 20", unit: "7 Tab", price: 32, company: "شراء موحد"},{name: "Lipitor 40", unit: "7 Tab", price: 46.5, company: "شراء موحد"},{name: "Lipiror 80", unit: "7 Tab", price: 51, company: "شراء موحد"},{name: "Lustral 50", unit: "7 Tab", price: 26.5, company: "شراء موحد"},{name: "Mena Q", unit: "20 Cap", price: 37, company: "شراء موحد"},{name: "Methyltechno", unit: "30 Film", price: 12, company: "شراء موحد"},{name: "Natrilix Sr", unit: "30 Tab", price: 16, company: "شراء موحد"},{name: "Natrixam 1.5 / 10", unit: "28 Tab", price: 43, company: "شراء موحد"},{name: "Natrixam 1.5 / 5", unit: "28 Tab", price: 43, company: "شراء موحد"},{name: "Nebicard 5", unit: "14 Tab", price: 13, company: "شراء موحد"},{name: "Nexium 20", unit: "28 Tab", price: 140, company: "شراء موحد"},{name: "Norditropine", unit: "Pen", price: 30, company: "شراء موحد"},{name: "Norvasc 10", unit: "10 Tab", price: 25.5, company: "شراء موحد"},{name: "Norvasc 5", unit: "10 Tab", price: 23.5, company: "شراء موحد"},{name: "Novomix 30 Mix قوي عاملة", unit: "Pen", price: 60, company: "شراء موحد"},{name: "Novomix 30 Mix طلاب", unit: "Pen", price: 20, company: "شراء موحد"},{name: "Novomix 50 Mix قوي عاملة", unit: "Pen", price: 60, company: "شراء موحد"},{name: "Novomix 50 Mix طلاب", unit: "Pen", price: 20, company: "شراء موحد"},{name: "Novorapid قوي عاملة", unit: "Penfill", price: 39.5, company: "شراء موحد"},{name: "Novorapid طلاب", unit: "Penfill", price: 20, company: "شراء موحد"},{name: "Orthoglobe", unit: "30 Tab", price: 10, company: "شراء موحد"},{name: "Plavix 75", unit: "28 Tab", price: 40, company: "ايرادات هيئة"},{name: "Plendil 5", unit: "30 Tab", price: 33, company: "شراء موحد"},{name: "Pletaal 100", unit: "20 Tab", price: 64, company: "شراء موحد"},{name: "Pletaal 50", unit: "20 Tab", price: 44.5, company: "شراء موحد"},{name: "Procorolan 5", unit: "28 Tab", price: 50, company: "شراء موحد"},{name: "Procorolan 7.5", unit: "28 Tab", price: 50, company: "شراء موحد"},{name: "Ryzodec", unit: "Pen", price: 100, company: "شراء موحد"},{name: "Singulair 10", unit: "14 Tab", price: 84.5, company: "شراء موحد"},{name: "Singulair 5", unit: "14 Tab", price: 77.75, company: "شراء موحد"},{name: "Soliqua 100 / 33", unit: "Pen", price: 162, company: "شراء موحد"},{name: "Soliqua 100 / 50", unit: "Pen", price: 287, company: "شراء موحد"},{name: "Tareg 40", unit: "15 Tab", price: 49, company: "شراء موحد"},{name: "Tarolimus", unit: "Tube", price: 15, company: "شراء موحد"},{name: "Taxoter 20", unit: "Vial", price: 240, company: "شراء موحد"},{name: "Taxoter 80", unit: "Vial", price: 860, company: "شراء موحد"},{name: "Tegretol 200", unit: "30 Tab", price: 13, company: "شراء موحد"},{name: "Tegretol 200 Cr", unit: "20 Tab", price: 7.5, company: "شراء موحد"},{name: "Tegretol 400 Cr", unit: "20 Tab", price: 9, company: "شراء موحد"},{name: "Tenormin 100", unit: "14 Tab", price: 9.5, company: "شراء موحد"},{name: "Tenormin 50", unit: "14 Tab", price: 7.25, company: "شراء موحد"},{name: "Tentavair 160", unit: "Spray", price: 27, company: "شراء موحد"},{name: "Toujeo قوي عاملة", unit: "Pen", price: 50, company: "شراء موحد"},{name: "Toujeo طلاب", unit: "Pen", price: 15, company: "شراء موحد"},{name: "Tresiba قوي عاملة", unit: "Pen", price: 70, company: "شراء موحد"},{name: "Tresiba طلاب", unit: "Pen", price: 25, company: "شراء موحد"},{name: "Trilepital 300", unit: "50 Tab", price: 116.25, company: "شراء موحد"},{name: "Tritace 2.5", unit: "14 Tab", price: 14.5, company: "شراء موحد"},{name: "Tritace 5", unit: "14 Tab", price: 19, company: "شراء موحد"},{name: "Tritace comp 5 / 25", unit: "14 Tab", price: 27, company: "شراء موحد"},{name: "Tritace Comp Ls 2.5 / 12.5", unit: "14 Tab", price: 18, company: "شراء موحد"},{name: "Tritace Protect 10", unit: "20 Tab", price: 29, company: "شراء موحد"},{name: "Trivastal", unit: "30 Tab", price: 27.25, company: "شراء موحد"},{name: "Vastarel Mr", unit: "30 Tab", price: 48.5, company: "شراء موحد"},{name: "Xarelto 10", unit: "10 Tab", price: 50, company: "ايرادات هيئة"},{name: "Xarelto 15", unit: "42 Tab", price: 210, company: "ايرادات هيئة"},{name: "Xarelto 20", unit: "28 Tab", price: 140, company: "ايرادات هيئة"},{name: "Xigduo 5 /1000", unit: "56 Tab", price: 98.5, company: "شراء موحد"},{name: "Zestril 5", unit: "10 Tab", price: 6.25, company: "شراء موحد"},{name: "Zestril 10", unit: "10 Tab", price: 7.5, company: "شراء موحد"},{name: "Zestril 20", unit: "10 Tab", price: 8.5, company: "شراء موحد"},{name: "Zocor 10", unit: "7 Tab", price: 22.75, company: "شراء موحد"},{name: "Zocor 20", unit: "14 Tab", price: 60.5, company: "شراء موحد"},{name: "Zocor 40", unit: "14 Tab", price: 57, company: "شراء موحد"}
         ];
@@ -1077,7 +965,6 @@ body.dark-mode .moon-icon { display: block; }
         const resultsSection = document.getElementById('results-section');
         const primaryFilterBtns = document.querySelectorAll('.primary-filters .filter-btn');
         const secondaryFiltersContainer = document.getElementById('secondary-filters-container');
-        const themeToggleButton = document.getElementById('theme-toggle');
         const resetAllFiltersBtn = document.getElementById('reset-all-filters');
 
         let currentFilterType = 'all';
@@ -1085,22 +972,22 @@ body.dark-mode .moon-icon { display: block; }
         let activeSecondaryFilters = {};
         let allDatasetNormalized = [];
         let typingTimer;
-        const DONE_TYPING_INTERVAL = 250; 
+        const DONE_TYPING_INTERVAL = 250;
 
         const baseFuseOptions = {
             includeScore: true,
             includeMatches: true,
-            minMatchCharLength: 1, 
-            useExtendedSearch: true, 
+            minMatchCharLength: 1,
+            useExtendedSearch: true,
         };
 
         function normalizeAllData() {
-            allDatasetNormalized = []; 
+            allDatasetNormalized = [];
             paidItems.forEach((pItem, index) => {
                 allDatasetNormalized.push({
                     _id: `paid_${index}`, _type: 'paid',
-                    search_name: pItem.name, 
-                    search_unit: pItem.unit, 
+                    search_name: pItem.name,
+                    search_unit: pItem.unit,
                     search_company: pItem.company,
                     originalItem: pItem
                 });
@@ -1108,10 +995,10 @@ body.dark-mode .moon-icon { display: block; }
             freeItems.forEach((fItem, index) => {
                 allDatasetNormalized.push({
                     _id: `free_${index}`, _type: 'free',
-                    search_name: fItem.Name, 
-                    search_conc: fItem.Conc, 
+                    search_name: fItem.Name,
+                    search_conc: fItem.Conc,
                     search_form: fItem.form,
-                    search_authority: fItem.Authority, 
+                    search_authority: fItem.Authority,
                     search_class: fItem.class,
                     originalItem: fItem
                 });
@@ -1125,7 +1012,7 @@ body.dark-mode .moon-icon { display: block; }
             const allKeys = [{name: 'search_name', weight: 0.7}, {name: 'search_company', weight: 0.1}, {name: 'search_class', weight: 0.1}, {name: 'search_unit', weight: 0.05}, {name: 'search_form', weight: 0.05}];
 
             const strictThreshold = 0.28;
-            const lenientThreshold = 0.6; 
+            const lenientThreshold = 0.6;
 
             fusePaid = new Fuse(paidItems, { ...baseFuseOptions, keys: paidKeys, threshold: strictThreshold });
             fuseFree = new Fuse(freeItems, { ...baseFuseOptions, keys: freeKeys, threshold: strictThreshold });
@@ -1152,7 +1039,7 @@ body.dark-mode .moon-icon { display: block; }
                 secondaryFiltersContainer.classList.add('visible');
                 return;
             }
-            secondaryFiltersContainer.classList.remove('visible'); 
+            secondaryFiltersContainer.classList.remove('visible');
 
             if (currentFilterType === 'paid') {
                 currentDataForSecondaryFilters = paidItems;
@@ -1168,14 +1055,14 @@ body.dark-mode .moon-icon { display: block; }
                     { key: 'class', label: 'Therapeutic Class', type: 'select' }
                 ];
             }
-            
+
             if (filtersToCreate.length > 0) {
-                requestAnimationFrame(() => { 
+                requestAnimationFrame(() => {
                     secondaryFiltersContainer.classList.add('visible');
                 });
             } else {
                 secondaryFiltersContainer.classList.remove('visible');
-                return; 
+                return;
             }
 
             filtersToCreate.forEach(filterConfig => {
@@ -1189,7 +1076,7 @@ body.dark-mode .moon-icon { display: block; }
                 if (filterConfig.type === 'select') {
                     const select = document.createElement('select');
                     select.id = `sf-${filterConfig.key}`;
-                    
+
                     let optionsData = [...currentDataForSecondaryFilters];
                     for (const activeFilterKey in activeSecondaryFilters) {
                         if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
@@ -1204,7 +1091,7 @@ body.dark-mode .moon-icon { display: block; }
                     uniqueOptions.forEach(val => {
                         select.innerHTML += `<option value="${val}">${val}</option>`;
                     });
-                    
+
                     if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
                         select.value = activeSecondaryFilters[filterConfig.key];
                     } else {
@@ -1215,24 +1102,24 @@ body.dark-mode .moon-icon { display: block; }
                     select.addEventListener('change', (e) => {
                         activeSecondaryFilters[filterConfig.key] = e.target.value;
                         createSecondaryFiltersUI();
-                        performSearch(searchInput.value.trim(), true); 
+                        performSearch(searchInput.value.trim(), true);
                     });
                     group.appendChild(select);
                 }
                 secondaryFiltersContainer.appendChild(group);
             });
         }
-        
+
         function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
             if (!fuseMatches || textToDisplay === null || textToDisplay === undefined) return String(textToDisplay || '');
-            
+
             const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
             if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return String(textToDisplay);
 
             let result = '';
             let lastIndex = 0;
             const textStr = String(textToDisplay);
-            
+
             relevantMatch.indices.forEach(pair => {
                 result += textStr.substring(lastIndex, pair[0]);
                 result += `<mark>${textStr.substring(pair[0], pair[1] + 1)}</mark>`;
@@ -1241,9 +1128,9 @@ body.dark-mode .moon-icon { display: block; }
             result += textStr.substring(lastIndex);
             return result;
         }
-        
+
         function renderResults(results, query, suggestions = []) {
-            resultsSection.innerHTML = ''; 
+            resultsSection.innerHTML = '';
 
             if (suggestions.length > 0) {
                 const dymOuter = document.createElement('div');
@@ -1252,7 +1139,7 @@ body.dark-mode .moon-icon { display: block; }
                 dymContainer.className = 'did-you-mean';
                 let suggestionHTML = 'Did you mean: <span class="suggestion-list">';
                 suggestions.forEach(term => {
-                    const cleanTerm = String(term).replace(/"/g, '"'); 
+                    const cleanTerm = String(term).replace(/"/g, '"');
                     suggestionHTML += `<a href="#" data-suggestion="${cleanTerm}">${cleanTerm}</a>`;
                 });
                 suggestionHTML += '</span>?';
@@ -1263,7 +1150,7 @@ body.dark-mode .moon-icon { display: block; }
                         const suggestedQuery = e.target.dataset.suggestion;
                         searchInput.value = suggestedQuery;
                         clearBtn.style.display = searchInput.value.length > 0 ? 'block' : 'none';
-                        performSearch(suggestedQuery, true); 
+                        performSearch(suggestedQuery, true);
                     });
                 });
                 dymOuter.appendChild(dymContainer);
@@ -1271,7 +1158,7 @@ body.dark-mode .moon-icon { display: block; }
             }
 
             if (!results || results.length === 0) {
-                if (query && suggestions.length === 0) { 
+                if (query && suggestions.length === 0) {
                     resultsSection.innerHTML += '<div class="no-results">No medications found for your query.</div>';
                 } else if (!query) {
                      resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
@@ -1290,13 +1177,13 @@ body.dark-mode .moon-icon { display: block; }
                 itemDiv.style.animationDelay = `${index * 0.035}s`;
 
                 let title, detailsHTML = '', tagsHTML = '';
-                
+
                 if (itemType === 'paid') {
                     title = highlightText(displayItem.name, fuseMatches, isAllSearch ? 'search_name' : 'name');
                     detailsHTML = `<p><strong>Unit:</strong> ${highlightText(displayItem.unit, fuseMatches, isAllSearch ? 'search_unit' : 'unit')}</p>
                                    <p><strong>Price:</strong> ${displayItem.price !== undefined ? displayItem.price.toFixed(2) : 'N/A'}</p>`;
                     if (displayItem.company) tagsHTML += `<div class="result-info-tag">By: ${highlightText(displayItem.company, fuseMatches, isAllSearch ? 'search_company' : 'company')}</div>`;
-                } else { 
+                } else {
                     title = highlightText(displayItem.Name, fuseMatches, isAllSearch ? 'search_name' : 'Name');
                     detailsHTML = `<p><strong>Concentration:</strong> ${highlightText(displayItem.Conc, fuseMatches, isAllSearch ? 'search_conc' : 'Conc')}</p>
                                    <p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, isAllSearch ? 'search_form' : 'form')}</p>`;
@@ -1321,26 +1208,26 @@ body.dark-mode .moon-icon { display: block; }
                 return fuseResults;
             }
             return fuseResults.filter(result => {
-                const item = (currentFilterType === 'all') ? result.item.originalItem : result.item; 
+                const item = (currentFilterType === 'all') ? result.item.originalItem : result.item;
                 for (const key in activeSecondaryFilters) {
                     const filterValue = activeSecondaryFilters[key];
-                    if (!filterValue) continue; 
+                    if (!filterValue) continue;
 
                     const itemValue = item[key];
                     if (itemValue === undefined || itemValue === null) return false;
-                    
+
                     if (String(itemValue).toLowerCase() !== String(filterValue).toLowerCase()) return false;
                 }
                 return true;
             });
         }
-        
+
         function performSearch(query, fromSuggestionOrFilter = false) {
             query = query.trim();
-             if (!query && !fromSuggestionOrFilter && Object.values(activeSecondaryFilters).every(v => !v)) { 
+             if (!query && !fromSuggestionOrFilter && Object.values(activeSecondaryFilters).every(v => !v)) {
                 resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
-                if (currentFilterType === 'all') { 
-                    createSecondaryFiltersUI(); 
+                if (currentFilterType === 'all') {
+                    createSecondaryFiltersUI();
                 }
                 return;
             }
@@ -1350,10 +1237,10 @@ body.dark-mode .moon-icon { display: block; }
                 currentFuse = fusePaid; currentFuseLenient = fusePaidLenient; nameKeyForSuggestion = 'name'; baseData = paidItems;
             } else if (currentFilterType === 'free') {
                 currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient; nameKeyForSuggestion = 'Name'; baseData = freeItems;
-            } else { 
+            } else {
                 currentFuse = fuseAll; currentFuseLenient = fuseAllLenient; nameKeyForSuggestion = 'search_name'; baseData = allDatasetNormalized;
             }
-            
+
             let resultsToFilter;
             if (query) {
                 resultsToFilter = currentFuse.search(query);
@@ -1370,18 +1257,18 @@ body.dark-mode .moon-icon { display: block; }
 
                 if (lenientFilteredResults.length > 0) {
                     const uniqueSuggestions = new Set();
-                    lenientFilteredResults.sort((a, b) => a.score - b.score); 
+                    lenientFilteredResults.sort((a, b) => a.score - b.score);
 
                     lenientFilteredResults.slice(0, 5).forEach(res => {
                         if (uniqueSuggestions.size >= 5) return;
-                        
+
                         let suggestedTerm;
                         if (currentFilterType === 'all') {
-                             suggestedTerm = res.item.search_name; 
+                             suggestedTerm = res.item.search_name;
                         } else {
-                             suggestedTerm = res.item[nameKeyForSuggestion]; 
+                             suggestedTerm = res.item[nameKeyForSuggestion];
                         }
-                        
+
                         if (suggestedTerm && String(suggestedTerm).toLowerCase() !== query.toLowerCase()) {
                             uniqueSuggestions.add(suggestedTerm);
                         }
@@ -1389,7 +1276,7 @@ body.dark-mode .moon-icon { display: block; }
                     suggestions = Array.from(uniqueSuggestions);
                 }
             }
-            
+
             renderResults(filteredResults, query, suggestions);
             if (filteredResults.length === 0 && suggestions.length === 0 && (query || Object.values(activeSecondaryFilters).some(v => v))) {
                  resultsSection.innerHTML = '<div class="no-results">No medications found for your query or filter combination.</div>';
@@ -1402,27 +1289,22 @@ body.dark-mode .moon-icon { display: block; }
                 btn.classList.toggle('active', btn.dataset.filter === type);
             });
             activeSecondaryFilters = {};
-            createSecondaryFiltersUI(); 
-            performSearch(searchInput.value.trim(), true); 
-        }
-
-        function toggleTheme() {
-            const isDarkMode = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            createSecondaryFiltersUI();
+            performSearch(searchInput.value.trim(), true);
         }
 
         searchInput.addEventListener('input', function() {
-            const query = this.value; 
-            const trimmedQuery = query.trim(); 
+            const query = this.value;
+            const trimmedQuery = query.trim();
 
             clearBtn.style.display = query.length > 0 ? 'block' : 'none';
-            
+
             clearTimeout(typingTimer);
             typingTimer = setTimeout(() => performSearch(trimmedQuery, false), DONE_TYPING_INTERVAL);
         });
-        
+
         searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') { 
+            if (e.key === 'Enter') {
                  performSearch(searchInput.value.trim(), false);
             }
         });
@@ -1430,7 +1312,7 @@ body.dark-mode .moon-icon { display: block; }
         clearBtn.addEventListener('click', function() {
             searchInput.value = '';
             this.style.display = 'none';
-            performSearch('', false); 
+            performSearch('', false);
             searchInput.focus();
         });
 
@@ -1441,7 +1323,7 @@ body.dark-mode .moon-icon { display: block; }
                 });
             }
         });
-        
+
         resetAllFiltersBtn.addEventListener('click', function() {
             searchInput.value = '';
             clearBtn.style.display = 'none';
@@ -1449,28 +1331,18 @@ body.dark-mode .moon-icon { display: block; }
             searchInput.focus();
         });
 
-
-        themeToggleButton.addEventListener('click', toggleTheme);
-
         document.addEventListener('keydown', function(e) {
             if (e.key === '/' && document.activeElement !== searchInput && !e.metaKey && !e.ctrlKey) {
                 e.preventDefault();
                 searchInput.focus();
             }
         });
-        
-        const preferredTheme = localStorage.getItem('theme');
-        if (preferredTheme === 'dark') {
-            document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode'); 
-        }
 
         initializeFuseInstances();
-        setActivePrimaryFilter('all'); 
+        setActivePrimaryFilter('all');
         setTimeout(() => {
             searchInput.focus();
-            if (!searchInput.value && Object.values(activeSecondaryFilters).every(v => !v)) { 
+            if (!searchInput.value && Object.values(activeSecondaryFilters).every(v => !v)) {
                  resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
             }
         }, 200);
