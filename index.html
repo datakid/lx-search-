@@ -2090,22 +2090,14 @@ const freeData = [
 
             if (!results || results.length === 0) {
                 let noResultsMsg = '';
-                if (query) {
+                 if (query) { // Query exists, but no results (even after suggestions)
                     noResultsMsg = 'No medications found for your query.';
-                } else if (Object.values(activeSecondaryFilters).some(v => v)) {
-                    noResultsMsg = 'No medications found for the current filters.';
-                } else {
-                    if (currentFilterType === 'paid' && paidData.length === 0) {
-                        noResultsMsg = 'There are no paid medications in the database.';
-                    } else if (currentFilterType === 'free' && freeData.length === 0) {
-                        noResultsMsg = 'There are no free medications in the database.';
-                    } else if (currentFilterType === 'all' && allDatasetNormalized.length === 0) {
-                         noResultsMsg = 'There are no medications in the database.';
-                    } else {
-                        noResultsMsg = 'Start typing to search for medications.';
-                    }
                 }
-                resultsSection.innerHTML += `<div class="no-results">${noResultsMsg}</div>`;
+                // If query was empty, performSearch would have already handled the message.
+                // This block now primarily handles the case where a query was made but yielded no results.
+                if (noResultsMsg) { // Append if there's a specific message for query with no results
+                    resultsSection.innerHTML += `<div class="no-results">${noResultsMsg}</div>`;
+                }
                 return;
             }
 
@@ -2173,8 +2165,15 @@ const freeData = [
         function performSearch(query, fromSuggestionOrFilter = false) {
             query = query.trim();
 
-            if (!query && Object.values(activeSecondaryFilters).every(v => !v)) {
+            if (!query) {
                 resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
+                if (currentFilterType === 'paid' && paidData.length === 0 && fromSuggestionOrFilter) {
+                     resultsSection.innerHTML = '<div class="no-results">There are no paid medications in the database. Start by typing a search term.</div>';
+                } else if (currentFilterType === 'free' && freeData.length === 0 && fromSuggestionOrFilter) {
+                     resultsSection.innerHTML = '<div class="no-results">There are no free medications in the database. Start by typing a search term.</div>';
+                } else if (currentFilterType === 'all' && allDatasetNormalized.length === 0 && fromSuggestionOrFilter) {
+                     resultsSection.innerHTML = '<div class="no-results">There are no medications in the database. Start by typing a search term.</div>';
+                }
                 searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
                 return;
             }
@@ -2192,25 +2191,7 @@ const freeData = [
                 nameKeyForSuggestion = 'search_name'; activeIngredientKey = 'search_active_ingredient';
             }
 
-            let resultsToFilter;
-            if (query) {
-                resultsToFilter = currentFuse.search(query);
-            } else {
-                const sourceData = (currentFilterType === 'paid') ? paidData :
-                                 (currentFilterType === 'free' ? freeData : allDatasetNormalized);
-                if (sourceData.length === 0 && Object.values(activeSecondaryFilters).some(v=>v)) {
-                    resultsToFilter = [];
-                } else if (sourceData.length === 0 && !Object.values(activeSecondaryFilters).some(v=>v) && fromSuggestionOrFilter){
-                    resultsToFilter = [];
-                }
-                else {
-                     resultsToFilter = sourceData.map(item => ({
-                        item: (currentFilterType === 'all' ? item : item),
-                        score: 0, matches: []
-                    }));
-                }
-            }
-
+            let resultsToFilter = currentFuse.search(query);
             let filteredResults = applySecondaryFiltersToResults(resultsToFilter);
             let suggestions = [];
 
@@ -2227,7 +2208,9 @@ const freeData = [
                         if (nameTerm && String(nameTerm).toLowerCase() !== query.toLowerCase()) uniqueSuggestions.add(nameTerm);
                         if (activeIngredientKey && uniqueSuggestions.size < 5) {
                             let ingredientTerm = res.item[activeIngredientKey];
-                            if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm)) uniqueSuggestions.add(ingredientTerm);
+                            if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm)) {
+                                 uniqueSuggestions.add(ingredientTerm);
+                            }
                         }
                     });
                     suggestions = Array.from(uniqueSuggestions);
@@ -2263,7 +2246,9 @@ const freeData = [
 
         searchInput.addEventListener('focus', () => searchHint.classList.remove('visible'));
         searchInput.addEventListener('blur', () => {
-            if (!searchInput.value) searchHint.classList.add('visible');
+            if (!searchInput.value && !resultsSection.querySelector('.result-item') && !resultsSection.querySelector('.did-you-mean')) {
+                 searchHint.classList.add('visible');
+            }
         });
 
         clearBtn.addEventListener('click', function() {
