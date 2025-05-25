@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -219,8 +217,8 @@ body {
 
 .search-hint {
     position: absolute;
-    bottom: -28px; /* Adjust as needed */
-    right: 0; /* Align to the right of the search input wrapper */
+    bottom: -28px;
+    right: 0;
     font-size: 0.75rem;
     color: var(--text-placeholder);
     background-color: rgba(var(--accent-color-rgb), 0.05);
@@ -386,6 +384,7 @@ body {
     font-style: italic;
     padding: 10px 0;
     opacity: 0.8;
+    font-size: 0.9rem;
 }
 
 .results-section {
@@ -1860,8 +1859,6 @@ const freeData = [
     {"name":"Acitretin 10","activeIngredient":null,"concentration":"10 mg","company":null,"price":null,"form":"Tab","class":"Dermatological Agents","authority":"Con"},
     {"name":"Acitretin 25","activeIngredient":null,"concentration":"25 mg","company":null,"price":null,"form":"Tab","class":"Dermatological Agents","authority":"Con"}
 ];
-
-
         const searchInput = document.getElementById('search-input');
         const clearBtn = document.getElementById('clear-btn');
         const resultsSection = document.getElementById('results-section');
@@ -1919,29 +1916,20 @@ const freeData = [
         function initializeFuseInstances() {
             normalizeAllData();
             const paidKeys = [
-                {name: 'name', weight: 0.30},
-                {name: 'activeIngredient', weight: 0.25},
-                {name: 'class', weight: 0.20},
-                {name: 'company', weight: 0.10},
-                {name: 'authority', weight: 0.05},
-                {name: 'concentration', weight: 0.05},
+                {name: 'name', weight: 0.30}, {name: 'activeIngredient', weight: 0.25},
+                {name: 'class', weight: 0.20}, {name: 'company', weight: 0.10},
+                {name: 'authority', weight: 0.05}, {name: 'concentration', weight: 0.05},
                 {name: 'form', weight: 0.05}
             ];
             const freeKeys = [
-                {name: 'name', weight: 0.5},
-                {name: 'class', weight: 0.3},
-                {name: 'concentration', weight: 0.1},
-                {name: 'form', weight: 0.05},
+                {name: 'name', weight: 0.5}, {name: 'class', weight: 0.3},
+                {name: 'concentration', weight: 0.1}, {name: 'form', weight: 0.05},
                 {name: 'authority', weight: 0.05}
             ];
-
-            const allKeys = [
-                {name: 'search_name', weight: 0.35},
-                {name: 'search_active_ingredient', weight: 0.20},
-                {name: 'search_class', weight: 0.20},
-                {name: 'search_company', weight: 0.075},
-                {name: 'search_authority', weight: 0.075},
-                {name: 'search_concentration', weight: 0.05},
+             const allKeys = [
+                {name: 'search_name', weight: 0.35}, {name: 'search_active_ingredient', weight: 0.20},
+                {name: 'search_class', weight: 0.20}, {name: 'search_company', weight: 0.075},
+                {name: 'search_authority', weight: 0.075}, {name: 'search_concentration', weight: 0.05},
                 {name: 'search_form', weight: 0.05}
             ];
 
@@ -1967,47 +1955,48 @@ const freeData = [
         function createSecondaryFiltersUI() {
             secondaryFiltersContainer.innerHTML = '';
             let filtersToCreate = [];
+            let showContainerMessage = '';
 
             if (currentFilterType === 'all') {
                 secondaryFiltersContainer.classList.remove('visible');
                 return;
             } else if (currentFilterType === 'paid') {
-                filtersToCreate = [
-                    { key: 'form', label: 'Form', dataContext: paidData },
-                    { key: 'authority', label: 'Authority', dataContext: paidData },
-                    { key: 'company', label: 'Company', dataContext: paidData },
-                    { key: 'class', label: 'Therapeutic Class', dataContext: paidData }
-                ];
+                if (paidData.length === 0) {
+                    showContainerMessage = '<div class="filters-disabled-message">No paid items available to filter.</div>';
+                } else {
+                    filtersToCreate = [
+                        { key: 'form', label: 'Form', dataContext: paidData },
+                        { key: 'authority', label: 'Authority', dataContext: paidData },
+                        { key: 'company', label: 'Company', dataContext: paidData },
+                        { key: 'class', label: 'Therapeutic Class', dataContext: paidData }
+                    ];
+                }
             } else if (currentFilterType === 'free') {
-                 filtersToCreate = [
-                    { key: 'form', label: 'Form', dataContext: freeData },
-                    { key: 'authority', label: 'Authority', dataContext: freeData },
-                    { key: 'class', label: 'Therapeutic Class', dataContext: freeData }
-                ];
+                 if (freeData.length === 0) {
+                    showContainerMessage = '<div class="filters-disabled-message">No free items available to filter.</div>';
+                 } else {
+                    filtersToCreate = [
+                        { key: 'form', label: 'Form', dataContext: freeData },
+                        { key: 'authority', label: 'Authority', dataContext: freeData },
+                        { key: 'class', label: 'Therapeutic Class', dataContext: freeData }
+                    ];
+                }
             }
 
-            if (filtersToCreate.length > 0 ) {
-                 if (currentFilterType === 'paid' && paidData.length === 0) {
-                     secondaryFiltersContainer.innerHTML = '<div class="filters-disabled-message">No paid items available to filter.</div>';
-                     requestAnimationFrame(() => {
-                        secondaryFiltersContainer.classList.add('visible');
-                    });
-                     return;
-                 }
-                 if (currentFilterType === 'free' && freeData.length === 0) {
-                    secondaryFiltersContainer.innerHTML = '<div class="filters-disabled-message">No free items available to filter.</div>';
-                     requestAnimationFrame(() => {
-                        secondaryFiltersContainer.classList.add('visible');
-                    });
-                     return;
-                 }
-                requestAnimationFrame(() => {
+            if (showContainerMessage) {
+                secondaryFiltersContainer.innerHTML = showContainerMessage;
+            }
+
+            if (filtersToCreate.length > 0 || showContainerMessage) {
+                 requestAnimationFrame(() => {
                     secondaryFiltersContainer.classList.add('visible');
                 });
             } else {
                 secondaryFiltersContainer.classList.remove('visible');
                 return;
             }
+
+            if (filtersToCreate.length === 0) return;
 
             filtersToCreate.forEach(filterConfig => {
                 const group = document.createElement('div');
@@ -2017,51 +2006,47 @@ const freeData = [
                 label.textContent = filterConfig.label;
                 group.appendChild(label);
 
-                if (filterConfig.type === 'select' || !filterConfig.type) {
-                    const select = document.createElement('select');
-                    select.id = `sf-${filterConfig.key}`;
+                const select = document.createElement('select');
+                select.id = `sf-${filterConfig.key}`;
 
-                    let optionsData = [...filterConfig.dataContext];
-                     for (const activeFilterKey in activeSecondaryFilters) {
-                        if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
-                            optionsData = optionsData.filter(item => String(item[activeFilterKey]) === String(activeSecondaryFilters[activeFilterKey]));
-                        }
+                let optionsData = [...filterConfig.dataContext];
+                 for (const activeFilterKey in activeSecondaryFilters) {
+                    if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
+                        optionsData = optionsData.filter(item => String(item[activeFilterKey]) === String(activeSecondaryFilters[activeFilterKey]));
                     }
-                    const uniqueOptions = getUniqueValues(optionsData, filterConfig.key);
-
-                    select.innerHTML = `<option value="">All ${filterConfig.label}s</option>`;
-                    uniqueOptions.forEach(val => {
-                        select.innerHTML += `<option value="${val}">${val}</option>`;
-                    });
-
-                    if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
-                        select.value = activeSecondaryFilters[filterConfig.key];
-                    } else {
-                        activeSecondaryFilters[filterConfig.key] = '';
-                        select.value = '';
-                    }
-
-                    select.addEventListener('change', (e) => {
-                        activeSecondaryFilters[filterConfig.key] = e.target.value;
-                        createSecondaryFiltersUI();
-                        performSearch(searchInput.value.trim(), true);
-                    });
-                    group.appendChild(select);
                 }
+                const uniqueOptions = getUniqueValues(optionsData, filterConfig.key);
+
+                select.innerHTML = `<option value="">All ${filterConfig.label}s</option>`;
+                uniqueOptions.forEach(val => {
+                    select.innerHTML += `<option value="${val}">${val}</option>`;
+                });
+
+                if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
+                    select.value = activeSecondaryFilters[filterConfig.key];
+                } else {
+                    activeSecondaryFilters[filterConfig.key] = '';
+                    select.value = '';
+                }
+
+                select.addEventListener('change', (e) => {
+                    activeSecondaryFilters[filterConfig.key] = e.target.value;
+                    createSecondaryFiltersUI();
+                    performSearch(searchInput.value.trim(), true);
+                });
+                group.appendChild(select);
                 secondaryFiltersContainer.appendChild(group);
             });
         }
 
         function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
             if (!fuseMatches || textToDisplay === null || textToDisplay === undefined) return String(textToDisplay || '');
-
             const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
             if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return String(textToDisplay);
 
             const textStr = String(textToDisplay);
             let result = '';
             let lastIndex = 0;
-
             const sortedIndices = relevantMatch.indices.slice().sort((a, b) => a[0] - b[0]);
 
             sortedIndices.forEach(pair => {
@@ -2075,7 +2060,6 @@ const freeData = [
             return result;
         }
 
-
         function renderResults(results, query, suggestions = []) {
             resultsSection.innerHTML = '';
 
@@ -2086,7 +2070,7 @@ const freeData = [
                 dymContainer.className = 'did-you-mean';
                 let suggestionHTML = 'Did you mean: <span class="suggestion-list">';
                 suggestions.forEach(term => {
-                    const cleanTerm = String(term).replace(/"/g, '&quot;');
+                    const cleanTerm = String(term).replace(/"/g, '"');
                     suggestionHTML += `<a href="#" data-suggestion="${cleanTerm}">${cleanTerm}</a>`;
                 });
                 suggestionHTML += '</span>?';
@@ -2105,13 +2089,23 @@ const freeData = [
             }
 
             if (!results || results.length === 0) {
-                if (query && suggestions.length === 0) {
-                    resultsSection.innerHTML += '<div class="no-results">No medications found for your query.</div>';
-                } else if (!query && Object.values(activeSecondaryFilters).every(v => !v)) {
-                     resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
-                } else if (!query && Object.values(activeSecondaryFilters).some(v => v)) {
-                    resultsSection.innerHTML += '<div class="no-results">No medications found for the current filters. Clear filters or try a search term.</div>';
+                let noResultsMsg = '';
+                if (query) {
+                    noResultsMsg = 'No medications found for your query.';
+                } else if (Object.values(activeSecondaryFilters).some(v => v)) {
+                    noResultsMsg = 'No medications found for the current filters.';
+                } else {
+                    if (currentFilterType === 'paid' && paidData.length === 0) {
+                        noResultsMsg = 'There are no paid medications in the database.';
+                    } else if (currentFilterType === 'free' && freeData.length === 0) {
+                        noResultsMsg = 'There are no free medications in the database.';
+                    } else if (currentFilterType === 'all' && allDatasetNormalized.length === 0) {
+                         noResultsMsg = 'There are no medications in the database.';
+                    } else {
+                        noResultsMsg = 'Start typing to search for medications.';
+                    }
                 }
+                resultsSection.innerHTML += `<div class="no-results">${noResultsMsg}</div>`;
                 return;
             }
 
@@ -2135,16 +2129,9 @@ const freeData = [
                         <p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, isAllSearch ? 'search_concentration' : 'concentration')}</p>
                         <p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, isAllSearch ? 'search_form' : 'form')}</p>
                         <p><strong>Price:</strong> <span class="result-price">${displayItem.price !== undefined && displayItem.price !== null ? displayItem.price.toFixed(2) : 'N/A'}</span></p>`;
-                    if (displayItem.company) {
-                        tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, isAllSearch ? 'search_company' : 'company')}</div>`;
-                    }
-                    if (displayItem.authority) {
-                         tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, isAllSearch ? 'search_authority' : 'authority')}</div>`;
-                    }
-                     if (displayItem.class) {
-                         tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, isAllSearch ? 'search_class' : 'class')}</div>`;
-                    }
-
+                    if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, isAllSearch ? 'search_company' : 'company')}</div>`;
+                    if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, isAllSearch ? 'search_authority' : 'authority')}</div>`;
+                    if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, isAllSearch ? 'search_class' : 'class')}</div>`;
                 } else {
                     title = highlightText(displayItem.name, fuseMatches, isAllSearch ? 'search_name' : 'name');
                     detailsHTML = `<p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, isAllSearch ? 'search_concentration' : 'concentration')}</p>
@@ -2172,13 +2159,10 @@ const freeData = [
             }
             return fuseResults.filter(result => {
                 const item = (currentFilterType === 'all') ? result.item.originalItem : result.item;
-
                 for (const key in activeSecondaryFilters) {
                     const filterValue = activeSecondaryFilters[key];
                     if (!filterValue) continue;
-
                     let itemValue = item[key];
-
                     if (itemValue === undefined || itemValue === null) return false;
                     if (String(itemValue).toLowerCase() !== String(filterValue).toLowerCase()) return false;
                 }
@@ -2188,35 +2172,42 @@ const freeData = [
 
         function performSearch(query, fromSuggestionOrFilter = false) {
             query = query.trim();
-             if (!query && !fromSuggestionOrFilter && Object.values(activeSecondaryFilters).every(v => !v)) {
+
+            if (!query && Object.values(activeSecondaryFilters).every(v => !v)) {
                 resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
+                searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
                 return;
             }
 
-            let currentFuse, currentFuseLenient, nameKeyForSuggestion, activeIngredientKey, baseDataForFiltering;
+            let currentFuse, currentFuseLenient, nameKeyForSuggestion, activeIngredientKey;
+
             if (currentFilterType === 'paid') {
                 currentFuse = fusePaid; currentFuseLenient = fusePaidLenient;
                 nameKeyForSuggestion = 'name'; activeIngredientKey = 'activeIngredient';
-                baseDataForFiltering = paidData;
             } else if (currentFilterType === 'free') {
                 currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient;
-                nameKeyForSuggestion = 'name'; activeIngredientKey = null; // Free items don't have activeIngredient structured
-                baseDataForFiltering = freeData;
-            } else { // 'all'
+                nameKeyForSuggestion = 'name'; activeIngredientKey = null;
+            } else {
                 currentFuse = fuseAll; currentFuseLenient = fuseAllLenient;
                 nameKeyForSuggestion = 'search_name'; activeIngredientKey = 'search_active_ingredient';
-                baseDataForFiltering = allDatasetNormalized;
             }
-
 
             let resultsToFilter;
             if (query) {
                 resultsToFilter = currentFuse.search(query);
             } else {
-                 if (currentFilterType === 'all') {
-                    resultsToFilter = baseDataForFiltering.map(item => ({ item: item, score: 0, matches: [] }));
-                } else {
-                    resultsToFilter = baseDataForFiltering.map(item => ({ item: item, score: 0, matches: [] }));
+                const sourceData = (currentFilterType === 'paid') ? paidData :
+                                 (currentFilterType === 'free' ? freeData : allDatasetNormalized);
+                if (sourceData.length === 0 && Object.values(activeSecondaryFilters).some(v=>v)) {
+                    resultsToFilter = [];
+                } else if (sourceData.length === 0 && !Object.values(activeSecondaryFilters).some(v=>v) && fromSuggestionOrFilter){
+                    resultsToFilter = [];
+                }
+                else {
+                     resultsToFilter = sourceData.map(item => ({
+                        item: (currentFilterType === 'all' ? item : item),
+                        score: 0, matches: []
+                    }));
                 }
             }
 
@@ -2230,30 +2221,20 @@ const freeData = [
                 if (lenientFilteredResults.length > 0) {
                     const uniqueSuggestions = new Set();
                     lenientFilteredResults.sort((a, b) => a.score - b.score);
-
                     lenientFilteredResults.slice(0, 5).forEach(res => {
                         if (uniqueSuggestions.size >= 5) return;
-
                         let nameTerm = res.item[nameKeyForSuggestion];
-                        if (nameTerm && String(nameTerm).toLowerCase() !== query.toLowerCase()) {
-                            uniqueSuggestions.add(nameTerm);
-                        }
-
+                        if (nameTerm && String(nameTerm).toLowerCase() !== query.toLowerCase()) uniqueSuggestions.add(nameTerm);
                         if (activeIngredientKey && uniqueSuggestions.size < 5) {
                             let ingredientTerm = res.item[activeIngredientKey];
-                            if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm)) {
-                                uniqueSuggestions.add(ingredientTerm);
-                            }
+                            if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm)) uniqueSuggestions.add(ingredientTerm);
                         }
                     });
                     suggestions = Array.from(uniqueSuggestions);
                 }
             }
-
             renderResults(filteredResults, query, suggestions);
-            if (filteredResults.length === 0 && suggestions.length === 0 && (query || Object.values(activeSecondaryFilters).some(v => v))) {
-                 resultsSection.innerHTML = '<div class="no-results">No medications found for your query or filter combination.</div>';
-            }
+            searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && !resultsSection.querySelector('.result-item') && !resultsSection.querySelector('.did-you-mean'));
         }
 
         function setActivePrimaryFilter(type) {
@@ -2268,10 +2249,9 @@ const freeData = [
 
         searchInput.addEventListener('input', function() {
             const query = this.value;
-            const trimmedQuery = query.trim();
             clearBtn.style.display = query.length > 0 ? 'block' : 'none';
             clearTimeout(typingTimer);
-            typingTimer = setTimeout(() => performSearch(trimmedQuery, false), DONE_TYPING_INTERVAL);
+            typingTimer = setTimeout(() => performSearch(query, false), DONE_TYPING_INTERVAL);
         });
 
         searchInput.addEventListener('keydown', (e) => {
@@ -2281,15 +2261,10 @@ const freeData = [
             }
         });
 
-        searchInput.addEventListener('focus', () => {
-            searchHint.classList.remove('visible');
-        });
+        searchInput.addEventListener('focus', () => searchHint.classList.remove('visible'));
         searchInput.addEventListener('blur', () => {
-            if (!searchInput.value) {
-                searchHint.classList.add('visible');
-            }
+            if (!searchInput.value) searchHint.classList.add('visible');
         });
-
 
         clearBtn.addEventListener('click', function() {
             searchInput.value = '';
@@ -2325,12 +2300,7 @@ const freeData = [
 
         setTimeout(() => {
             searchInput.focus();
-            if (!searchInput.value && Object.values(activeSecondaryFilters).every(v => !v)) {
-                 resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
-            }
-            if (document.activeElement !== searchInput) {
-                searchHint.classList.add('visible');
-            }
+            searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
         }, 100);
 
     </script>
