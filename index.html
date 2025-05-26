@@ -138,10 +138,32 @@ body {
 .did-you-mean { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6; }
 .did-you-mean .suggestion-list a { text-decoration: none; font-weight: 500; color: var(--accent-color); padding: 4px 10px; margin-right: 8px; margin-bottom: 8px; display: inline-block; border-radius: var(--border-radius-md); background-color: var(--accent-bg-subtle); transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast), transform var(--transition-speed-fast), box-shadow var(--transition-speed-fast); }
 .did-you-mean .suggestion-list a:hover { background-color: var(--accent-bg-active); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(var(--accent-color-rgb), 0.15); color: var(--text-primary); }
-.result-item { background: var(--glass-bg-card); backdrop-filter: blur(var(--glass-blur-card)); -webkit-backdrop-filter: blur(var(--glass-blur-card)); border: 1px solid var(--glass-border-card); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1.25rem; box-shadow: 0 15px 40px -10px var(--shadow-color-medium), 0 6px 15px -4px var(--shadow-color-soft); transition: all var(--transition-speed-normal) var(--transition-easing); animation: resultFadeIn var(--transition-speed-slow) var(--transition-easing) forwards; opacity: 0; position: relative; overflow: hidden; }
+.result-item {
+    background: var(--glass-bg-card);
+    backdrop-filter: blur(var(--glass-blur-card));
+    -webkit-backdrop-filter: blur(var(--glass-blur-card));
+    border: 1px solid var(--glass-border-card);
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 15px 40px -10px var(--shadow-color-medium), 0 6px 15px -4px var(--shadow-color-soft);
+    transition: background var(--transition-speed-normal) var(--transition-easing),
+                transform var(--transition-speed-normal) var(--transition-easing),
+                box-shadow var(--transition-speed-normal) var(--transition-easing),
+                border-color var(--transition-speed-normal) var(--transition-easing),
+                opacity var(--transition-speed-slow) var(--transition-easing), /* For fade in/out controlled by JS */
+                transform var(--transition-speed-slow) var(--transition-easing); /* For transform controlled by JS */
+    position: relative;
+    overflow: hidden;
+    opacity: 0; /* Initially hidden, made visible by IntersectionObserver */
+    transform: translateY(20px) scale(0.98); /* Initial state for animation */
+}
+.result-item.is-visible { /* Added by IntersectionObserver */
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
 .result-item::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(150deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0) 50%, rgba(255,255,255,0.015) 100%); border-radius: calc(var(--border-radius-lg) - 1px); pointer-events: none; z-index: 0; }
-@keyframes resultFadeIn { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-.result-item:hover { background: var(--glass-bg-card-hover); transform: translateY(-5px); box-shadow: 0 18px 45px -10px var(--shadow-color-medium), 0 10px 20px -6px var(--shadow-color-soft), 0 0 0 1.5px rgba(var(--accent-color-rgb), 0.2); border-color: rgba(var(--accent-color-rgb), 0.2); }
+.result-item:hover { background: var(--glass-bg-card-hover); transform: translateY(-5px) scale(1.01); box-shadow: 0 18px 45px -10px var(--shadow-color-medium), 0 10px 20px -6px var(--shadow-color-soft), 0 0 0 1.5px rgba(var(--accent-color-rgb), 0.2); border-color: rgba(var(--accent-color-rgb), 0.2); }
 .result-header, .result-details, .result-tags-container { position: relative; z-index: 1; }
 .result-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
 .result-title { font-weight: 600; color: var(--text-primary); font-size: 1.15rem; line-height: 1.4; flex-grow: 1; padding-right: 1rem; }
@@ -225,6 +247,22 @@ body {
 .custom-confirm-actions .confirm-yes { background-color: var(--accent-color); color: var(--text-on-accent); border-color: var(--accent-color); }
 .custom-confirm-actions .confirm-yes:hover { filter: brightness(1.1); }
 .app-disclaimer { text-align: center; font-size: 0.8rem; color: var(--text-placeholder); padding: 1rem; margin-top: auto; width: 100%; background-color: rgba(var(--dark-bg-gradient-start), 0.8); backdrop-filter: blur(5px); border-top: 1px solid var(--glass-border-main); position: fixed; bottom: 0; left: 0; z-index: 50; }
+.load-more-btn {
+    display: block;
+    margin: 1.5rem auto 0.5rem;
+    padding: 10px 20px;
+    background-color: var(--glass-bg-interactive);
+    border: 1px solid var(--glass-border-interactive);
+    color: var(--text-secondary);
+    border-radius: var(--border-radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-speed-fast) var(--transition-easing);
+}
+.load-more-btn:hover {
+    background-color: var(--glass-bg-interactive-hover);
+    color: var(--text-primary);
+    border-color: rgba(var(--accent-color-rgb), 0.25);
+}
 @media (max-width: 1024px) and (min-width: 769px) { #secondary-filters-container { flex-wrap: wrap; } .filter-group { min-width: calc(50% - 0.5rem); } }
 @media (max-width: 768px) { #secondary-filters-container { flex-wrap: wrap; } .filter-group { min-width: calc(50% - 0.625rem); } .search-hub-container { padding: 1rem 0.75rem; gap: 0.75rem; } .title { font-size: 1.5rem; } .title::after { width: 50px; } .main-search-card { padding: 1rem; border-radius: var(--border-radius-lg); } .search-input { height: 46px; font-size: 1rem; padding: 0 50px 0 50px; } .search-icon-svg { width: 20px; height: 20px; left: 16px; } .clear-btn { right: 12px; width: 32px; height: 32px; } .clear-btn svg { width: 18px; height: 18px; } .primary-filters { margin-top: 0.75rem; gap: 8px; } .filter-btn { padding: 8px 12px; font-size: 0.85rem; } .filter-btn .filter-icon-svg { width: 16px; height: 16px; } #secondary-filters-container.visible { margin-top: 0.75rem; padding-top: 0.75rem; } .result-item { padding: 1rem; margin-bottom: 0.75rem; border-radius: var(--border-radius-md); } .result-title { font-size: 1.05rem; } .result-details { font-size: 0.9rem; } .result-header { flex-wrap: wrap; gap: 0.5rem;} .result-card-actions { margin-left: 0; width: 100%; order: 1; justify-content: flex-start;} .item-type-tag { order: -1; margin-right: auto;} .side-panel-toggle { top: 0.75rem; left: 0.75rem; width: 40px; height: 40px;} .side-panel { width: 300px; left: -310px;} }
 @media (max-width: 480px) { #secondary-filters-container { flex-direction: column; flex-wrap: nowrap; overflow-x: hidden; max-height: 0; } #secondary-filters-container.visible { max-height: 500px; } .filter-group { min-width: 100%; } .search-hub-container { padding: 0.75rem 0.5rem; gap: 0.5rem; } .title { font-size: 1.35rem; } .title::after { width: 40px; height: 2px; bottom: -3px; } .main-search-card { padding: 0.75rem; border-radius: var(--border-radius-md); } .search-input { height: 42px; font-size: 0.95rem; padding: 0 42px 0 42px; border-radius: var(--border-radius-md); } .search-icon-svg { width: 18px; height: 18px; left: 14px; } .clear-btn { right: 12px; width: 32px; height: 32px; } .clear-btn svg { width: 18px; height: 18px; } .primary-filters { margin-top: 0.6rem; gap: 6px; } .filter-btn { padding: 6px 10px; font-size: 0.8rem; border-radius: var(--border-radius-md); } .filter-btn .filter-icon-svg { width: 14px; height: 14px; } #secondary-filters-container.visible { margin-top: 0.6rem; padding-top: 0.6rem; gap: 0.8rem; } .filter-group label { font-size: 0.8rem; margin-bottom: 0.4rem; } .filter-group select, .filter-group input[type="number"] { padding: 8px 12px; font-size: 0.85rem; border-radius: var(--border-radius-md); } .result-item { padding: 0.85rem; margin-bottom: 0.6rem; border-radius: var(--border-radius-sm); } .result-header { margin-bottom: 0.5rem; flex-direction: column; align-items: flex-start; gap: 0.5rem; } .result-title { font-size: 1rem; padding-right: 0; } .item-type-tag { font-size: 0.65rem; padding: 3px 10px; align-self: flex-start; order: initial; margin-left: 0; } .result-card-actions { width: auto; order: initial; margin-left: auto; } .result-details { font-size: 0.85rem; line-height: 1.5; } .result-tags-container { margin-top: 0.75rem; gap: 6px; } .result-info-tag { font-size: 0.75rem; padding: 3px 8px; } .did-you-mean { font-size: 0.85rem; margin-bottom: 1rem; } .did-you-mean .suggestion-list a { padding: 3px 8px; margin-right: 6px; margin-bottom: 6px; font-size: 0.8rem; } .no-results { padding: 1.5rem 0; font-size: 1rem; } .side-panel { width: 100%; left: -100%; border-right: none;} .side-panel.open { left: 0;} .side-panel-toggle { top: 0.5rem; left: 0.5rem;} }
@@ -310,7 +348,7 @@ body {
     </div>
 
     <div class="app-disclaimer">
-    Note: This list is experimental and might not be comprehensive or up to date.     
+    Note: This list is experimental and might not be comprehensive or up to date.
     </div>
 
     <div id="custom-confirm-dialog" class="custom-confirm" style="display: none;">
@@ -324,6 +362,7 @@ body {
     </div>
 
     <script>
+
 const paidData = [
     {"name":"Amaryl 1","activeIngredient":"Glimepiride","concentration":"1 mg","company":"شراء موحد","price":11.5,"form":"30 Tab","class":"Anti-Diabetics","authority":"con","_uniqueId":"paid_amaryl_1_1_mg"},
     {"name":"Amaryl 2","activeIngredient":"Glimepiride","concentration":"2 mg","company":"شراء موحد","price":27,"form":"30 Tab","class":"Anti-Diabetics","authority":"con","_uniqueId":"paid_amaryl_2_2_mg"},
@@ -1489,6 +1528,7 @@ const freeData = [
     {"name":"Acitretin 10","activeIngredient":null,"concentration":"10 mg","company":null,"price":null,"form":"Tab","class":"Dermatological Agents","authority":"Con","_uniqueId":"free_acitretin_10_10_mg"},
     {"name":"Acitretin 25","activeIngredient":null,"concentration":"25 mg","company":null,"price":null,"form":"Tab","class":"Dermatological Agents","authority":"Con","_uniqueId":"free_acitretin_25_25_mg"}
 ];
+
 const searchInput = document.getElementById('search-input');
 const clearBtn = document.getElementById('clear-btn');
 const resultsSection = document.getElementById('results-section');
@@ -1524,6 +1564,12 @@ const DONE_TYPING_INTERVAL = 200;
 const MAX_HISTORY_ITEMS = 10;
 const MAX_PINNED_ITEMS = 10;
 
+const MIN_QUERY_LENGTH_FOR_SUGGESTIONS = 1;
+const RESULTS_PER_PAGE = 20;
+let allMatchingResults = [];
+let currentlyDisplayedCount = 0;
+let resultItemObserver;
+
 const baseFuseOptions = {
     includeScore: true,
     includeMatches: true,
@@ -1538,7 +1584,6 @@ function generateUniqueId(item, type, index = 0) {
     const concPart = (item.concentration || 'na').replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
     return `${type}_${namePart}_${concPart}`.toLowerCase();
 }
-
 
 function normalizeAllData() {
     allDatasetNormalized = [];
@@ -1567,8 +1612,8 @@ function normalizeAllData() {
             search_form: fItem.form,
             search_authority: fItem.authority,
             search_class: fItem.class,
-            search_company: null,
-            search_active_ingredient: null,
+            search_company: fItem.company,
+            search_active_ingredient: fItem.activeIngredient,
             originalItem: {...fItem, _uniqueId: uniqueId}
         });
     });
@@ -1583,11 +1628,11 @@ function initializeFuseInstances() {
         {name: 'form', weight: 0.05}
     ];
     const freeKeys = [
-        {name: 'name', weight: 0.5}, {name: 'class', weight: 0.3},
-        {name: 'concentration', weight: 0.1}, {name: 'form', weight: 0.05},
+        {name: 'name', weight: 0.5}, {name: 'activeIngredient', weight: 0.2}, {name: 'class', weight: 0.15},
+        {name: 'concentration', weight: 0.05}, {name: 'form', weight: 0.05},
         {name: 'authority', weight: 0.05}
     ];
-    const allKeys = [
+     const allKeys = [
         {name: 'search_name', weight: 0.35}, {name: 'search_active_ingredient', weight: 0.20},
         {name: 'search_class', weight: 0.20}, {name: 'search_company', weight: 0.075},
         {name: 'search_authority', weight: 0.075}, {name: 'search_concentration', weight: 0.05},
@@ -1633,6 +1678,7 @@ function createSecondaryFiltersUI() {
         else filtersToCreate = [
             { key: 'form', label: 'Form', dataContext: freeData },
             { key: 'authority', label: 'Authority', dataContext: freeData },
+            { key: 'company', label: 'Company', dataContext: freeData },
             { key: 'class', label: 'Therapeutic Class', dataContext: freeData }
         ];
     }
@@ -1669,7 +1715,7 @@ function createSecondaryFiltersUI() {
 
         select.innerHTML = `<option value="">All ${filterConfig.label}s</option>`;
         uniqueOptions.forEach(val => {
-            select.innerHTML += `<option value="${val}">${val}</option>`;
+            select.innerHTML += `<option value="${escapeHTML(val)}">${escapeHTML(val)}</option>`;
         });
 
         if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
@@ -1690,9 +1736,9 @@ function createSecondaryFiltersUI() {
 }
 
 function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
-    if (!fuseMatches || textToDisplay === null || textToDisplay === undefined) return String(textToDisplay || '');
+    if (!fuseMatches || textToDisplay === null || textToDisplay === undefined) return escapeHTML(String(textToDisplay || ''));
     const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
-    if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return String(textToDisplay);
+    if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return escapeHTML(String(textToDisplay));
 
     const textStr = String(textToDisplay);
     let result = '', lastIndex = 0;
@@ -1700,12 +1746,12 @@ function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
 
     sortedIndices.forEach(pair => {
         if (pair[0] >= lastIndex) {
-            result += textStr.substring(lastIndex, pair[0]);
-            result += `<mark>${textStr.substring(pair[0], pair[1] + 1)}</mark>`;
+            result += escapeHTML(textStr.substring(lastIndex, pair[0]));
+            result += `<mark>${escapeHTML(textStr.substring(pair[0], pair[1] + 1))}</mark>`;
             lastIndex = pair[1] + 1;
         }
     });
-    result += textStr.substring(lastIndex);
+    result += escapeHTML(textStr.substring(lastIndex));
     return result;
 }
 
@@ -1716,9 +1762,106 @@ function escapeHTML(str) {
     });
 }
 
-function renderResults(results, query, suggestions = []) {
+function performSearch(query, fromSuggestionOrFilter = false) {
+    query = query.trim();
+    currentlyDisplayedCount = 0;
+    allMatchingResults = [];
+
+    if (!query) {
+        if (currentFilterType === 'all') {
+            renderInitialResults(query, []);
+        } else {
+            let baseData = [];
+            let itemMapper = item => ({ item: item, matches: null, score: 0 });
+            if (currentFilterType === 'paid') baseData = paidData;
+            else if (currentFilterType === 'free') baseData = freeData;
+
+            allMatchingResults = applySecondaryFiltersToResults(baseData.map(itemMapper));
+            renderInitialResults(query, []);
+        }
+        searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
+        return;
+    }
+
+    let currentFuse, currentFuseLenient, nameKeyForSuggestion, activeIngredientKey;
+    if (currentFilterType === 'paid') {
+        currentFuse = fusePaid; currentFuseLenient = fusePaidLenient;
+        nameKeyForSuggestion = 'name'; activeIngredientKey = 'activeIngredient';
+    } else if (currentFilterType === 'free') {
+        currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient;
+        nameKeyForSuggestion = 'name'; activeIngredientKey = 'activeIngredient';
+    } else {
+        currentFuse = fuseAll; currentFuseLenient = fuseAllLenient;
+        nameKeyForSuggestion = 'search_name'; activeIngredientKey = 'search_active_ingredient';
+    }
+
+    let fuseSearchResults = currentFuse.search(query);
+    let filteredStrictResults = applySecondaryFiltersToResults(fuseSearchResults);
+    let suggestions = [];
+
+    allMatchingResults = filteredStrictResults;
+
+    if (query.length >= MIN_QUERY_LENGTH_FOR_SUGGESTIONS && (filteredStrictResults.length === 0 || (query.length < 3 && filteredStrictResults.length < 5)) && !fromSuggestionOrFilter) {
+        const lenientFuseResults = currentFuseLenient.search(query);
+        const lenientFilteredResults = applySecondaryFiltersToResults(lenientFuseResults);
+
+        if (lenientFilteredResults.length > 0) {
+            if (filteredStrictResults.length === 0) {
+                allMatchingResults = lenientFilteredResults;
+            }
+
+            const uniqueSuggestions = new Set();
+            const primaryResultNamesLower = new Set(
+                allMatchingResults.slice(0, RESULTS_PER_PAGE).map(r => {
+                    const item = (currentFilterType === 'all') ? r.item.originalItem : r.item;
+                    return (item[nameKeyForSuggestion] || '').toLowerCase();
+                })
+            );
+
+            lenientFilteredResults.sort((a, b) => a.score - b.score);
+            lenientFilteredResults.slice(0, 5).forEach(res => {
+                if (uniqueSuggestions.size >= 5) return;
+                const itemForSuggestion = (currentFilterType === 'all') ? res.item.originalItem : res.item;
+
+                let nameTerm = itemForSuggestion[nameKeyForSuggestion];
+                if (nameTerm && String(nameTerm).toLowerCase() !== query.toLowerCase() && !primaryResultNamesLower.has(String(nameTerm).toLowerCase())) {
+                    uniqueSuggestions.add(nameTerm);
+                }
+
+                if (activeIngredientKey && itemForSuggestion[activeIngredientKey] && uniqueSuggestions.size < 5) {
+                    let ingredientTerm = itemForSuggestion[activeIngredientKey];
+                    if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm) && !primaryResultNamesLower.has(String(ingredientTerm).toLowerCase())) {
+                        uniqueSuggestions.add(ingredientTerm);
+                    }
+                }
+            });
+            suggestions = Array.from(uniqueSuggestions);
+        }
+    }
+
+    renderInitialResults(query, suggestions);
+
+    if (query && query.length >= 2 && !fromSuggestionOrFilter && allMatchingResults.length > 0) {
+        addSearchToHistory(query);
+    }
+    searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && !suggestions.length);
+}
+
+function renderInitialResults(query, suggestions = []) {
     resultsSection.innerHTML = '';
-    let currentHtmlContent = '';
+    currentlyDisplayedCount = 0;
+    if (resultItemObserver) {
+        resultItemObserver.disconnect();
+    }
+    resultItemObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1, rootMargin: "0px 0px -30px 0px" });
+
 
     if (suggestions.length > 0) {
         const dymOuter = document.createElement('div');
@@ -1733,12 +1876,21 @@ function renderResults(results, query, suggestions = []) {
         suggestionHTML += '</span>?';
         dymContainer.innerHTML = suggestionHTML;
         dymOuter.appendChild(dymContainer);
-        currentHtmlContent += dymOuter.outerHTML;
+        resultsSection.appendChild(dymOuter);
     }
+    appendResultsToDom(query);
+}
 
-    if (!results || results.length === 0) {
-        if (query) {
-            let noResultsMsg = `
+function appendResultsToDom(currentQuery) {
+    const resultsToDisplay = allMatchingResults.slice(currentlyDisplayedCount, currentlyDisplayedCount + RESULTS_PER_PAGE);
+    const query = typeof currentQuery === 'string' ? currentQuery : searchInput.value.trim();
+
+    if (currentlyDisplayedCount === 0 && resultsToDisplay.length === 0) {
+        const oldLoadMoreButton = resultsSection.querySelector('.load-more-btn');
+        if (oldLoadMoreButton) oldLoadMoreButton.remove();
+
+        if (query.length > 0 && !resultsSection.querySelector('.did-you-mean')) {
+             let noResultsMsg = `
                 <div class="no-results">
                     <p>No local medications found for "<strong>${escapeHTML(query)}</strong>".</p>
                     <p>Try searching online:</p>
@@ -1757,46 +1909,57 @@ function renderResults(results, query, suggestions = []) {
                         </button>
                     </div>
                 </div>`;
-            currentHtmlContent += noResultsMsg;
-        } else {
-            currentHtmlContent += '<div class="no-results">Start typing to search for medications.</div>';
+            resultsSection.insertAdjacentHTML('beforeend', noResultsMsg);
+        } else if (query.length === 0 && !resultsSection.querySelector('.did-you-mean') && !resultsSection.querySelector('.result-item')) {
+             resultsSection.insertAdjacentHTML('beforeend', '<div class="no-results">Start typing to search for medications.</div>');
         }
-        resultsSection.innerHTML = currentHtmlContent;
+        updatePinButtonsInResults();
         return;
     }
 
     const fragment = document.createDocumentFragment();
-    results.forEach((resultItem, index) => {
+    resultsToDisplay.forEach((resultItem, indexInPage) => {
+        const globalIndex = currentlyDisplayedCount + indexInPage;
         const isAllSearch = currentFilterType === 'all';
-        const displayItem = isAllSearch ? resultItem.item.originalItem : resultItem.item;
-        const itemType = isAllSearch ? resultItem.item._type : currentFilterType;
+        const displayItemWrapper = isAllSearch ? resultItem.item : { originalItem: resultItem.item, _type: currentFilterType, _id: resultItem.item._uniqueId };
+        const displayItem = displayItemWrapper.originalItem;
+        const itemType = displayItemWrapper._type;
         const fuseMatches = resultItem.matches;
-        const uniqueItemId = displayItem._uniqueId || (isAllSearch ? resultItem.item._id : generateUniqueId(displayItem, itemType, index));
+        const uniqueItemId = displayItem._uniqueId || (isAllSearch ? displayItemWrapper._id : generateUniqueId(displayItem, itemType, globalIndex));
 
         const itemDiv = document.createElement('div');
         itemDiv.className = 'result-item';
-        itemDiv.style.animationDelay = `${index * 0.030}s`;
 
         let title, detailsHTML = '', tagsHTML = '';
         const itemNameForSearch = escapeHTML(displayItem.name);
 
+        const nameKey = isAllSearch ? 'search_name' : 'name';
+        const activeIngredientKeyHighlight = isAllSearch ? 'search_active_ingredient' : 'activeIngredient';
+        const concentrationKeyHighlight = isAllSearch ? 'search_concentration' : 'concentration';
+        const formKeyHighlight = isAllSearch ? 'search_form' : 'form';
+        const companyKeyHighlight = isAllSearch ? 'search_company' : 'company';
+        const authorityKeyHighlight = isAllSearch ? 'search_authority' : 'authority';
+        const classKeyHighlight = isAllSearch ? 'search_class' : 'class';
+
+        title = highlightText(displayItem.name, fuseMatches, nameKey);
+
         if (itemType === 'paid') {
-            title = highlightText(displayItem.name, fuseMatches, isAllSearch ? 'search_name' : 'name');
             detailsHTML = `
-                <p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, isAllSearch ? 'search_active_ingredient' : 'activeIngredient')}</p>
-                <p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, isAllSearch ? 'search_concentration' : 'concentration')}</p>
-                <p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, isAllSearch ? 'search_form' : 'form')}</p>
-                <p><strong>Price:</strong> <span class="result-price">${displayItem.price !== undefined && displayItem.price !== null ? displayItem.price.toFixed(2) : 'N/A'}</span></p>`;
-            if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, isAllSearch ? 'search_company' : 'company')}</div>`;
-            if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, isAllSearch ? 'search_authority' : 'authority')}</div>`;
-            if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, isAllSearch ? 'search_class' : 'class')}</div>`;
+                ${displayItem.activeIngredient ? `<p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, activeIngredientKeyHighlight)}</p>` : ''}
+                ${displayItem.concentration ? `<p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, concentrationKeyHighlight)}</p>` : ''}
+                ${displayItem.form ? `<p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, formKeyHighlight)}</p>` : ''}
+                <p><strong>Price:</strong> <span class="result-price">${displayItem.price !== undefined && displayItem.price !== null ? Number(displayItem.price).toFixed(2) : 'N/A'}</span></p>`;
+            if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, companyKeyHighlight)}</div>`;
+            if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, authorityKeyHighlight)}</div>`;
+            if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, classKeyHighlight)}</div>`;
         } else {
-            title = highlightText(displayItem.name, fuseMatches, isAllSearch ? 'search_name' : 'name');
             detailsHTML = `
-                <p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, isAllSearch ? 'search_concentration' : 'concentration')}</p>
-                <p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, isAllSearch ? 'search_form' : 'form')}</p>`;
-            if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, isAllSearch ? 'search_authority' : 'authority')}</div>`;
-            if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, isAllSearch ? 'search_class' : 'class')}</div>`;
+                ${displayItem.activeIngredient ? `<p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, activeIngredientKeyHighlight)}</p>` : ''}
+                ${displayItem.concentration ? `<p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, concentrationKeyHighlight)}</p>` : ''}
+                ${displayItem.form ? `<p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, formKeyHighlight)}</p>` : ''}`;
+            if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, companyKeyHighlight)}</div>`;
+            if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, authorityKeyHighlight)}</div>`;
+            if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, classKeyHighlight)}</div>`;
         }
 
         itemDiv.innerHTML = `
@@ -1826,9 +1989,29 @@ function renderResults(results, query, suggestions = []) {
             ${tagsHTML ? `<div class="result-tags-container">${tagsHTML}</div>` : ''}
         `;
         fragment.appendChild(itemDiv);
+        if (resultItemObserver) {
+            resultItemObserver.observe(itemDiv);
+        }
     });
-    resultsSection.innerHTML = currentHtmlContent;
-    resultsSection.appendChild(fragment);
+
+    const oldLoadMoreButton = resultsSection.querySelector('.load-more-btn');
+    if (oldLoadMoreButton) {
+        oldLoadMoreButton.remove();
+    }
+
+    if (fragment.childNodes.length > 0) {
+        resultsSection.appendChild(fragment);
+    }
+    currentlyDisplayedCount += resultsToDisplay.length;
+
+    if (currentlyDisplayedCount < allMatchingResults.length) {
+        const loadMoreBtn = document.createElement('button');
+        const remainingCount = allMatchingResults.length - currentlyDisplayedCount;
+        loadMoreBtn.textContent = `Load More (${remainingCount} remaining)`;
+        loadMoreBtn.className = 'load-more-btn';
+        loadMoreBtn.addEventListener('click', () => appendResultsToDom(query));
+        resultsSection.appendChild(loadMoreBtn);
+    }
     updatePinButtonsInResults();
 }
 
@@ -1846,78 +2029,6 @@ function applySecondaryFiltersToResults(fuseResults) {
         }
         return true;
     });
-}
-
-function performSearch(query, fromSuggestionOrFilter = false) {
-    query = query.trim();
-
-    if (!query && !fromSuggestionOrFilter) {
-        renderResults([], query);
-        searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
-        return;
-    }
-     if (!query && fromSuggestionOrFilter) {
-        let dataToCheck;
-        if (currentFilterType === 'paid') dataToCheck = paidData;
-        else if (currentFilterType === 'free') dataToCheck = freeData;
-        else dataToCheck = allDatasetNormalized;
-
-        if (dataToCheck.length === 0) {
-             resultsSection.innerHTML = `<div class="no-results">No medications in the current filter category.</div>`;
-        } else {
-            renderResults([], query);
-        }
-        searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
-        return;
-    }
-
-    let currentFuse, currentFuseLenient, nameKeyForSuggestion, activeIngredientKey;
-    if (currentFilterType === 'paid') {
-        currentFuse = fusePaid; currentFuseLenient = fusePaidLenient;
-        nameKeyForSuggestion = 'name'; activeIngredientKey = 'activeIngredient';
-    } else if (currentFilterType === 'free') {
-        currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient;
-        nameKeyForSuggestion = 'name'; activeIngredientKey = null;
-    } else {
-        currentFuse = fuseAll; currentFuseLenient = fuseAllLenient;
-        nameKeyForSuggestion = 'search_name'; activeIngredientKey = 'search_active_ingredient';
-    }
-
-    let resultsToFilter = currentFuse.search(query);
-    let filteredResults = applySecondaryFiltersToResults(resultsToFilter);
-    let suggestions = [];
-
-    if (query && filteredResults.length === 0 && !fromSuggestionOrFilter) {
-        const lenientResults = currentFuseLenient.search(query);
-        const lenientFilteredResults = applySecondaryFiltersToResults(lenientResults);
-
-        if (lenientFilteredResults.length > 0) {
-            const uniqueSuggestions = new Set();
-            lenientFilteredResults.sort((a, b) => a.score - b.score);
-            lenientFilteredResults.slice(0, 5).forEach(res => {
-                if (uniqueSuggestions.size >= 5) return;
-                let nameTerm = res.item[nameKeyForSuggestion] || (currentFilterType === 'all' ? res.item.originalItem.name : res.item.name) ;
-                if (nameTerm && String(nameTerm).toLowerCase() !== query.toLowerCase()) uniqueSuggestions.add(nameTerm);
-
-                if (activeIngredientKey && uniqueSuggestions.size < 5) {
-                    let ingredientTerm = res.item[activeIngredientKey] || (currentFilterType === 'all' ? res.item.originalItem.activeIngredient : res.item.activeIngredient);
-                    if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm)) {
-                         uniqueSuggestions.add(ingredientTerm);
-                    }
-                }
-            });
-            suggestions = Array.from(uniqueSuggestions);
-        }
-    }
-
-    renderResults(filteredResults, query, suggestions);
-
-    if (query && query.length >= 3 && !fromSuggestionOrFilter && filteredResults.length > 0) {
-        addSearchToHistory(query);
-    }
-
-    updatePinButtonsInResults();
-    searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && !resultsSection.querySelector('.result-item') && !resultsSection.querySelector('.did-you-mean'));
 }
 
 function setActivePrimaryFilter(type) {
@@ -2018,7 +2129,6 @@ resultsSection.addEventListener('click', function(event) {
         searchInput.value = suggestedQuery;
         clearBtn.style.display = searchInput.value.length > 0 ? 'block' : 'none';
         performSearch(suggestedQuery, true);
-        addSearchToHistory(suggestedQuery);
         return;
     }
     const pinBtn = event.target.closest('.pin-item-btn');
@@ -2035,7 +2145,6 @@ function getFromLocalStorage(key, defaultValue = []) {
         const item = localStorage.getItem(key);
         return item ? JSON.parse(item) : defaultValue;
     } catch (e) {
-        console.error(`Error reading ${key} from localStorage`, e);
         return defaultValue;
     }
 }
@@ -2049,7 +2158,7 @@ function saveToLocalStorage(key, value) {
 }
 
 function addSearchToHistory(query) {
-    if (!query || query.length < 3) return;
+    if (!query || query.length < 2) return;
     let history = getFromLocalStorage('searchHistory', []);
     history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
     history.unshift(query);
@@ -2072,9 +2181,9 @@ function loadSearchHistory() {
     } else {
         history.forEach(item => {
             const li = document.createElement('li');
-            li.textContent = item;
+            li.textContent = escapeHTML(item);
             li.dataset.query = item;
-            li.title = `Search for: ${item}`;
+            li.title = `Search for: ${escapeHTML(item)}`;
             const removeBtn = document.createElement('button');
             removeBtn.className = 'remove-history-btn-side-panel';
             removeBtn.innerHTML = '&times;';
@@ -2130,9 +2239,9 @@ function loadPinnedItems() {
     } else {
         pinnedItems.forEach(pin => {
             const li = document.createElement('li');
-            li.textContent = pin.name;
+            li.textContent = escapeHTML(pin.name);
             li.dataset.itemId = pin.id;
-            li.title = `Pinned: ${pin.name} (Timestamp: ${new Date(pin.timestamp).toLocaleString()})`;
+            li.title = `Pinned: ${escapeHTML(pin.name)} (Timestamp: ${new Date(pin.timestamp).toLocaleString()})`;
 
             const unpinBtn = document.createElement('button');
             unpinBtn.className = 'unpin-btn-side-panel';
@@ -2260,7 +2369,6 @@ copyPinnedBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(textToCopy).then(() => {
             showCopyFeedback(copyPinnedFeedback);
         }).catch(err => {
-            console.error('Failed to copy pinned items: ', err);
             showCustomConfirm("Failed to copy.", null, { yesText: "OK", noText: null });
         });
     }
@@ -2273,23 +2381,24 @@ copyHistoryBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(textToCopy).then(() => {
             showCopyFeedback(copyHistoryFeedback);
         }).catch(err => {
-            console.error('Failed to copy history: ', err);
             showCustomConfirm("Failed to copy.", null, { yesText: "OK", noText: null });
         });
     }
 });
 
-
 exportAllDataBtn.addEventListener('click', () => {
     const allExportData = [];
-    paidData.forEach((item, index) => {
+    const fullPaidData = typeof window.fullPaidData !== 'undefined' ? window.fullPaidData : paidData;
+    const fullFreeData = typeof window.fullFreeData !== 'undefined' ? window.fullFreeData : freeData;
+
+    fullPaidData.forEach((item, index) => {
         allExportData.push({
             ...item,
             source_type: 'paid',
             _uniqueId: item._uniqueId || generateUniqueId(item, 'paid', index)
         });
     });
-    freeData.forEach((item, index) => {
+    fullFreeData.forEach((item, index) => {
         allExportData.push({
             ...item,
             source_type: 'free',
@@ -2303,10 +2412,8 @@ exportAllDataBtn.addEventListener('click', () => {
     }
 
     const predefinedHeaders = ['_uniqueId', 'source_type', 'name', 'activeIngredient', 'concentration', 'form', 'price', 'company', 'class', 'authority'];
-    
     const allKeysEncountered = new Set(predefinedHeaders);
     allExportData.forEach(item => Object.keys(item).forEach(key => allKeysEncountered.add(key)));
-    
     const finalHeaders = [...allKeysEncountered].sort((a,b) => {
         const indexA = predefinedHeaders.indexOf(a);
         const indexB = predefinedHeaders.indexOf(b);
@@ -2315,12 +2422,9 @@ exportAllDataBtn.addEventListener('click', () => {
         if (indexB !== -1) return 1;
         return a.localeCompare(b);
     });
-
-
     const csvString = convertArrayOfObjectsToCSV(allExportData, finalHeaders);
     downloadCSV(csvString, 'lx_search_all_medications.csv');
 });
-
 
 clearPinnedBtn.addEventListener('click', clearPinnedItems);
 clearHistoryBtn.addEventListener('click', clearSearchHistory);
@@ -2359,27 +2463,21 @@ document.addEventListener('keydown', (e) => {
 function showCustomConfirm(message, callback, options = {}) {
     customConfirmMessage.textContent = message;
     confirmCallback = callback;
-
     customConfirmYesBtn.textContent = options.yesText || 'Yes';
     customConfirmNoBtn.textContent = options.noText || 'No';
-
     customConfirmYesBtn.style.display = options.yesText === null ? 'none' : 'inline-flex';
     customConfirmNoBtn.style.display = options.noText === null ? 'none' : 'inline-flex';
-    
     if (options.yesText !== null && options.noText === null) {
         customConfirmYesBtn.classList.remove('confirm-yes');
         customConfirmYesBtn.style.backgroundColor = 'var(--glass-bg-interactive)';
         customConfirmYesBtn.style.color = 'var(--text-secondary)';
         customConfirmYesBtn.style.borderColor = 'var(--glass-border-interactive)';
-
     } else {
         customConfirmYesBtn.classList.add('confirm-yes');
         customConfirmYesBtn.style.backgroundColor = 'var(--accent-color)';
         customConfirmYesBtn.style.color = 'var(--text-on-accent)';
         customConfirmYesBtn.style.borderColor = 'var(--accent-color)';
     }
-
-
     customConfirmDialog.style.display = 'flex';
 }
 
@@ -2401,12 +2499,8 @@ loadSearchHistory();
 setActivePrimaryFilter('all');
 setTimeout(() => {
     searchInput.focus();
-    searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
-    if (!searchInput.value.trim()) {
-         performSearch('', true);
-    }
+    searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && !resultsSection.querySelector('.did-you-mean'));
 }, 100);
-
     </script>
 </body>
 </html>
