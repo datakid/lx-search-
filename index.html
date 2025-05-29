@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -278,31 +276,31 @@ body {
 .search-loading-indicator {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(var(--dark-bg-gradient-mid), 0.85); /* Use your theme's mid background with alpha */
-    backdrop-filter: blur(5px); /* Optional: blur content behind, matches glass effect */
+    background: rgba(var(--dark-bg-gradient-mid), 0.85);
+    backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    z-index: 10; /* Ensure it's on top of other card content */
+    z-index: 10;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: var(--border-radius-xl); /* Match parent card's radius */
+    border-radius: var(--border-radius-xl);
     color: var(--text-secondary);
     font-size: 0.9rem;
-    pointer-events: none; /* Allow clicks to pass through if needed, though input is disabled */
+    pointer-events: none;
 }
 .search-loading-indicator .spinner {
     animation: rotate 1.4s linear infinite;
-    width: 32px; /* Adjust size as needed */
+    width: 32px;
     height: 32px;
     margin-bottom: 0.75rem;
 }
 .search-loading-indicator .spinner .path {
-    stroke: var(--accent-color); /* Use your accent color */
+    stroke: var(--accent-color);
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
-    fill: none; /* Important for spinner SVGs */
-    stroke-width: 4px; /* Adjust thickness */
+    fill: none;
+    stroke-width: 4px;
 }
 @keyframes rotate { 100% { transform: rotate(360deg); } }
 @keyframes dash {
@@ -362,6 +360,7 @@ body {
                 <section id="data-management-section">
                     <h4>Manage All Data</h4>
                     <button id="export-all-data-btn" class="panel-action-btn">Export All Data to CSV</button>
+                    <button id="view-in-sheets-btn" class="panel-action-btn">View Source Data in Sheets</button>
                 </section>
             </div>
         </aside>
@@ -1125,9 +1124,7 @@ const freeData = [
     {"name":"Mycophenolat mofetil 500","activeIngredient":null,"concentration":"500 mg","company":null,"price":null,"form":"Tab","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_mycophenolat_mofetil_500_500_mg"},
     {"name":"Neurokinin 1 Receptor Antagonist","activeIngredient":null,"concentration":"---","company":null,"price":null,"form":"Tab","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_neurokinin_1_receptor_antagonist_---"},
     {"name":"Oxaliplatin","activeIngredient":null,"concentration":"50 mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_oxaliplatin_50_mg"},
-    {"name":"Paclitaxel","activeIngredient":null,"concentration":"100 mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_paclitaxel_100_mg"},
     {"name":"Paclitaxel 100","activeIngredient":null,"concentration":"100 mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_paclitaxel_100_100_mg_0"},
-    {"name":"Paclitaxel 30","activeIngredient":null,"concentration":"30 mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_paclitaxel_30_30_mg"},
     {"name":"Paclitaxel 30","activeIngredient":null,"concentration":"30 mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_paclitaxel_30_30_mg_0"},
     {"name":"Procarbazine Hcl","activeIngredient":null,"concentration":"25mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_procarbazine_hcl_25mg"},
     {"name":"Serotonin Antagonist","activeIngredient":null,"concentration":"---","company":null,"price":null,"form":"Amp","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_serotonin_antagonist_---"},
@@ -1139,7 +1136,6 @@ const freeData = [
     {"name":"Vinorelbine 50","activeIngredient":null,"concentration":"50 mg","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Con","_uniqueId":"free_vinorelbine_50_50_mg"},
     {"name":"Methotrexate","activeIngredient":null,"concentration":"2.5 mg","company":null,"price":null,"form":"Tab","class":"Cytotoxic,Immunosuppressant","authority":"Sp","_uniqueId":"free_methotrexate_2.5_mg"},
     {"name":"Methotrexate vial","activeIngredient":null,"concentration":"50 mg /ml","company":null,"price":null,"form":"Vial","class":"Cytotoxic,Immunosuppressant","authority":"Sp","_uniqueId":"free_methotrexate_vial_50_mg_/ml"},
-    {"name":"Tamoxifen Citrate","activeIngredient":null,"concentration":"10 mg","company":null,"price":null,"form":"Tab","class":"Cytotoxic,Immunosuppressant","authority":"Sp","_uniqueId":"free_tamoxifen_citrate_10_mg"},
     {"name":"Tamoxifen citrate","activeIngredient":null,"concentration":"10 mg","company":null,"price":null,"form":"Tab","class":"Cytotoxic,Immunosuppressant","authority":"Sp","_uniqueId":"free_tamoxifen_citrate_10_mg_0"},
     {"name":"Anthraquinone Glycosides+Lidocaine+Salicylic Acid","activeIngredient":null,"concentration":"---","company":null,"price":null,"form":"Paint","class":"Dental &Buccal Agents","authority":"Sp","_uniqueId":"free_anthraquinone_glycosides+lidocaine+salicylic_acid_---"},
     {"name":"Lidocaine+Aminacrine","activeIngredient":null,"concentration":"---","company":null,"price":null,"form":"Tube","class":"Dental &Buccal Agents","authority":"Sp","_uniqueId":"free_lidocaine+aminacrine_---"},
@@ -1601,6 +1597,7 @@ const copyHistoryBtn = document.getElementById('copy-history-btn');
 const copyPinnedFeedback = document.getElementById('copy-pinned-feedback');
 const copyHistoryFeedback = document.getElementById('copy-history-feedback');
 const exportAllDataBtn = document.getElementById('export-all-data-btn');
+const viewInSheetsBtn = document.getElementById('view-in-sheets-btn');
 const customConfirmDialog = document.getElementById('custom-confirm-dialog');
 const customConfirmMessage = document.getElementById('custom-confirm-message');
 const customConfirmYesBtn = document.getElementById('custom-confirm-yes');
@@ -1961,7 +1958,7 @@ function appendResultsToDom(currentQuery) {
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13.225 6.544c0-1.26-.45-2.398-1.223-3.234C11.197 2.455 10.024 2 8.668 2H5.522V.704h-.93v1.296H2.31v.93h2.282V14.3h.93V3.943h2.316c1.01 0 1.842.328 2.422.975.623.69.934 1.635.934 2.626v.573c0 .78-.187 1.456-.561 2.028-.373.573-.883.99-1.53 1.25l2.08 3.01h1.09L9.53 10.65c.044.016.09.03.133.042.734.225 1.334.597 1.797 1.117s.695 1.15.695 1.79v.02c0 .64-.163 1.21-.49 1.707-.328.498-.76.87-1.3.123-.538.355-1.15.532-1.83.532H5.522v1.287h-.93V16.58h6.883c1.172 0 2.19-.365 3.053-1.093.863-.728 1.295-1.692 1.295-2.892v-.02c0-.908-.307-1.71-.923-2.408-.615-.698-1.448-1.178-2.5-1.44zm-4.478.913v3.26h-2.28V7.457h2.28zm.117-3.65c0-.718-.22-1.303-.66-1.755-.44-.45-.99-.676-1.648-.676h-1.22v3.107h1.22c.658 0 1.2-.225 1.648-.675.44-.45.66-.99.66-1.626v-.375zM17.46 14.5l3.414-3.414a.75.75 0 00-1.06-1.06L17 12.878l-2.815-2.814a.75.75 0 10-1.06 1.06L15.878 14.5l-2.813 2.813a.75.75 0 001.06 1.06L17 15.56l2.813 2.813a.75.75 0 101.06-1.06L18.062 14.5z"/></svg>
                              Drugs.com
                         </button>
-                        <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="perplexity">
+                         <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="perplexity">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10c1.99 0 3.824-.572 5.366-1.562l-2.182-2.182A5.957 5.957 0 0 1 12 18a6 6 0 0 1-6-6c0-2.328 1.324-4.352 3.25-5.34V4.69C7.037 5.624 6 7.193 6 9H4c0-3.841 2.802-7 6.5-7H12zm8 8h-2c0-2.807-.807-5.963-3.318-5.963C12.341 4.037 12 5.908 12 7v1c0 1.103.897 2 2 2h2v2h-2c-2.206 0-4-1.794-4-4V7c0-2.598 1.808-5 4.682-5C19.193 2 20 5.159 20 8zM12 13c-1.103 0-2 .897-2 2s.897 2 2 2 2-.897 2-2-.897-2-2-2z"/></svg>
                             P.AI
                         </button>
@@ -2489,6 +2486,13 @@ exportAllDataBtn.addEventListener('click', () => {
     const csvString = convertArrayOfObjectsToCSV(allExportData, finalHeaders);
     downloadCSV(csvString, 'lx_search_all_medications.csv');
 });
+
+if (viewInSheetsBtn) {
+    viewInSheetsBtn.addEventListener('click', () => {
+        const googleSheetUrl = "https://docs.google.com/spreadsheets/d/1kupHb2msk7pKmtVmPW2CGZnUqHydHa0rW7eiubeHIDQ/edit?usp=sharing";
+        window.open(googleSheetUrl, '_blank', 'noopener,noreferrer');
+    });
+}
 
 clearPinnedBtn.addEventListener('click', clearPinnedItems);
 clearHistoryBtn.addEventListener('click', clearSearchHistory);
