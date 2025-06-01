@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -87,12 +88,12 @@ body {
 }
 .search-hub-container {
     width: 100%;
-    max-width: 800px; /* Increased max-width for larger screens */
-    margin: 0 auto; /* Reverted from auto auto */
+    max-width: 800px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    min-height: calc(100vh - 4rem); /* Re-added */
+    min-height: calc(100vh - 4rem);
     padding: 1.25rem;
     position: relative;
 }
@@ -161,7 +162,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 10px;
-    margin-top: 0.5rem; /* Reduced margin-top */
+    margin-top: 0.5rem;
     flex-wrap: wrap;
     position: relative;
     z-index: 1;
@@ -173,11 +174,11 @@ body {
     -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
     border: 1px solid var(--glass-border-interactive);
     border-radius: var(--border-radius-lg);
-    padding: 9px 14px; /* Adjusted for slightly more compact buttons */
+    padding: 9px 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px; /* Reduced gap */
+    gap: 6px;
     cursor: pointer;
     transition: background-color var(--transition-speed-fast) var(--transition-easing),
                 border-color var(--transition-speed-fast) var(--transition-easing),
@@ -185,7 +186,7 @@ body {
                 transform var(--transition-speed-fast) var(--transition-easing),
                 box-shadow var(--transition-speed-fast) var(--transition-easing);
     color: var(--text-secondary);
-    font-size: 0.85rem; /* Slightly reduced font size */
+    font-size: 0.85rem;
     font-weight: 500;
     box-shadow: 0 4px 12px -5px var(--shadow-color-soft);
     text-align: center;
@@ -400,12 +401,16 @@ body {
     transition: all var(--transition-speed-fast) var(--transition-easing);
     font-weight: 600;
 }
-.load-more-btn:hover {
+.load-more-btn:hover:not(:disabled) {
     background-color: var(--glass-bg-interactive-hover);
     color: var(--text-primary);
     border-color: rgba(var(--accent-color-rgb), 0.3);
     transform: translateY(-2px) scale(1.02);
     box-shadow: 0 8px 20px -4px var(--shadow-color-soft);
+}
+.load-more-btn:disabled {
+    cursor: wait;
+    opacity: 0.7;
 }
 .search-loading-indicator {
     position: absolute;
@@ -454,31 +459,31 @@ body {
 }
 
 @media (max-width: 768px) {
-    .search-hub-container { max-width: 100%; padding: 1rem 0.75rem; } /* Allow full width */
+    .search-hub-container { max-width: 100%; padding: 1rem 0.75rem; }
     .title { font-size: 2rem; } .title::after { width: 80px; }
     .main-search-card { padding: 1.5rem; border-radius: var(--border-radius-lg); }
     .search-input { height: 54px; font-size: 1.05rem; padding: 0 56px 0 56px; }
     .search-icon-svg { width: 22px; height: 22px; left: 20px; }
     .clear-btn { right: 16px; width: 36px; height: 36px; } .clear-btn svg { width: 18px; height: 18px; }
     .primary-filters {
-        margin-top: 1rem; 
-        gap: 8px; 
+        margin-top: 1rem;
+        gap: 8px;
     }
     .filter-btn {
-        padding: 10px 14px; 
+        padding: 10px 14px;
         font-size: 0.85rem;
-        flex-basis: calc(50% - 4px); 
+        flex-basis: calc(50% - 4px);
         flex-grow: 1;
     }
     .filter-btn .filter-icon-svg { width: 16px; height: 16px; }
     #secondary-filters-container.visible {
-        margin-top: 1rem; 
-        padding-top: 1rem; 
-        max-height: 200px; 
+        margin-top: 1rem;
+        padding-top: 1rem;
+        max-height: 200px;
         overflow-y: auto;
     }
-     #secondary-filters-container { flex-wrap: wrap; } 
-    .filter-group { min-width: calc(50% - 0.5rem); } 
+     #secondary-filters-container { flex-wrap: wrap; }
+    .filter-group { min-width: calc(50% - 0.5rem); }
 
     .result-item { padding: 1.25rem; margin-bottom: 1rem; border-radius: var(--border-radius-md); }
     .result-title { font-size: 1.1rem; } .result-details { font-size: 0.9rem; }
@@ -497,34 +502,34 @@ body {
     .main-search-card {
         padding: 1rem;
         border-radius: var(--border-radius-md);
-        max-height: calc(100vh - 100px); 
+        max-height: calc(100vh - 100px);
         overflow-y: auto;
         display: flex;
         flex-direction: column;
     }
     .search-input-wrapper {
-        margin-bottom: 1rem; 
+        margin-bottom: 1rem;
     }
     .primary-filters {
-        margin-top: 0; 
-        margin-bottom: 1rem; 
-        display: flex; 
-        flex-direction: column; 
+        margin-top: 0;
+        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
         gap: 8px;
         flex-shrink: 0;
     }
     .filter-btn {
-        width: 100%; 
-        padding: 10px 12px; 
-        font-size: 0.85rem; 
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.85rem;
         border-radius: var(--border-radius-md);
         min-height: 42px;
-       
+
     }
     .filter-btn .filter-icon-svg {
-        width: 15px; 
+        width: 15px;
         height: 15px;
-        margin-right: 8px; 
+        margin-right: 8px;
     }
 
     #secondary-filters-container {
@@ -534,8 +539,8 @@ body {
         margin-top: 0;
         padding-top: 0;
         border-top: none;
-        flex-grow: 1; 
-        min-height: 0; 
+        flex-grow: 1;
+        min-height: 0;
     }
     #secondary-filters-container.visible {
         opacity: 1;
@@ -543,8 +548,8 @@ body {
         margin-top: 1rem;
         padding-top: 1rem;
         border-top: 1px solid var(--glass-border-main);
-        max-height: 250px; 
-        overflow-y: auto; 
+        max-height: 250px;
+        overflow-y: auto;
     }
     .filter-group { min-width: 100%; }
     .filter-group label { font-size: 0.8rem; margin-bottom: 0.5rem; }
@@ -1835,6 +1840,8 @@ const freeData = [
     {"name":"Acitretin 10","activeIngredient":null,"concentration":"10 mg","company":null,"price":null,"form":"Tab","class":"Dermatological Agents","authority":"Con","_uniqueId":"free_acitretin_10_10_mg"},
     {"name":"Acitretin 25","activeIngredient":null,"concentration":"25 mg","company":null,"price":null,"form":"Tab","class":"Dermatological Agents","authority":"Con","_uniqueId":"free_acitretin_25_25_mg"}
 ];
+
+
 const searchInput = document.getElementById('search-input');
 const clearBtn = document.getElementById('clear-btn');
 const resultsSection = document.getElementById('results-section');
@@ -1873,7 +1880,12 @@ const DONE_TYPING_INTERVAL = 200;
 const MAX_HISTORY_ITEMS = 10;
 const MAX_PINNED_ITEMS = 10;
 
-const MIN_QUERY_LENGTH_FOR_SUGGESTIONS = 1;
+
+const MIN_QUERY_LENGTH_FOR_SUGGESTIONS = 3;
+const MAX_SUGGESTIONS = 5;
+const LENIENT_THRESHOLD_FOR_SUGGESTIONS = 0.55;
+
+
 const RESULTS_PER_PAGE = 20;
 let allMatchingResults = [];
 let currentlyDisplayedCount = 0;
@@ -1889,8 +1901,8 @@ const baseFuseOptions = {
 };
 
 function generateUniqueId(item, type, index = 0) {
-    const namePart = (item.name || `item${index}`).replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
-    const concPart = (item.concentration || 'na').replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
+    const namePart = (item.name || item.Name || `item${index}`).replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
+    const concPart = (item.concentration || item.Conc || 'na').replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
     return `${type}_${namePart}_${concPart}`.toLowerCase();
 }
 
@@ -1913,17 +1925,21 @@ function normalizeAllData() {
     });
     freeData.forEach((fItem, index) => {
         const uniqueId = fItem._uniqueId || generateUniqueId(fItem, 'free', index);
+        const nameToUse = fItem.name || fItem.Name;
+        const concentrationToUse = fItem.concentration || fItem.Conc;
+        const authorityToUse = fItem.authority || fItem.Authority;
+
         allDatasetNormalized.push({
             _id: uniqueId,
             _type: 'free',
-            search_name: fItem.name,
-            search_concentration: fItem.concentration,
+            search_name: nameToUse,
+            search_concentration: concentrationToUse,
             search_form: fItem.form,
-            search_authority: fItem.authority,
+            search_authority: authorityToUse,
             search_class: fItem.class,
             search_company: fItem.company,
             search_active_ingredient: fItem.activeIngredient,
-            originalItem: {...fItem, _uniqueId: uniqueId}
+            originalItem: {...fItem, _uniqueId: uniqueId, name: nameToUse, concentration: concentrationToUse, authority: authorityToUse }
         });
     });
 }
@@ -1947,34 +1963,60 @@ function initializeFuseInstances() {
         {name: 'search_authority', weight: 0.075}, {name: 'search_concentration', weight: 0.05},
         {name: 'search_form', weight: 0.05}
     ];
-    const strictThreshold = 0.3, lenientThreshold = 0.65;
+    const strictThreshold = 0.3;
 
     const tempPaidData = paidData.map((item, index) => ({...item, _uniqueId: item._uniqueId || generateUniqueId(item, 'paid', index) }));
-    const tempFreeData = freeData.map((item, index) => ({...item, _uniqueId: item._uniqueId || generateUniqueId(item, 'free', index) }));
+    const tempFreeData = freeData.map((item, index) => ({
+        ...item,
+        _uniqueId: item._uniqueId || generateUniqueId(item, 'free', index),
+        name: item.name || item.Name,
+        concentration: item.concentration || item.Conc,
+        authority: item.authority || item.Authority
+    }));
+
 
     fusePaid = new Fuse(tempPaidData, { ...baseFuseOptions, keys: paidKeys, threshold: strictThreshold, id: '_uniqueId' });
     fuseFree = new Fuse(tempFreeData, { ...baseFuseOptions, keys: freeKeys, threshold: strictThreshold, id: '_uniqueId' });
     fuseAll = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: strictThreshold, id: '_id' });
 
-    fusePaidLenient = new Fuse(tempPaidData, { ...baseFuseOptions, keys: paidKeys, threshold: lenientThreshold, id: '_uniqueId' });
-    fuseFreeLenient = new Fuse(tempFreeData, { ...baseFuseOptions, keys: freeKeys, threshold: lenientThreshold, id: '_uniqueId' });
-    fuseAllLenient = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: lenientThreshold, id: '_id' });
+    fusePaidLenient = new Fuse(tempPaidData, { ...baseFuseOptions, keys: paidKeys, threshold: LENIENT_THRESHOLD_FOR_SUGGESTIONS, id: '_uniqueId' });
+    fuseFreeLenient = new Fuse(tempFreeData, { ...baseFuseOptions, keys: freeKeys, threshold: LENIENT_THRESHOLD_FOR_SUGGESTIONS, id: '_uniqueId' });
+    fuseAllLenient = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: LENIENT_THRESHOLD_FOR_SUGGESTIONS, id: '_id' });
 }
 
 function getUniqueValues(data, key) {
     if (!data || data.length === 0) return [];
-    const values = data.map(item => item[key]).filter(value => value != null && String(value).trim() !== '');
+
+    const values = data.map(item => {
+        let targetItem = item;
+        let keyToAccess = key;
+
+        if (currentFilterType === 'all' && item.originalItem) {
+            targetItem = item.originalItem;
+            if (key.startsWith('search_')) {
+                keyToAccess = key.substring(7);
+            }
+        } else if (currentFilterType === 'free') {
+            if (key === 'name' && targetItem.Name) keyToAccess = 'Name';
+            else if (key === 'concentration' && targetItem.Conc) keyToAccess = 'Conc';
+            else if (key === 'authority' && targetItem.Authority) keyToAccess = 'Authority';
+        }
+        return targetItem[keyToAccess];
+    }).filter(value => value != null && String(value).trim() !== '');
     return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
 }
+
 
 function createSecondaryFiltersUI() {
     secondaryFiltersContainer.innerHTML = '';
     let filtersToCreate = [], showContainerMessage = '';
+    let dataSourceForFilters;
 
     if (currentFilterType === 'all') {
         secondaryFiltersContainer.classList.remove('visible');
         return;
     } else if (currentFilterType === 'paid') {
+        dataSourceForFilters = paidData;
         if (paidData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No paid items available to filter.</div>';
         else filtersToCreate = [
             { key: 'form', label: 'Form', dataContext: paidData },
@@ -1983,12 +2025,13 @@ function createSecondaryFiltersUI() {
             { key: 'class', label: 'Therapeutic Class', dataContext: paidData }
         ];
     } else if (currentFilterType === 'free') {
+        dataSourceForFilters = freeData.map(item => ({...item, name: item.name || item.Name, concentration: item.concentration || item.Conc, authority: item.authority || item.Authority }));
         if (freeData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No free items available to filter.</div>';
         else filtersToCreate = [
-            { key: 'form', label: 'Form', dataContext: freeData },
-            { key: 'authority', label: 'Authority', dataContext: freeData },
-            { key: 'company', label: 'Company', dataContext: freeData },
-            { key: 'class', label: 'Therapeutic Class', dataContext: freeData }
+            { key: 'form', label: 'Form', dataContext: dataSourceForFilters },
+            { key: 'authority', label: 'Authority', dataContext: dataSourceForFilters },
+            { key: 'company', label: 'Company', dataContext: dataSourceForFilters },
+            { key: 'class', label: 'Therapeutic Class', dataContext: dataSourceForFilters }
         ];
     }
 
@@ -2017,14 +2060,23 @@ function createSecondaryFiltersUI() {
         let optionsData = [...filterConfig.dataContext];
         for (const activeFilterKey in activeSecondaryFilters) {
             if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
-                optionsData = optionsData.filter(item => String(item[activeFilterKey]) === String(activeSecondaryFilters[activeFilterKey]));
+                 optionsData = optionsData.filter(item => {
+                    let itemToInspect = item;
+                    let keyToCompare = activeFilterKey;
+                     if (currentFilterType === 'free') {
+                        if (activeFilterKey === 'name' && itemToInspect.Name) keyToCompare = 'Name';
+                        else if (activeFilterKey === 'concentration' && itemToInspect.Conc) keyToCompare = 'Conc';
+                        else if (activeFilterKey === 'authority' && itemToInspect.Authority) keyToCompare = 'Authority';
+                    }
+                    return String(itemToInspect[keyToCompare]) === String(activeSecondaryFilters[activeFilterKey]);
+                });
             }
         }
         const uniqueOptions = getUniqueValues(optionsData, filterConfig.key);
 
         select.innerHTML = `<option value="">All ${filterConfig.label}s</option>`;
         uniqueOptions.forEach(val => {
-            select.innerHTML += `<option value="${escapeHTML(val)}">${escapeHTML(val)}</option>`;
+            select.innerHTML += `<option value="${escapeHTML(String(val))}">${escapeHTML(String(val))}</option>`;
         });
 
         if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
@@ -2037,7 +2089,7 @@ function createSecondaryFiltersUI() {
         select.addEventListener('change', (e) => {
             activeSecondaryFilters[filterConfig.key] = e.target.value;
             createSecondaryFiltersUI();
-            performSearch(searchInput.value.trim(), true);
+            performSearch(searchInput.value.trim(), 'filter_change');
         });
         group.appendChild(select);
         secondaryFiltersContainer.appendChild(group);
@@ -2045,22 +2097,25 @@ function createSecondaryFiltersUI() {
 }
 
 function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
-    if (!fuseMatches || textToDisplay === null || textToDisplay === undefined) return escapeHTML(String(textToDisplay || ''));
-    const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
-    if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return escapeHTML(String(textToDisplay));
+    if (textToDisplay === null || textToDisplay === undefined) textToDisplay = '';
+    let escapedText = escapeHTML(String(textToDisplay));
 
-    const textStr = String(textToDisplay);
+    if (!fuseMatches || !keyToHighlightInFuseSearch) return escapedText;
+
+    const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
+    if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return escapedText;
+
     let result = '', lastIndex = 0;
     const sortedIndices = relevantMatch.indices.slice().sort((a, b) => a[0] - b[0]);
 
     sortedIndices.forEach(pair => {
         if (pair[0] >= lastIndex) {
-            result += escapeHTML(textStr.substring(lastIndex, pair[0]));
-            result += `<mark>${escapeHTML(textStr.substring(pair[0], pair[1] + 1))}</mark>`;
+            result += escapedText.substring(lastIndex, pair[0]);
+            result += `<mark>${escapedText.substring(pair[0], pair[1] + 1)}</mark>`;
             lastIndex = pair[1] + 1;
         }
     });
-    result += escapeHTML(textStr.substring(lastIndex));
+    result += escapedText.substring(lastIndex);
     return result;
 }
 
@@ -2071,90 +2126,94 @@ function escapeHTML(str) {
     });
 }
 
-function performSearch(query, fromSuggestionOrFilter = false) {
+function performSearch(query, operationType = 'user_input') {
     query = query.trim();
     currentlyDisplayedCount = 0;
     allMatchingResults = [];
+    let generatedSuggestions = [];
 
-    if (!query) {
-        if (currentFilterType === 'all') {
-            renderInitialResults(query, []);
-        } else {
-            let baseData = [];
-            let itemMapper = item => ({ item: item, matches: null, score: 0 });
-            if (currentFilterType === 'paid') baseData = paidData;
-            else if (currentFilterType === 'free') baseData = freeData;
-
-            allMatchingResults = applySecondaryFiltersToResults(baseData.map(itemMapper));
-            renderInitialResults(query, []);
-        }
+    if (!query && Object.values(activeSecondaryFilters).every(v => !v) && operationType === 'user_input' && currentFilterType === 'all') {
+        renderInitialResults(query, []);
         searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
         return;
     }
 
-    let currentFuse, currentFuseLenient, nameKeyForSuggestion, activeIngredientKey;
+    let currentFuse, currentFuseLenient, nameKeyForSuggestions;
+
     if (currentFilterType === 'paid') {
         currentFuse = fusePaid; currentFuseLenient = fusePaidLenient;
-        nameKeyForSuggestion = 'name'; activeIngredientKey = 'activeIngredient';
+        nameKeyForSuggestions = 'name';
     } else if (currentFilterType === 'free') {
         currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient;
-        nameKeyForSuggestion = 'name'; activeIngredientKey = 'activeIngredient';
+        nameKeyForSuggestions = 'name';
     } else {
         currentFuse = fuseAll; currentFuseLenient = fuseAllLenient;
-        nameKeyForSuggestion = 'search_name'; activeIngredientKey = 'search_active_ingredient';
+        nameKeyForSuggestions = 'search_name';
     }
 
-    let fuseSearchResults = currentFuse.search(query);
-    let filteredStrictResults = applySecondaryFiltersToResults(fuseSearchResults);
-    let suggestions = [];
+    let fuseSearchResults;
+    if (query) {
+      fuseSearchResults = currentFuse.search(query);
+    } else {
+      let baseDataForFiltering = [];
+      if (currentFilterType === 'paid') {
+          baseDataForFiltering = paidData.map((item, index) => ({...item, _uniqueId: item._uniqueId || generateUniqueId(item, 'paid', index)}));
+      } else if (currentFilterType === 'free') {
+          baseDataForFiltering = freeData.map((item, index) => ({
+              ...item,
+              _uniqueId: item._uniqueId || generateUniqueId(item, 'free', index),
+              name: item.name || item.Name,
+              concentration: item.concentration || item.Conc,
+              authority: item.authority || item.Authority
+          }));
+      } else {
+          fuseSearchResults = [];
+      }
+      if (currentFilterType !== 'all') {
+        fuseSearchResults = baseDataForFiltering.map(item => ({ item: item, score: 0, matches: [] }));
+      }
+    }
 
+    let filteredStrictResults = applySecondaryFiltersToResults(fuseSearchResults);
     allMatchingResults = filteredStrictResults;
 
-    if (query.length >= MIN_QUERY_LENGTH_FOR_SUGGESTIONS && (filteredStrictResults.length === 0 || (query.length < 3 && filteredStrictResults.length < 5)) && !fromSuggestionOrFilter) {
+    if (query.length >= MIN_QUERY_LENGTH_FOR_SUGGESTIONS &&
+        filteredStrictResults.length === 0 &&
+        operationType !== 'suggestion_click') {
+
         const lenientFuseResults = currentFuseLenient.search(query);
-        const lenientFilteredResults = applySecondaryFiltersToResults(lenientFuseResults);
+        const filteredLenientResultsForSuggestions = applySecondaryFiltersToResults(lenientFuseResults);
 
-        if (lenientFilteredResults.length > 0) {
-            if (filteredStrictResults.length === 0) {
-                allMatchingResults = lenientFilteredResults;
-            }
-
+        if (filteredLenientResultsForSuggestions.length > 0) {
             const uniqueSuggestions = new Set();
-            const primaryResultNamesLower = new Set(
-                allMatchingResults.slice(0, RESULTS_PER_PAGE).map(r => {
-                    const item = (currentFilterType === 'all') ? r.item.originalItem : r.item;
-                    return (item[nameKeyForSuggestion] || '').toLowerCase();
-                })
-            );
+            filteredLenientResultsForSuggestions.sort((a, b) => (a.score || 0) - (b.score || 0));
 
-            lenientFilteredResults.sort((a, b) => a.score - b.score);
-            lenientFilteredResults.slice(0, 5).forEach(res => {
-                if (uniqueSuggestions.size >= 5) return;
-                const itemForSuggestion = (currentFilterType === 'all') ? res.item.originalItem : res.item;
+            filteredLenientResultsForSuggestions.forEach(res => {
+                if (uniqueSuggestions.size >= MAX_SUGGESTIONS) return;
 
-                let nameTerm = itemForSuggestion[nameKeyForSuggestion];
-                if (nameTerm && String(nameTerm).toLowerCase() !== query.toLowerCase() && !primaryResultNamesLower.has(String(nameTerm).toLowerCase())) {
-                    uniqueSuggestions.add(nameTerm);
+                let suggestedTerm;
+                if (currentFilterType === 'all') {
+                    suggestedTerm = res.item.search_name;
+                } else {
+                    suggestedTerm = res.item[nameKeyForSuggestions];
                 }
 
-                if (activeIngredientKey && itemForSuggestion[activeIngredientKey] && uniqueSuggestions.size < 5) {
-                    let ingredientTerm = itemForSuggestion[activeIngredientKey];
-                    if (ingredientTerm && String(ingredientTerm).toLowerCase() !== query.toLowerCase() && !uniqueSuggestions.has(ingredientTerm) && !primaryResultNamesLower.has(String(ingredientTerm).toLowerCase())) {
-                        uniqueSuggestions.add(ingredientTerm);
-                    }
+                if (suggestedTerm && String(suggestedTerm).toLowerCase() !== query.toLowerCase()) {
+                    uniqueSuggestions.add(suggestedTerm);
                 }
             });
-            suggestions = Array.from(uniqueSuggestions);
+            generatedSuggestions = Array.from(uniqueSuggestions);
         }
     }
 
-    renderInitialResults(query, suggestions);
+    renderInitialResults(query, generatedSuggestions);
 
-    if (query && query.length >= 2 && !fromSuggestionOrFilter && allMatchingResults.length > 0) {
+    if (query && query.length >= 2 && operationType === 'user_input' && allMatchingResults.length > 0) {
         addSearchToHistory(query);
     }
-    searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && !suggestions.length);
+    searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && generatedSuggestions.length === 0);
 }
+
 
 function renderInitialResults(query, suggestions = []) {
     resultsSection.innerHTML = '';
@@ -2223,7 +2282,7 @@ function appendResultsToDom(currentQuery) {
                     </div>
                 </div>`;
             resultsSection.insertAdjacentHTML('beforeend', noResultsMsg);
-        } else if (query.length === 0 && !resultsSection.querySelector('.did-you-mean') && !resultsSection.querySelector('.result-item')) {
+        } else if (query.length === 0 && !resultsSection.querySelector('.did-you-mean') && !resultsSection.querySelector('.result-item') && Object.values(activeSecondaryFilters).every(v => !v)) {
              resultsSection.insertAdjacentHTML('beforeend', '<div class="no-results">Start typing to search for medications.</div>');
         }
         updatePinButtonsInResults();
@@ -2234,6 +2293,7 @@ function appendResultsToDom(currentQuery) {
     resultsToDisplay.forEach((resultItem, indexInPage) => {
         const globalIndex = currentlyDisplayedCount + indexInPage;
         const isAllSearch = currentFilterType === 'all';
+
         const displayItemWrapper = isAllSearch ? resultItem.item : { originalItem: resultItem.item, _type: currentFilterType, _id: resultItem.item._uniqueId };
         const displayItem = displayItemWrapper.originalItem;
         const itemType = displayItemWrapper._type;
@@ -2244,17 +2304,20 @@ function appendResultsToDom(currentQuery) {
         itemDiv.className = 'result-item';
 
         let title, detailsHTML = '', tagsHTML = '';
-        const itemNameForSearch = escapeHTML(displayItem.name);
+        let nameValue = displayItem.name || displayItem.Name;
+        const itemNameForSearch = escapeHTML(nameValue);
 
-        const nameKey = isAllSearch ? 'search_name' : 'name';
-        const activeIngredientKeyHighlight = isAllSearch ? 'search_active_ingredient' : 'activeIngredient';
-        const concentrationKeyHighlight = isAllSearch ? 'search_concentration' : 'concentration';
-        const formKeyHighlight = isAllSearch ? 'search_form' : 'form';
-        const companyKeyHighlight = isAllSearch ? 'search_company' : 'company';
-        const authorityKeyHighlight = isAllSearch ? 'search_authority' : 'authority';
-        const classKeyHighlight = isAllSearch ? 'search_class' : 'class';
 
-        title = highlightText(displayItem.name, fuseMatches, nameKey);
+        let nameKeyHighlight = isAllSearch ? 'search_name' : 'name';
+        let activeIngredientKeyHighlight = isAllSearch ? 'search_active_ingredient' : 'activeIngredient';
+        let concentrationKeyHighlight = isAllSearch ? 'search_concentration' : 'concentration';
+        let formKeyHighlight = isAllSearch ? 'search_form' : 'form';
+        let companyKeyHighlight = isAllSearch ? 'search_company' : 'company';
+        let authorityKeyHighlight = isAllSearch ? 'search_authority' : 'authority';
+        let classKeyHighlight = isAllSearch ? 'search_class' : 'class';
+
+
+        title = highlightText(nameValue, fuseMatches, nameKeyHighlight);
 
         if (itemType === 'paid') {
             detailsHTML = `
@@ -2266,14 +2329,18 @@ function appendResultsToDom(currentQuery) {
             if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, authorityKeyHighlight)}</div>`;
             if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, classKeyHighlight)}</div>`;
         } else {
+            let currentConcentration = displayItem.concentration || displayItem.Conc;
+            let currentAuthority = displayItem.authority || displayItem.Authority;
+
             detailsHTML = `
                 ${displayItem.activeIngredient ? `<p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, activeIngredientKeyHighlight)}</p>` : ''}
-                ${displayItem.concentration ? `<p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, concentrationKeyHighlight)}</p>` : ''}
+                ${currentConcentration ? `<p><strong>Concentration:</strong> ${highlightText(currentConcentration, fuseMatches, concentrationKeyHighlight)}</p>` : ''}
                 ${displayItem.form ? `<p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, formKeyHighlight)}</p>` : ''}`;
             if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, companyKeyHighlight)}</div>`;
-            if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, authorityKeyHighlight)}</div>`;
+            if (currentAuthority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(currentAuthority, fuseMatches, authorityKeyHighlight)}</div>`;
             if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, classKeyHighlight)}</div>`;
         }
+
 
         itemDiv.innerHTML = `
             <div class="result-header">
@@ -2326,21 +2393,42 @@ function appendResultsToDom(currentQuery) {
         const remainingCount = allMatchingResults.length - currentlyDisplayedCount;
         loadMoreBtn.textContent = `Load More (${remainingCount} remaining)`;
         loadMoreBtn.className = 'load-more-btn';
-        loadMoreBtn.addEventListener('click', () => appendResultsToDom(query));
+        loadMoreBtn.addEventListener('click', function() {
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = 'Loading...';
+            setTimeout(() => {
+                appendResultsToDom(currentQuery);
+            }, 50);
+        });
         resultsSection.appendChild(loadMoreBtn);
     }
     updatePinButtonsInResults();
 }
 
 function applySecondaryFiltersToResults(fuseResults) {
-    if (Object.values(activeSecondaryFilters).every(v => !v)) return fuseResults;
+    const activeFilterKeys = Object.keys(activeSecondaryFilters).filter(key => activeSecondaryFilters[key]);
+    if (activeFilterKeys.length === 0) return fuseResults;
+
 
     return fuseResults.filter(result => {
-        const item = (currentFilterType === 'all') ? result.item.originalItem : result.item;
-        for (const key in activeSecondaryFilters) {
-            const filterValue = activeSecondaryFilters[key];
-            if (!filterValue) continue;
-            let itemValue = item[key];
+        const itemToInspect = (currentFilterType === 'all' && result.item.originalItem) ? result.item.originalItem : result.item;
+
+        for (const filterConfigKey of activeFilterKeys) {
+            const filterValue = activeSecondaryFilters[filterConfigKey];
+            let itemKeyToUse = filterConfigKey;
+
+            if (currentFilterType === 'all') {
+                 itemKeyToUse = filterConfigKey.startsWith('search_') ? filterConfigKey.substring(7) : filterConfigKey;
+            } else if (currentFilterType === 'free') {
+                 if (filterConfigKey === 'name' && itemToInspect.Name) itemKeyToUse = 'Name';
+                 else if (filterConfigKey === 'concentration' && itemToInspect.Conc) itemKeyToUse = 'Conc';
+                 else if (filterConfigKey === 'authority' && itemToInspect.Authority) itemKeyToUse = 'Authority';
+            }
+
+
+            const itemValue = itemToInspect[itemKeyToUse];
+
             if (itemValue === undefined || itemValue === null) return false;
             if (String(itemValue).toLowerCase() !== String(filterValue).toLowerCase()) return false;
         }
@@ -2348,25 +2436,26 @@ function applySecondaryFiltersToResults(fuseResults) {
     });
 }
 
+
 function setActivePrimaryFilter(type) {
     currentFilterType = type;
     primaryFilterBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === type));
     activeSecondaryFilters = {};
     createSecondaryFiltersUI();
-    performSearch(searchInput.value.trim(), true);
+    performSearch(searchInput.value.trim(), 'filter_change');
 }
 
 searchInput.addEventListener('input', function() {
     const query = this.value;
     clearBtn.style.display = query.length > 0 ? 'block' : 'none';
     clearTimeout(typingTimer);
-    typingTimer = setTimeout(() => performSearch(query, false), DONE_TYPING_INTERVAL);
+    typingTimer = setTimeout(() => performSearch(query, 'user_input'), DONE_TYPING_INTERVAL);
 });
 
 searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         clearTimeout(typingTimer);
-        performSearch(searchInput.value.trim(), false);
+        performSearch(searchInput.value.trim(), 'user_input');
     }
 });
 searchInput.addEventListener('focus', () => searchHint.classList.remove('visible'));
@@ -2379,7 +2468,7 @@ searchInput.addEventListener('blur', () => {
 clearBtn.addEventListener('click', function() {
     searchInput.value = '';
     this.style.display = 'none';
-    performSearch('', false);
+    performSearch('', 'user_input');
     searchInput.focus();
 });
 
@@ -2447,7 +2536,7 @@ resultsSection.addEventListener('click', function(event) {
         const suggestedQuery = suggestionLink.dataset.suggestion;
         searchInput.value = suggestedQuery;
         clearBtn.style.display = searchInput.value.length > 0 ? 'block' : 'none';
-        performSearch(suggestedQuery, true);
+        performSearch(suggestedQuery, 'suggestion_click');
         return;
     }
     const pinBtn = event.target.closest('.pin-item-btn');
@@ -2472,7 +2561,7 @@ function saveToLocalStorage(key, value) {
     try {
         localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
-        console.error(`Error saving ${key} to localStorage`, e);
+
     }
 }
 
@@ -2613,7 +2702,7 @@ pinnedItemsList.addEventListener('click', function(event) {
     } else if (targetLi) {
         const itemName = targetLi.textContent.replace(/×$/, '').trim();
         searchInput.value = itemName;
-        performSearch(itemName, true);
+        performSearch(itemName, 'suggestion_click');
         closeSidePanel();
     }
 });
@@ -2632,7 +2721,7 @@ searchHistoryList.addEventListener('click', function(event) {
     } else if (targetLi) {
         const query = targetLi.dataset.query;
         searchInput.value = query;
-        performSearch(query, true);
+        performSearch(query, 'suggestion_click');
         closeSidePanel();
     }
 });
@@ -2834,6 +2923,9 @@ function initializeApp() {
         loadPinnedItems();
         loadSearchHistory();
         setActivePrimaryFilter('all');
+        if (!searchInput.value.trim() && Object.values(activeSecondaryFilters).every(v => !v)) {
+            resultsSection.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
+        }
         setTimeout(() => {
             if (searchInput) searchInput.focus();
              searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && !resultsSection.querySelector('.did-you-mean'));
