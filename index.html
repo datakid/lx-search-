@@ -58,6 +58,8 @@
     --dark-side-panel-overlay-bg: rgba(0, 0, 0, 0.6);
     --dark-custom-confirm-overlay-bg: rgba(0, 0, 0, 0.7);
     --dark-search-loading-indicator-bg: rgba(10, 15, 28, 0.85);
+    --dark-tooltip-bg: #1e293b;
+    --dark-tooltip-text: #ffffff;
 
     --light-bg-gradient-start: #f8faff;
     --light-bg-gradient-mid: #ffffff;
@@ -88,6 +90,7 @@
     --light-scrollbar-thumb: rgba(0, 122, 255, 0.45);
     --light-scrollbar-track: rgba(0, 122, 255, 0.06);
     --light-select-option-bg: #ffffff;
+    --light-select-option-text: #1f2328;
     --light-price-text-color: #b06c00;
     --light-price-bg-color: rgba(255, 193, 7, 0.1);
     --light-panel-bg: #fcfdff;
@@ -96,6 +99,8 @@
     --light-side-panel-overlay-bg: rgba(50, 50, 50, 0.4);
     --light-custom-confirm-overlay-bg: rgba(240, 240, 240, 0.7);
     --light-search-loading-indicator-bg: rgba(248,249,250, 0.85);
+    --light-tooltip-bg: #333333;
+    --light-tooltip-text: #ffffff;
 
     --bg-gradient-start: var(--dark-bg-gradient-start);
     --bg-gradient-mid: var(--dark-bg-gradient-mid);
@@ -137,6 +142,9 @@
     --side-panel-overlay-bg: var(--dark-side-panel-overlay-bg);
     --custom-confirm-overlay-bg: var(--dark-custom-confirm-overlay-bg);
     --search-loading-indicator-bg: var(--dark-search-loading-indicator-bg);
+    --tooltip-bg: var(--dark-tooltip-bg);
+    --tooltip-text: var(--dark-tooltip-text);
+    
     --accent-bg-subtle: rgba(var(--accent-color-rgb), 0.08);
     --accent-bg-active: rgba(var(--accent-color-rgb), 0.18);
     --main-search-card-before-bg: linear-gradient(150deg, rgba(var(--accent-color-rgb),0.08) 0%, transparent 50%, rgba(var(--accent-color-rgb),0.02) 100%);
@@ -186,6 +194,9 @@
     --side-panel-overlay-bg: var(--light-side-panel-overlay-bg);
     --custom-confirm-overlay-bg: var(--light-custom-confirm-overlay-bg);
     --search-loading-indicator-bg: var(--light-search-loading-indicator-bg);
+    --tooltip-bg: var(--light-tooltip-bg);
+    --tooltip-text: var(--light-tooltip-text);
+
     --accent-bg-subtle: rgba(var(--light-accent-color-rgb), 0.07);
     --accent-bg-active: rgba(var(--light-accent-color-rgb), 0.14);
     --main-search-card-before-bg: linear-gradient(150deg, rgba(var(--light-accent-color-rgb),0.03) 0%, transparent 50%, rgba(var(--light-accent-color-rgb),0.01) 100%);
@@ -234,6 +245,9 @@ html[data-theme="light"] {
     --side-panel-overlay-bg: var(--light-side-panel-overlay-bg);
     --custom-confirm-overlay-bg: var(--light-custom-confirm-overlay-bg);
     --search-loading-indicator-bg: var(--light-search-loading-indicator-bg);
+    --tooltip-bg: var(--light-tooltip-bg);
+    --tooltip-text: var(--light-tooltip-text);
+
     --accent-bg-subtle: rgba(var(--light-accent-color-rgb), 0.07);
     --accent-bg-active: rgba(var(--light-accent-color-rgb), 0.14);
     --main-search-card-before-bg: linear-gradient(150deg, rgba(var(--light-accent-color-rgb),0.03) 0%, transparent 50%, rgba(var(--light-accent-color-rgb),0.01) 100%);
@@ -589,7 +603,7 @@ body {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
-    min-width: 180px;
+    min-width: 150px;
 
     & label {
         font-size: 0.85rem;
@@ -599,16 +613,15 @@ body {
         letter-spacing: 0.02em;
         opacity: 0.9;
     }
-    & select,
-    & input[type="number"] {
-        padding: 10px 14px;
+    & select {
+        padding: 8px 12px;
         border-radius: var(--border-radius-lg);
         border: 1px solid var(--glass-border-interactive);
         background: var(--glass-bg-interactive);
         backdrop-filter: blur(var(--glass-blur-interactive));
         -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
         color: var(--text-primary);
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         outline: none;
         transition: border-color var(--transition-speed-fast), background-color var(--transition-speed-fast), box-shadow var(--transition-speed-fast);
         box-shadow: 0 4px 12px -5px var(--shadow-color-soft), inset 0 1px 1px rgba(0,0,0,0.05);
@@ -687,7 +700,7 @@ body {
     margin-bottom: 1.25rem;
     box-shadow: 0 15px 40px -10px var(--shadow-color-medium), 0 6px 15px -4px var(--shadow-color-soft);
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     opacity: 0;
     transform: translateY(20px);
     transition: opacity var(--transition-speed-slow), transform var(--transition-speed-slow), background var(--transition-speed-normal), box-shadow var(--transition-speed-normal), border-color var(--transition-speed-normal);
@@ -881,57 +894,114 @@ body {
 }
 
 .card-action-btn {
-    background: none;
-    border: 1px solid transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    padding: 6px 10px;
-    border-radius: var(--border-radius-md);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color var(--transition-speed-fast), color var(--transition-speed-fast), border-color var(--transition-speed-fast), transform var(--transition-speed-fast);
-    line-height: 1;
-    font-weight: 500;
-    gap: 6px;
-    & svg {
-        display: block;
-        width: 18px;
-        height: 18px;
-    }
-    &:hover {
-        background-color: rgba(var(--accent-color-rgb), 0.12);
-        color: var(--accent-color);
-        border-color: rgba(var(--accent-color-rgb), 0.2);
-        transform: scale(1.05);
-    }
-}
-
-.pin-item-btn {
-    background: none;
-    border: none;
+    background: var(--accent-bg-subtle);
+    border: 1px solid var(--glass-border-interactive);
     color: var(--text-secondary);
     cursor: pointer;
     padding: 6px;
-    margin-right: 8px;
+    width: 34px;
+    height: 34px;
     border-radius: 50%;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    transition: color var(--transition-speed-fast), background-color var(--transition-speed-fast), transform var(--transition-speed-fast);
+    transition: all var(--transition-speed-fast);
+    line-height: 1;
+    position: relative;
+
     & svg {
-        width: 20px;
-        height: 20px;
+        display: block;
+        width: 18px;
+        height: 18px;
+        stroke-width: 1.8;
+    }
+
+    &:hover {
+        background-color: var(--accent-bg-active);
+        color: var(--accent-color);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(var(--accent-color-rgb), 0.15);
+    }
+
+    &:hover::after {
+        content: attr(title);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--tooltip-bg);
+        color: var(--tooltip-text);
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        white-space: nowrap;
+        pointer-events: none;
+        opacity: 0;
+        animation: tooltipFadeIn 0.2s forwards;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10;
+        font-weight: 500;
+    }
+}
+
+@keyframes tooltipFadeIn {
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.pin-item-btn {
+    background: var(--glass-bg-interactive);
+    border: 1px solid var(--glass-border-interactive);
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 6px;
+    margin-right: 8px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-speed-fast);
+    position: relative;
+
+    & svg {
+        width: 18px;
+        height: 18px;
         pointer-events: none;
     }
     &:hover {
         color: var(--accent-color);
-        background-color: rgba(var(--accent-color-rgb),0.1);
-        transform: scale(1.1);
+        background-color: var(--accent-bg-subtle);
+        border-color: var(--accent-color);
+        transform: translateY(-2px);
+    }
+    &.pinned {
+        background-color: var(--accent-bg-active);
+        border-color: var(--accent-color);
     }
     &.pinned svg {
         fill: var(--accent-color);
         stroke: var(--accent-color);
+    }
+    &:hover::after {
+        content: attr(aria-label);
+        position: absolute;
+        bottom: 120%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--tooltip-bg);
+        color: var(--tooltip-text);
+        padding: 4px 8px;
+        font-size: 11px;
+        border-radius: 4px;
+        white-space: nowrap;
+        pointer-events: none;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10;
+        font-weight: 500;
+        opacity: 0;
+        animation: tooltipFadeIn 0.2s forwards;
     }
 }
 
@@ -1549,7 +1619,7 @@ body {
             font-size: 0.8rem;
             margin-bottom: 0.5rem;
         }
-        & select, & input[type="number"] {
+        & select {
             padding: 10px 14px;
             font-size: 0.85rem;
             border-radius: var(--border-radius-md);
@@ -1610,7 +1680,7 @@ body {
         order: initial;
         margin-left: auto;
         gap: 6px;
-        & .card-action-btn { padding: 4px 8px; }
+        & .card-action-btn { padding: 4px; }
     }
     .result-details {
         font-size: 0.9rem;
@@ -3116,7 +3186,7 @@ function normalizeAllData() {
     });
     freeData.forEach((fItem, index) => {
         const uniqueId = fItem._uniqueId || generateUniqueId(fItem, 'free', index);
-        const nameToUse = fItem.name || fItem.Name; // Handle case variations
+        const nameToUse = fItem.name || fItem.Name; 
         const concentrationToUse = fItem.concentration || fItem.Conc;
         const authorityToUse = fItem.authority || fItem.Authority;
 
@@ -3340,7 +3410,7 @@ function performSearch(query, operationType = 'user_input') {
     } else if (currentFilterType === 'free') {
         currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient;
         nameKeyForSuggestions = 'name'; 
-    } else { // 'all'
+    } else { 
         currentFuse = fuseAll; currentFuseLenient = fuseAllLenient;
         nameKeyForSuggestions = 'search_name';
     }
@@ -3533,28 +3603,28 @@ function renderAndAppendBatch(batchItems, batchStartIndex, currentQuery) {
         
         const rawDetailsForSharing = JSON.stringify(displayItem); 
 
-itemDiv.innerHTML = `
+        itemDiv.innerHTML = `
             <div class="result-header">
                 <button class="pin-item-btn" data-item-id="${uniqueItemId}" data-item-name="${itemNameForSearch}" aria-label="Pin this item">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 3L10 13M6 7L14 7M10 13C8 15 7 17 7 17M10 13C12 15 13 17 13 17M7 4C7 2.89543 7.89543 2 9 2H11C12.1046 2 13 2.89543 13 4C13 5.10457 12.1046 6 11 6H9C7.89543 6 7 5.10457 7 4Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H6.5v4L4.5 9v2h4.5v7l1 1 1-1v-7h4.5V9l-2-2V3z" />
                     </svg>
                 </button>
                 <div class="result-title">${title || 'Unknown Item'}</div>
                 <div class="result-card-actions">
-                    <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${itemType}" title="Copy medication details">
+                    <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${itemType}" title="Copy Details">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                     </button>
-                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google-images" title="Search images of '${itemNameForSearch}' on Google">
+                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google-images" title="Search Images">
                         <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                     </button>
-                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="drugs.com" title="Search '${itemNameForSearch}' on Drugs.com">
+                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="drugs.com" title="Search Drugs.com">
                         <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 6.5C17.5 4.57 15.93 3 14 3H10C8.07 3 6.5 4.57 6.5 6.5V17.5C6.5 19.43 8.07 21 10 21H14C15.93 21 17.5 19.43 17.5 17.5V6.5ZM8.5 6.5C8.5 5.67 9.17 5 10 5H12V12H8.5V6.5ZM15.5 17.5C15.5 18.33 14.83 19 14 19H10C9.17 19 8.5 18.33 8.5 17.5V14H15.5V17.5ZM15.5 12H12V5H14C14.83 5 15.5 5.67 15.5 6.5V12Z"/></svg>
                     </button>
-                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="perplexity" title="Search '${itemNameForSearch}' on Perplexity">
+                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="perplexity" title="Search Perplexity">
                         <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg>
                     </button>
-                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google" title="Search '${itemNameForSearch}' on Google">
+                    <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google" title="Search Google">
                         <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.84 0-5.22-1.9-6.08-4.48H2.15v2.84C3.97 20.98 7.72 23 12 23z"/><path d="M5.92 14.01c-.21-.66-.33-1.34-.33-2.04s.12-1.38.33-2.04V7.13H2.15C1.43 8.53 1 10.22 1 12s.43 3.47 1.15 4.87l3.77-2.86z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.72 1 3.97 3.02 2.15 7.13l3.77 2.84C6.78 7.28 9.16 5.38 12 5.38z"/></svg>
                     </button>
                     <span class="item-type-tag ${itemType}">${itemType}</span>
@@ -3756,12 +3826,11 @@ function copyDetailsToClipboard(textToCopy, buttonElement) {
     navigator.clipboard.writeText(textToCopy).then(() => {
         const originalButtonContent = buttonElement.innerHTML;
         const originalTitle = buttonElement.title;
-        buttonElement.innerHTML = 'Copied!';
-        buttonElement.disabled = true;
+        buttonElement.setAttribute('title', 'Copied!');
+        buttonElement.style.color = 'var(--accent-color)';
         setTimeout(() => {
-            buttonElement.innerHTML = originalButtonContent;
-            buttonElement.title = originalTitle;
-            buttonElement.disabled = false;
+            buttonElement.setAttribute('title', originalTitle);
+            buttonElement.style.color = '';
         }, 1500);
     }).catch(err => {
         showCustomConfirm("Failed to copy details. Please try again.", null, { yesText: "OK", noText: null });
