@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1867,10 +1866,8 @@
                 right: 0.5rem;
                 padding: 0.3rem;
                 gap: 0.2rem;
-
                 & button {
                     padding: 0.4rem;
-
                     & svg {
                         width: 16px;
                         height: 16px;
@@ -1886,76 +1883,91 @@
             .main-search-card {
                 padding: 1rem;
                 border-radius: var(--border-radius-md);
-                max-height: calc(100vh - 100px);
-                overflow-y: auto;
+                max-height: none;
+                overflow-y: visible;
                 display: flex;
                 flex-direction: column;
             }
 
             .search-input-wrapper {
-                margin-bottom: 1rem;
+                margin-bottom: 0.75rem;
             }
 
             .primary-filters {
                 margin-top: 0;
-                margin-bottom: 1rem;
+                margin-bottom: 0.5rem;
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
+                flex-wrap: nowrap;
                 gap: 8px;
                 flex-shrink: 0;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding-bottom: 2px;
+            }
+
+            .primary-filters::-webkit-scrollbar {
+                display: none;
             }
 
             .filter-btn {
-                width: 100%;
-                padding: 10px 12px;
+                width: auto;
+                flex: 0 0 auto;
+                padding: 8px 14px;
                 font-size: 0.85rem;
                 border-radius: var(--border-radius-md);
-                min-height: 42px;
-
+                min-height: 38px;
                 & .filter-icon-svg {
                     width: 15px;
                     height: 15px;
-                    margin-right: 8px;
+                    margin-right: 6px;
                 }
             }
 
             #secondary-filters-container {
-                flex-direction: column;
+                flex-direction: row;
                 flex-wrap: nowrap;
-                overflow-x: hidden;
-                overflow-y: auto;
+                overflow-x: auto;
+                overflow-y: hidden;
                 margin-top: 0;
                 padding-top: 0;
                 border-top: none;
-                flex-grow: 1;
+                flex-grow: 0;
                 min-height: 0;
-
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                gap: 10px;
                 &.visible {
-                    margin-top: 1rem;
-                    padding-top: 1rem;
+                    margin-top: 0.5rem;
+                    padding-top: 0.5rem;
                     border-top: 1px solid var(--glass-border-main);
-                    max-height: 250px;
+                    max-height: 100px;
                 }
             }
 
+            #secondary-filters-container::-webkit-scrollbar {
+                display: none;
+            }
+
             .filter-group {
-                min-width: 100%;
-
+                min-width: 140px;
+                flex: 0 0 auto;
                 & label {
-                    font-size: 0.8rem;
-                    margin-bottom: 0.5rem;
+                    font-size: 0.75rem;
+                    margin-bottom: 0.25rem;
+                    white-space: nowrap;
                 }
-
                 & select {
-                    padding: 10px 14px;
+                    padding: 8px 12px;
                     font-size: 0.85rem;
                     border-radius: var(--border-radius-md);
+                    width: 100%;
                 }
             }
 
             .title {
                 font-size: 1.75rem;
-
                 &::after {
                     width: 60px;
                     height: 3px;
@@ -1973,14 +1985,13 @@
             .search-icon-svg {
                 width: 20px;
                 height: 20px;
-                left: 18px;
+                inset-inline-start: 18px;
             }
 
             .clear-btn {
-                right: 14px;
+                inset-inline-end: 14px;
                 width: 32px;
                 height: 32px;
-
                 & svg {
                     width: 16px;
                     height: 16px;
@@ -2018,7 +2029,6 @@
                 order: initial;
                 margin-left: auto;
                 gap: 6px;
-
                 & .card-action-btn {
                     padding: 4px;
                 }
@@ -2042,7 +2052,6 @@
             .did-you-mean {
                 font-size: 0.85rem;
                 margin-bottom: 1.25rem;
-
                 & .suggestion-list a {
                     padding: 5px 10px;
                     margin-right: 8px;
@@ -2058,17 +2067,16 @@
 
             .side-panel {
                 width: 100%;
-                left: -100%;
-                border-right: none;
-
+                inset-inline-start: -100%;
+                border-inline-end: none;
                 &.open {
-                    left: 0;
+                    inset-inline-start: 0;
                 }
             }
 
             .side-panel-toggle {
                 top: 0.5rem;
-                left: 0.5rem;
+                inset-inline-start: 0.5rem;
             }
         }
 
@@ -2295,7 +2303,7 @@
     </div>
 
     <script>
-  const paidData = [
+const paidData = [
             { "name": "Amaryl 1", "activeIngredient": "Glimepiride", "concentration": "1 mg", "company": "شراء موحد", "price": 11.5, "form": "30 Tab", "class": "Anti-Diabetics", "authority": "con", "_uniqueId": "paid_amaryl_1_1_mg" },
             { "name": "Amaryl 2", "activeIngredient": "Glimepiride", "concentration": "2 mg", "company": "شراء موحد", "price": 27, "form": "30 Tab", "class": "Anti-Diabetics", "authority": "con", "_uniqueId": "paid_amaryl_2_2_mg" },
             { "name": "Amaryl 3", "activeIngredient": "Glimepiride", "concentration": "3 mg", "company": "شراء موحد", "price": 30, "form": "30 Tab", "class": "Anti-Diabetics", "authority": "con", "_uniqueId": "paid_amaryl_3_3_mg" },
@@ -3477,6 +3485,7 @@
             { "name": "Brivaracetam 100", "activeIngredient": null, "concentration": "100 mg", "company": null, "price": null, "form": "Tab", "class": "Anti-Epileptic", "authority": "Con", "_uniqueId": "free_brivaracetam_100_mg" },
             { "name": "Brivaracetam Syrup", "activeIngredient": null, "concentration": "---", "company": null, "price": null, "form": "Syrup", "class": "Anti-Epileptic", "authority": "Con", "_uniqueId": "free_brivaracetam_syrup" }
         ];
+
 
 
         const searchInput = document.getElementById('search-input');
