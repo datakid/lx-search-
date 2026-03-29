@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -3487,7 +3486,6 @@ const paidData = [
         ];
 
 
-
         const searchInput = document.getElementById('search-input');
         const clearBtn = document.getElementById('clear-btn');
         const resultsSection = document.getElementById('results-section');
@@ -3781,24 +3779,24 @@ const paidData = [
 
         function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
             if (textToDisplay === null || textToDisplay === undefined) textToDisplay = '';
-            let escapedText = escapeHTML(String(textToDisplay));
-
-            if (!fuseMatches || !keyToHighlightInFuseSearch) return escapedText;
+            const strText = String(textToDisplay);
+            
+            if (!fuseMatches || !keyToHighlightInFuseSearch) return escapeHTML(strText);
 
             const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
-            if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return escapedText;
+            if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return escapeHTML(strText);
 
             let result = '', lastIndex = 0;
             const sortedIndices = relevantMatch.indices.slice().sort((a, b) => a[0] - b[0]);
 
             sortedIndices.forEach(pair => {
                 if (pair[0] >= lastIndex) {
-                    result += escapedText.substring(lastIndex, pair[0]);
-                    result += `<mark>${escapedText.substring(pair[0], pair[1] + 1)}</mark>`;
+                    result += escapeHTML(strText.substring(lastIndex, pair[0]));
+                    result += `<mark>${escapeHTML(strText.substring(pair[0], pair[1] + 1))}</mark>`;
                     lastIndex = pair[1] + 1;
                 }
             });
-            result += escapedText.substring(lastIndex);
+            result += escapeHTML(strText.substring(lastIndex));
             return result;
         }
 
@@ -3813,6 +3811,8 @@ const paidData = [
             let title, detailsHTML = '', tagsHTML = '';
             let nameValue = displayItem.name || displayItem.Name;
             const itemNameForSearch = escapeHTML(nameValue);
+            const safeItemId = escapeHTML(uniqueItemId);
+            const safeItemType = escapeHTML(itemType);
 
             let nameKeyHighlight = isAllSearch ? 'search_name' : 'name';
             let activeIngredientKeyHighlight = isAllSearch ? 'search_active_ingredient' : 'activeIngredient';
@@ -3850,14 +3850,14 @@ const paidData = [
 
             return `
                 <div class="result-header">
-                    <button class="pin-item-btn" data-item-id="${uniqueItemId}" data-item-name="${itemNameForSearch}" aria-label="Pin this item">
+                    <button class="pin-item-btn" data-item-id="${safeItemId}" data-item-name="${itemNameForSearch}" aria-label="Pin this item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H6.5v4L4.5 9v2h4.5v7l1 1 1-1v-7h4.5V9l-2-2V3z" />
                         </svg>
                     </button>
                     <div class="result-title">${title || 'Unknown Item'}</div>
                     <div class="result-card-actions">
-                        <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${itemType}" title="Copy Details">
+                        <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${safeItemType}" title="Copy Details">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                         </button>
                         <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google-images" title="Search Images">
@@ -3872,7 +3872,7 @@ const paidData = [
                         <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google" title="Search Google">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.84 0-5.22-1.9-6.08-4.48H2.15v2.84C3.97 20.98 7.72 23 12 23z"/><path d="M5.92 14.01c-.21-.66-.33-1.34-.33-2.04s.12-1.38.33-2.04V7.13H2.15C1.43 8.53 1 10.22 1 12s.43 3.47 1.15 4.87l3.77-2.86z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.72 1 3.97 3.02 2.15 7.13l3.77 2.84C6.78 7.28 9.16 5.38 12 5.38z"/></svg>
                         </button>
-                        <span class="item-type-tag ${itemType}">${itemType}</span>
+                        <span class="item-type-tag ${safeItemType}">${safeItemType}</span>
                     </div>
                 </div>
                 <div class="result-details">${detailsHTML}</div>
@@ -4683,5 +4683,4 @@ const paidData = [
 
     </script>
 </body>
-
 </html>
