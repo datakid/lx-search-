@@ -346,6 +346,11 @@
             75% { transform: translate3d(70px, -40px, 0) scale(1.03); }
         }
 
+        @keyframes inputFocusPulse {
+            0%, 100% { box-shadow: 0 0 0 4px rgba(var(--accent-color-rgb), 0.12), 0 8px 24px -6px var(--shadow-color-medium), 0 3px 10px -3px var(--shadow-color-soft), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+            50% { box-shadow: 0 0 0 6px rgba(var(--accent-color-rgb), 0.08), 0 10px 28px -6px var(--shadow-color-medium), 0 4px 12px -3px var(--shadow-color-soft), inset 0 1px 0 rgba(255, 255, 255, 0.05); }
+        }
+
         .theme-switcher {
             position: fixed;
             top: 1.25rem;
@@ -521,6 +526,7 @@
                 border-color: var(--glass-border-interactive-focus);
                 background: var(--glass-bg-interactive-hover);
                 box-shadow: 0 0 0 4px rgba(var(--accent-color-rgb), 0.12), 0 8px 24px -6px var(--shadow-color-medium), 0 3px 10px -3px var(--shadow-color-soft), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+                animation: inputFocusPulse 2s ease-in-out infinite;
             }
 
             &:disabled {
@@ -798,6 +804,28 @@
             min-height: 150px;
         }
 
+        .result-count {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            padding: 0.35rem 0.85rem;
+            margin-bottom: 0.85rem;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(-6px);
+            transition: opacity 0.25s var(--transition-easing), transform 0.25s var(--transition-easing);
+            letter-spacing: 0.01em;
+        }
+
+        .result-count.visible {
+            opacity: 0.8;
+            transform: translateY(0);
+        }
+
+        .result-count strong {
+            color: var(--accent-color);
+            font-weight: 650;
+        }
+
         .did-you-mean-outer {
             padding: 0.5rem 0.25rem;
         }
@@ -888,6 +916,23 @@
             & .result-tags-container {
                 position: relative;
                 z-index: 1;
+            }
+
+            animation: none;
+        }
+
+        .result-item.card-enter {
+            animation: cardSlideIn 0.35s var(--transition-easing) both;
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px) scale(0.98);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
             }
         }
 
@@ -2280,6 +2325,7 @@
             <div id="secondary-filters-container"></div>
         </div>
         <div class="results-section" id="results-section">
+            <div id="result-count" class="result-count"></div>
             <div id="suggestions-container"></div>
             <div id="no-results-container"></div>
             <div id="results-list"></div>
@@ -3556,7 +3602,7 @@ const paidData = [
 
         let confirmCallback = null;
         let currentFilterType = 'all';
-        let fusePaid, fuseFree, fuseAll, fusePaidLenient, fuseFreeLenient, fuseAllLenient;
+        let fusePaid, fuseFree, fuseAll;
         let activeSecondaryFilters = {};
         let allDatasetNormalized =[];
         const MAX_HISTORY_ITEMS = 10;
@@ -3568,6 +3614,8 @@ const paidData = [
         const MAX_BATCHES_IN_DOM = 3;
         let allMatchingResults =[];
         let activeDOMBatchesStartIndices =[];
+        let _debounceTimer = null;
+        function debounce(fn, ms) { return function(...args) { clearTimeout(_debounceTimer); _debounceTimer = setTimeout(() => fn.apply(this, args), ms); }; }
 
         const baseFuseOptions = {
             includeScore: true,
@@ -3655,10 +3703,6 @@ const paidData = [
             fusePaid = new Fuse(tempPaidData, { ...baseFuseOptions, keys: paidKeys, threshold: strictThreshold, id: '_uniqueId' });
             fuseFree = new Fuse(tempFreeData, { ...baseFuseOptions, keys: freeKeys, threshold: strictThreshold, id: '_uniqueId' });
             fuseAll = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: strictThreshold, id: '_id' });
-
-            fusePaidLenient = new Fuse(tempPaidData, { ...baseFuseOptions, keys: paidKeys, threshold: LENIENT_THRESHOLD_FOR_SUGGESTIONS, id: '_uniqueId' });
-            fuseFreeLenient = new Fuse(tempFreeData, { ...baseFuseOptions, keys: freeKeys, threshold: LENIENT_THRESHOLD_FOR_SUGGESTIONS, id: '_uniqueId' });
-            fuseAllLenient = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: LENIENT_THRESHOLD_FOR_SUGGESTIONS, id: '_id' });
         }
 
         function getUniqueValues(data, key) {
@@ -3800,9 +3844,21 @@ const paidData = [
             return result;
         }
 
+        const _escapeCache = new Map();
         function escapeHTML(str) {
             if (str === null || str === undefined) return '';
-            return String(str).replace(/[&<>"']/g, function (match) {
+            const s = String(str);
+            if (s.length < 120) {
+                const cached = _escapeCache.get(s);
+                if (cached !== undefined) return cached;
+                const r = s.replace(/[&<>"']/g, function (match) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match];
+                });
+                if (_escapeCache.size > 2000) _escapeCache.clear();
+                _escapeCache.set(s, r);
+                return r;
+            }
+            return s.replace(/[&<>"']/g, function (match) {
                 return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[match];
             });
         }
@@ -3892,16 +3948,16 @@ const paidData = [
                 return;
             }
 
-            let currentFuse, currentFuseLenient, nameKeyForSuggestions;
+            let currentFuse, nameKeyForSuggestions;
 
             if (currentFilterType === 'paid') {
-                currentFuse = fusePaid; currentFuseLenient = fusePaidLenient;
+                currentFuse = fusePaid;
                 nameKeyForSuggestions = 'name';
             } else if (currentFilterType === 'free') {
-                currentFuse = fuseFree; currentFuseLenient = fuseFreeLenient;
+                currentFuse = fuseFree;
                 nameKeyForSuggestions = 'name';
             } else {
-                currentFuse = fuseAll; currentFuseLenient = fuseAllLenient;
+                currentFuse = fuseAll;
                 nameKeyForSuggestions = 'search_name';
             }
 
@@ -3936,7 +3992,10 @@ const paidData = [
                 filteredStrictResults.length === 0 &&
                 operationType !== 'suggestion_click') {
 
-                const lenientFuseResults = currentFuseLenient.search(query);
+                const savedThreshold = currentFuse.options.threshold;
+                currentFuse.options.threshold = LENIENT_THRESHOLD_FOR_SUGGESTIONS;
+                const lenientFuseResults = currentFuse.search(query);
+                currentFuse.options.threshold = savedThreshold;
                 const filteredLenientResultsForSuggestions = applySecondaryFiltersToResults(lenientFuseResults);
 
                 if (filteredLenientResultsForSuggestions.length > 0) {
@@ -3961,7 +4020,7 @@ const paidData = [
                 }
             }
 
-            renderInitialDOM(query, generatedSuggestions);
+            requestAnimationFrame(() => renderInitialDOM(query, generatedSuggestions));
 
             if (query && query.length >= 2 && (operationType === 'user_input' || operationType === 'suggestion_click') && allMatchingResults.length > 0) {
                 addSearchToHistory(query);
@@ -3985,6 +4044,8 @@ const paidData = [
 
             if (allMatchingResults.length === 0 && !suggestions.length) {
                 resultsList.style.display = 'none';
+                const rc = document.getElementById('result-count');
+                if (rc) { rc.classList.remove('visible'); rc.textContent = ''; }
                 if (query.length > 0) {
                     noResultsContainer.innerHTML = `
                         <div class="no-results">
@@ -4013,6 +4074,12 @@ const paidData = [
             noResultsContainer.style.display = 'none';
             resultsList.style.display = 'block';
 
+            const resultCountEl = document.getElementById('result-count');
+            if (resultCountEl) {
+                resultCountEl.innerHTML = `<strong>${allMatchingResults.length}</strong> result${allMatchingResults.length !== 1 ? 's' : ''} found`;
+                resultCountEl.classList.add('visible');
+            }
+
             const initialItemsToLoad = Math.min(RESULTS_PER_PAGE, allMatchingResults.length);
             const existingItems = Array.from(resultsList.children);
             
@@ -4032,10 +4099,12 @@ const paidData = [
                     node.dataset.itemId = uniqueItemId;
                     node.innerHTML = innerHTML;
                     node.style.display = 'block';
+                    node.classList.remove('card-enter');
                 } else {
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = 'result-item';
+                    itemDiv.className = 'result-item card-enter';
                     itemDiv.dataset.itemId = uniqueItemId;
+                    itemDiv.style.animationDelay = `${(i - existingItems.length) * 30}ms`;
                     itemDiv.innerHTML = innerHTML;
                     resultsList.appendChild(itemDiv);
                 }
@@ -4144,10 +4213,11 @@ const paidData = [
             performSearch(searchInput.value.trim(), 'filter_change');
         }
 
+        const _debouncedSearch = debounce(q => performSearch(q, 'user_input'), 80);
         searchInput.addEventListener('input', function () {
             const query = this.value;
             clearBtn.style.display = query.length > 0 ? 'block' : 'none';
-            performSearch(query, 'user_input');
+            _debouncedSearch(query);
         });
 
         searchInput.addEventListener('keydown', (e) => {
