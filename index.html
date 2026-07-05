@@ -3627,47 +3627,22 @@ const paidData = [
         };
 
         function generateUniqueId(item, type, index = 0) {
-            const namePart = (item.name || item.Name || `item${index}`).replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
-            const concPart = (item.concentration || item.Conc || 'na').replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
+            const namePart = (item.name || `item${index}`).replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
+            const concPart = (item.concentration || 'na').replace(/\s+/g, '_').replace(/[^\w\s]/gi, '');
             return `${type}_${namePart}_${concPart}`.toLowerCase();
         }
 
-        function normalizeAllData() {
-            allDatasetNormalized =[];
-            paidData.forEach((pItem, index) => {
-                const uniqueId = pItem._uniqueId || generateUniqueId(pItem, 'paid', index);
-                allDatasetNormalized.push({
-                    _id: uniqueId,
-                    _type: 'paid',
-                    search_name: pItem.name,
-                    search_active_ingredient: pItem.activeIngredient,
-                    search_concentration: pItem.concentration,
-                    search_company: pItem.company,
-                    search_authority: pItem.authority,
-                    search_form: pItem.form,
-                    search_class: pItem.class,
-                    originalItem: { ...pItem, _uniqueId: uniqueId }
-                });
-            });
-            freeData.forEach((fItem, index) => {
-                const uniqueId = fItem._uniqueId || generateUniqueId(fItem, 'free', index);
-                const nameToUse = fItem.name || fItem.Name;
-                const concentrationToUse = fItem.concentration || fItem.Conc;
-                const authorityToUse = fItem.authority || fItem.Authority;
+        let paidBaseResults =[];
+        let freeBaseResults =[];
 
-                allDatasetNormalized.push({
-                    _id: uniqueId,
-                    _type: 'free',
-                    search_name: nameToUse,
-                    search_concentration: concentrationToUse,
-                    search_form: fItem.form,
-                    search_authority: authorityToUse,
-                    search_class: fItem.class,
-                    search_company: fItem.company,
-                    search_active_ingredient: fItem.activeIngredient,
-                    originalItem: { ...fItem, _uniqueId: uniqueId, name: nameToUse, concentration: concentrationToUse, authority: authorityToUse }
-                });
-            });
+        function normalizeAllData() {
+            paidData.forEach((item, index) => { if (!item._uniqueId) item._uniqueId = generateUniqueId(item, 'paid', index); item._type = 'paid'; });
+            freeData.forEach((item, index) => { if (!item._uniqueId) item._uniqueId = generateUniqueId(item, 'free', index); item._type = 'free'; });
+
+            allDatasetNormalized = paidData.concat(freeData);
+
+            paidBaseResults = paidData.map(item => ({ item, score: 0, matches:[] }));
+            freeBaseResults = freeData.map(item => ({ item, score: 0, matches:[] }));
         }
 
         function initializeFuseInstances() {
@@ -3684,46 +3659,21 @@ const paidData = [
                 { name: 'authority', weight: 0.05 }
             ];
             const allKeys =[
-                { name: 'search_name', weight: 0.35 }, { name: 'search_active_ingredient', weight: 0.20 },
-                { name: 'search_class', weight: 0.20 }, { name: 'search_company', weight: 0.075 },
-                { name: 'search_authority', weight: 0.075 }, { name: 'search_concentration', weight: 0.05 },
-                { name: 'search_form', weight: 0.05 }
+                { name: 'name', weight: 0.35 }, { name: 'activeIngredient', weight: 0.20 },
+                { name: 'class', weight: 0.20 }, { name: 'company', weight: 0.075 },
+                { name: 'authority', weight: 0.075 }, { name: 'concentration', weight: 0.05 },
+                { name: 'form', weight: 0.05 }
             ];
             const strictThreshold = 0.3;
 
-            const tempPaidData = paidData.map((item, index) => ({ ...item, _uniqueId: item._uniqueId || generateUniqueId(item, 'paid', index) }));
-            const tempFreeData = freeData.map((item, index) => ({
-                ...item,
-                _uniqueId: item._uniqueId || generateUniqueId(item, 'free', index),
-                name: item.name || item.Name,
-                concentration: item.concentration || item.Conc,
-                authority: item.authority || item.Authority
-            }));
-
-            fusePaid = new Fuse(tempPaidData, { ...baseFuseOptions, keys: paidKeys, threshold: strictThreshold, id: '_uniqueId' });
-            fuseFree = new Fuse(tempFreeData, { ...baseFuseOptions, keys: freeKeys, threshold: strictThreshold, id: '_uniqueId' });
-            fuseAll = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: strictThreshold, id: '_id' });
+            fusePaid = new Fuse(paidData, { ...baseFuseOptions, keys: paidKeys, threshold: strictThreshold });
+            fuseFree = new Fuse(freeData, { ...baseFuseOptions, keys: freeKeys, threshold: strictThreshold });
+            fuseAll = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: strictThreshold });
         }
 
         function getUniqueValues(data, key) {
             if (!data || data.length === 0) return[];
-
-            const values = data.map(item => {
-                let targetItem = item;
-                let keyToAccess = key;
-
-                if (currentFilterType === 'all' && item.originalItem) {
-                    targetItem = item.originalItem;
-                    if (key.startsWith('search_')) {
-                        keyToAccess = key.substring(7);
-                    }
-                } else if (currentFilterType === 'free') {
-                    if (key === 'name' && typeof targetItem.Name !== 'undefined') keyToAccess = 'Name';
-                    else if (key === 'concentration' && typeof targetItem.Conc !== 'undefined') keyToAccess = 'Conc';
-                    else if (key === 'authority' && typeof targetItem.Authority !== 'undefined') keyToAccess = 'Authority';
-                }
-                return targetItem[keyToAccess];
-            }).filter(value => value != null && String(value).trim() !== '');
+            const values = data.map(item => item[key]).filter(value => value != null && String(value).trim() !== '');
             return[...new Set(values)].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
         }
 
@@ -3745,12 +3695,7 @@ const paidData = [
                     { key: 'class', label: 'Therapeutic Class', dataContext: paidData }
                 ];
             } else if (currentFilterType === 'free') {
-                dataSourceForFilters = freeData.map(item => ({
-                    ...item,
-                    name: item.name || item.Name,
-                    concentration: item.concentration || item.Conc,
-                    authority: item.authority || item.Authority
-                }));
+                dataSourceForFilters = freeData;
                 if (freeData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No free items available to filter.</div>';
                 else filtersToCreate =[
                     { key: 'form', label: 'Form', dataContext: dataSourceForFilters },
@@ -3782,19 +3727,11 @@ const paidData = [
                 const select = document.createElement('select');
                 select.id = `sf-${filterConfig.key}`;
 
-                let optionsData = [...filterConfig.dataContext];
+                let optionsData = filterConfig.dataContext;
                 for (const activeFilterKey in activeSecondaryFilters) {
                     if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
-                        optionsData = optionsData.filter(item => {
-                            let itemToInspect = item;
-                            let keyToCompare = activeFilterKey;
-                            if (currentFilterType === 'free') {
-                                if (activeFilterKey === 'name' && typeof itemToInspect.Name !== 'undefined') keyToCompare = 'Name';
-                                else if (activeFilterKey === 'concentration' && typeof itemToInspect.Conc !== 'undefined') keyToCompare = 'Conc';
-                                else if (activeFilterKey === 'authority' && typeof itemToInspect.Authority !== 'undefined') keyToCompare = 'Authority';
-                            }
-                            return String(itemToInspect[keyToCompare]) === String(activeSecondaryFilters[activeFilterKey]);
-                        });
+                        const filterVal = String(activeSecondaryFilters[activeFilterKey]);
+                        optionsData = optionsData.filter(item => String(item[activeFilterKey]) === filterVal);
                     }
                 }
                 const uniqueOptions = getUniqueValues(optionsData, filterConfig.key);
@@ -3863,44 +3800,23 @@ const paidData = [
             });
         }
 
-        function buildItemHTML(displayItem, itemType, fuseMatches, isAllSearch, uniqueItemId) {
-            let title, detailsHTML = '', tagsHTML = '';
-            let nameValue = displayItem.name || displayItem.Name;
+        function buildItemHTML(displayItem, itemType, fuseMatches, uniqueItemId) {
+            let detailsHTML = '', tagsHTML = '';
+            const nameValue = displayItem.name;
             const itemNameForSearch = escapeHTML(nameValue);
             const safeItemId = escapeHTML(uniqueItemId);
             const safeItemType = escapeHTML(itemType);
 
-            let nameKeyHighlight = isAllSearch ? 'search_name' : 'name';
-            let activeIngredientKeyHighlight = isAllSearch ? 'search_active_ingredient' : 'activeIngredient';
-            let concentrationKeyHighlight = isAllSearch ? 'search_concentration' : 'concentration';
-            let formKeyHighlight = isAllSearch ? 'search_form' : 'form';
-            let companyKeyHighlight = isAllSearch ? 'search_company' : 'company';
-            let authorityKeyHighlight = isAllSearch ? 'search_authority' : 'authority';
-            let classKeyHighlight = isAllSearch ? 'search_class' : 'class';
+            const title = highlightText(nameValue, fuseMatches, 'name');
 
-            title = highlightText(nameValue, fuseMatches, nameKeyHighlight);
-
-            if (itemType === 'paid') {
-                detailsHTML = `
-                    ${displayItem.activeIngredient ? `<p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, activeIngredientKeyHighlight)}</p>` : ''}
-                    ${displayItem.concentration ? `<p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, concentrationKeyHighlight)}</p>` : ''}
-                    ${displayItem.form ? `<p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, formKeyHighlight)}</p>` : ''}
-                    <p><strong>Price:</strong> <span class="result-price">${displayItem.price !== undefined && displayItem.price !== null ? Number(displayItem.price).toFixed(2) : 'N/A'}</span></p>`;
-                if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, companyKeyHighlight)}</div>`;
-                if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, authorityKeyHighlight)}</div>`;
-                if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, classKeyHighlight)}</div>`;
-            } else {
-                let currentConcentration = displayItem.concentration || displayItem.Conc;
-                let currentAuthority = displayItem.authority || displayItem.Authority;
-
-                detailsHTML = `
-                    ${displayItem.activeIngredient ? `<p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, activeIngredientKeyHighlight)}</p>` : ''}
-                    ${currentConcentration ? `<p><strong>Concentration:</strong> ${highlightText(currentConcentration, fuseMatches, concentrationKeyHighlight)}</p>` : ''}
-                    ${displayItem.form ? `<p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, formKeyHighlight)}</p>` : ''}`;
-                if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, companyKeyHighlight)}</div>`;
-                if (currentAuthority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(currentAuthority, fuseMatches, authorityKeyHighlight)}</div>`;
-                if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, classKeyHighlight)}</div>`;
-            }
+            detailsHTML = `
+                ${displayItem.activeIngredient ? `<p><strong>Active Ingredient:</strong> ${highlightText(displayItem.activeIngredient, fuseMatches, 'activeIngredient')}</p>` : ''}
+                ${displayItem.concentration ? `<p><strong>Concentration:</strong> ${highlightText(displayItem.concentration, fuseMatches, 'concentration')}</p>` : ''}
+                ${displayItem.form ? `<p><strong>Form:</strong> ${highlightText(displayItem.form, fuseMatches, 'form')}</p>` : ''}
+                ${itemType === 'paid' ? `<p><strong>Price:</strong> <span class="result-price">${displayItem.price !== undefined && displayItem.price !== null ? Number(displayItem.price).toFixed(2) : 'N/A'}</span></p>` : ''}`;
+            if (displayItem.company) tagsHTML += `<div class="result-info-tag">Company: ${highlightText(displayItem.company, fuseMatches, 'company')}</div>`;
+            if (displayItem.authority) tagsHTML += `<div class="result-info-tag">Auth: ${highlightText(displayItem.authority, fuseMatches, 'authority')}</div>`;
+            if (displayItem.class) tagsHTML += `<div class="result-info-tag">Class: ${highlightText(displayItem.class, fuseMatches, 'class')}</div>`;
 
             const rawDetailsForSharing = JSON.stringify(displayItem);
 
@@ -3948,41 +3864,17 @@ const paidData = [
                 return;
             }
 
-            let currentFuse, nameKeyForSuggestions;
-
-            if (currentFilterType === 'paid') {
-                currentFuse = fusePaid;
-                nameKeyForSuggestions = 'name';
-            } else if (currentFilterType === 'free') {
-                currentFuse = fuseFree;
-                nameKeyForSuggestions = 'name';
-            } else {
-                currentFuse = fuseAll;
-                nameKeyForSuggestions = 'search_name';
-            }
+            const currentFuse = currentFilterType === 'paid' ? fusePaid : currentFilterType === 'free' ? fuseFree : fuseAll;
 
             let fuseSearchResults;
             if (query) {
                 fuseSearchResults = currentFuse.search(query);
+            } else if (currentFilterType === 'paid') {
+                fuseSearchResults = paidBaseResults;
+            } else if (currentFilterType === 'free') {
+                fuseSearchResults = freeBaseResults;
             } else {
-                let baseDataForFiltering =[];
-                if (currentFilterType === 'paid') {
-                    baseDataForFiltering = paidData.map((item, index) => ({ ...item, _uniqueId: item._uniqueId || generateUniqueId(item, 'paid', index) }));
-                } else if (currentFilterType === 'free') {
-                    baseDataForFiltering = freeData.map((item, index) => ({
-                        ...item,
-                        _uniqueId: item._uniqueId || generateUniqueId(item, 'free', index),
-                        name: item.name || item.Name,
-                        concentration: item.concentration || item.Conc,
-                        authority: item.authority || item.Authority
-                    }));
-                } else {
-                    fuseSearchResults =[];
-                }
-
-                if (currentFilterType !== 'all') {
-                    fuseSearchResults = baseDataForFiltering.map(item => ({ item: item, score: 0, matches:[] }));
-                }
+                fuseSearchResults =[];
             }
 
             let filteredStrictResults = applySecondaryFiltersToResults(fuseSearchResults);
@@ -4005,13 +3897,7 @@ const paidData = [
                     filteredLenientResultsForSuggestions.forEach(res => {
                         if (uniqueSuggestions.size >= MAX_SUGGESTIONS) return;
 
-                        let suggestedTerm;
-                        if (currentFilterType === 'all') {
-                            suggestedTerm = res.item.search_name;
-                        } else {
-                            suggestedTerm = res.item[nameKeyForSuggestions];
-                        }
-
+                        const suggestedTerm = res.item.name;
                         if (suggestedTerm && String(suggestedTerm).toLowerCase() !== query.toLowerCase()) {
                             uniqueSuggestions.add(suggestedTerm);
                         }
@@ -4085,14 +3971,12 @@ const paidData = [
             
             for (let i = 0; i < initialItemsToLoad; i++) {
                 const resultItem = allMatchingResults[i];
-                const isAllSearch = currentFilterType === 'all';
-                const displayItemWrapper = isAllSearch ? resultItem.item : { originalItem: resultItem.item, _type: currentFilterType, _id: resultItem.item._uniqueId };
-                const displayItem = displayItemWrapper.originalItem;
-                const itemType = displayItemWrapper._type;
+                const displayItem = resultItem.item;
+                const itemType = displayItem._type;
                 const fuseMatches = resultItem.matches;
-                const uniqueItemId = displayItem._uniqueId || (isAllSearch ? displayItemWrapper._id : generateUniqueId(displayItem, itemType, i));
+                const uniqueItemId = displayItem._uniqueId;
 
-                const innerHTML = buildItemHTML(displayItem, itemType, fuseMatches, isAllSearch, uniqueItemId);
+                const innerHTML = buildItemHTML(displayItem, itemType, fuseMatches, uniqueItemId);
 
                 if (i < existingItems.length) {
                     const node = existingItems[i];
@@ -4145,19 +4029,16 @@ const paidData = [
                 const batchItems = allMatchingResults.slice(nextBatchStartIndex, nextBatchStartIndex + RESULTS_PER_PAGE);
 
                 const fragment = document.createDocumentFragment();
-                batchItems.forEach((resultItem, indexInBatch) => {
-                    const globalIndex = nextBatchStartIndex + indexInBatch;
-                    const isAllSearch = currentFilterType === 'all';
-                    const displayItemWrapper = isAllSearch ? resultItem.item : { originalItem: resultItem.item, _type: currentFilterType, _id: resultItem.item._uniqueId };
-                    const displayItem = displayItemWrapper.originalItem;
-                    const itemType = displayItemWrapper._type;
+                batchItems.forEach((resultItem) => {
+                    const displayItem = resultItem.item;
+                    const itemType = displayItem._type;
                     const fuseMatches = resultItem.matches;
-                    const uniqueItemId = displayItem._uniqueId || (isAllSearch ? displayItemWrapper._id : generateUniqueId(displayItem, itemType, globalIndex));
+                    const uniqueItemId = displayItem._uniqueId;
 
                     const itemDiv = document.createElement('div');
                     itemDiv.className = 'result-item';
                     itemDiv.dataset.itemId = uniqueItemId;
-                    itemDiv.innerHTML = buildItemHTML(displayItem, itemType, fuseMatches, isAllSearch, uniqueItemId);
+                    itemDiv.innerHTML = buildItemHTML(displayItem, itemType, fuseMatches, uniqueItemId);
                     fragment.appendChild(itemDiv);
                 });
 
@@ -4182,24 +4063,11 @@ const paidData = [
             if (activeFilterKeys.length === 0) return fuseResults;
 
             return fuseResults.filter(result => {
-                const itemToInspect = (currentFilterType === 'all' && result.item.originalItem) ? result.item.originalItem : result.item;
-
+                const item = result.item;
                 for (const filterConfigKey of activeFilterKeys) {
-                    const filterValue = activeSecondaryFilters[filterConfigKey];
-                    let itemKeyToUse = filterConfigKey;
-
-                    if (currentFilterType === 'all') {
-                        itemKeyToUse = filterConfigKey.startsWith('search_') ? filterConfigKey.substring(7) : filterConfigKey;
-                    } else if (currentFilterType === 'free') {
-                        if (filterConfigKey === 'name' && typeof itemToInspect.Name !== 'undefined') itemKeyToUse = 'Name';
-                        else if (filterConfigKey === 'concentration' && typeof itemToInspect.Conc !== 'undefined') itemKeyToUse = 'Conc';
-                        else if (filterConfigKey === 'authority' && typeof itemToInspect.Authority !== 'undefined') itemKeyToUse = 'Authority';
-                    }
-
-                    const itemValue = itemToInspect[itemKeyToUse];
-
+                    const itemValue = item[filterConfigKey];
                     if (itemValue === undefined || itemValue === null) return false;
-                    if (String(itemValue).toLowerCase() !== String(filterValue).toLowerCase()) return false;
+                    if (String(itemValue).toLowerCase() !== String(activeSecondaryFilters[filterConfigKey]).toLowerCase()) return false;
                 }
                 return true;
             });
@@ -4280,28 +4148,17 @@ const paidData = [
 
 
         function generateCopyText(itemObject, itemType) {
-            let textLines =[];
-            textLines.push(`Name: ${itemObject.name || itemObject.Name || 'N/A'}`);
+            const textLines =[`Name: ${itemObject.name || 'N/A'}`];
 
+            if (itemObject.activeIngredient) textLines.push(`Active Ingredient: ${itemObject.activeIngredient}`);
+            if (itemObject.concentration) textLines.push(`Concentration: ${itemObject.concentration}`);
+            if (itemObject.form) textLines.push(`Form: ${itemObject.form}`);
             if (itemType === 'paid') {
-                if (itemObject.activeIngredient) textLines.push(`Active Ingredient: ${itemObject.activeIngredient}`);
-                if (itemObject.concentration) textLines.push(`Concentration: ${itemObject.concentration}`);
-                if (itemObject.form) textLines.push(`Form: ${itemObject.form}`);
-                if (itemObject.price !== undefined && itemObject.price !== null) {
-                    textLines.push(`Price: ${Number(itemObject.price).toFixed(2)}`);
-                } else {
-                    textLines.push(`Price: N/A`);
-                }
-            } else {
-                if (itemObject.activeIngredient) textLines.push(`Active Ingredient: ${itemObject.activeIngredient}`);
-                const concentration = itemObject.concentration || itemObject.Conc;
-                if (concentration) textLines.push(`Concentration: ${concentration}`);
-                if (itemObject.form) textLines.push(`Form: ${itemObject.form}`);
+                textLines.push(`Price: ${itemObject.price !== undefined && itemObject.price !== null ? Number(itemObject.price).toFixed(2) : 'N/A'}`);
             }
             if (itemObject.company) textLines.push(`Company: ${itemObject.company}`);
             if (itemObject.class) textLines.push(`Class: ${itemObject.class}`);
-            const authority = itemObject.authority || itemObject.Authority;
-            if (authority) textLines.push(`Authority: ${authority}`);
+            if (itemObject.authority) textLines.push(`Authority: ${itemObject.authority}`);
 
             return textLines.join('\n');
         }
@@ -4615,31 +4472,23 @@ const paidData = [
         });
 
         exportAllDataBtn.addEventListener('click', () => {
-            const allExportData =[];
             const fullPaidData = typeof window.fullPaidData !== 'undefined' ? window.fullPaidData : paidData;
             const fullFreeData = typeof window.fullFreeData !== 'undefined' ? window.fullFreeData : freeData;
 
-            fullPaidData.forEach((item, index) => {
-                allExportData.push({
-                    ...item,
-                    source_type: 'paid',
-                    _uniqueId: item._uniqueId || generateUniqueId(item, 'paid', index)
-                });
-            });
-            fullFreeData.forEach((item, index) => {
-                allExportData.push({
-                    ...item,
-                    source_type: 'free',
-                    _uniqueId: item._uniqueId || generateUniqueId(item, 'free', index)
-                });
-            });
+            const stripType = (item, type) => {
+                const { _type, ...exportItem } = item;
+                exportItem.source_type = type;
+                return exportItem;
+            };
+            const allExportData = fullPaidData.map(item => stripType(item, 'paid'))
+                .concat(fullFreeData.map(item => stripType(item, 'free')));
 
             if (allExportData.length === 0) {
                 showCustomConfirm("No data available to export.", null, { yesText: "OK", noText: null });
                 return;
             }
 
-            const predefinedHeaders =['_uniqueId', 'source_type', 'name', 'Name', 'activeIngredient', 'concentration', 'Conc', 'form', 'price', 'company', 'class', 'authority', 'Authority'];
+            const predefinedHeaders =['_uniqueId', 'source_type', 'name', 'activeIngredient', 'concentration', 'form', 'price', 'company', 'class', 'authority'];
             const allKeysEncountered = new Set(predefinedHeaders);
             allExportData.forEach(item => Object.keys(item).forEach(key => allKeysEncountered.add(key)));
             const finalHeaders = [...allKeysEncountered].sort((a, b) => {
