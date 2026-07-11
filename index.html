@@ -623,18 +623,37 @@
             }
         }
 
-        .primary-filters {
+        .search-row {
             display: flex;
-            justify-content: center;
+            align-items: stretch;
             gap: 0.65rem;
-            margin-top: 0.75rem;
-            flex-wrap: wrap;
+            margin-bottom: 1rem;
             position: relative;
-            z-index: 1;
-            flex-shrink: 0;
         }
 
-        .filter-btn {
+        .search-row .search-input-wrapper {
+            flex: 1;
+            margin-bottom: 0;
+            min-width: 0;
+        }
+
+        .filters-bar {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.65rem;
+            min-height: 0;
+            margin-top: 0.85rem;
+            transition: margin-top var(--transition-speed-normal) var(--transition-easing);
+        }
+
+        .filters-bar:has(.active-chips:empty) {
+            margin-top: 0;
+        }
+
+        .filters-trigger-btn {
+            flex-shrink: 0;
+            height: 56px;
             background: var(--glass-bg-interactive);
             backdrop-filter: blur(var(--glass-blur-interactive));
             -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
@@ -643,78 +662,225 @@
             padding: 10px 16px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 7px;
+            gap: 8px;
             cursor: pointer;
-            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing);
             color: var(--text-secondary);
             font-size: 0.84rem;
-            font-weight: 520;
+            font-weight: 550;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing);
             box-shadow: 0 4px 14px -5px var(--shadow-color-soft), inset 0 1px 0 rgba(255, 255, 255, 0.03);
-            text-align: center;
-            line-height: 1.35;
-            letter-spacing: 0.01em;
+
+            & .filters-icon-svg {
+                width: 16px;
+                height: 16px;
+                flex-shrink: 0;
+            }
 
             &:hover {
                 background: var(--glass-bg-interactive-hover);
                 color: var(--text-primary);
                 border-color: rgba(var(--accent-color-rgb), 0.25);
-                transform: translateY(-3px);
-                box-shadow: 0 8px 20px -5px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.08);
-
-                & .filter-icon-svg {
-                    fill: var(--text-primary);
-                    transform: scale(1.1);
-                }
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px -5px var(--shadow-color-medium);
             }
 
             &:active {
                 transform: translateY(-1px) scale(0.98);
             }
 
-            &.active {
+            &[aria-expanded="true"] {
                 background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
                 border-color: transparent;
                 color: var(--text-on-accent);
-                box-shadow: 0 10px 28px -6px color-mix(in srgb, var(--accent-color) 40%, transparent), 0 4px 12px -3px color-mix(in srgb, var(--accent-color) 20%, transparent), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-                transform: translateY(-2px);
+                box-shadow: 0 10px 28px -6px color-mix(in srgb, var(--accent-color) 40%, transparent);
 
-                & .filter-icon-svg {
-                    fill: var(--text-on-accent);
+                & .filters-badge {
+                    background: rgba(255, 255, 255, 0.25);
+                    color: var(--text-on-accent);
                 }
-            }
-
-            & .filter-icon-svg {
-                width: 14px;
-                height: 14px;
-                fill: var(--text-secondary);
-                transition: fill var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
-                flex-shrink: 0;
             }
         }
 
-        #secondary-filters-container {
-            border-top: 1px solid var(--glass-border-main);
+        .filters-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            border-radius: 999px;
+            background: var(--accent-color);
+            color: var(--text-on-accent);
+            font-size: 0.68rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .filters-badge[hidden] {
+            display: none;
+        }
+
+        .active-chips {
             display: flex;
-            flex-wrap: nowrap;
-            gap: 1rem;
-            max-height: 0;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+            padding-top: 4px;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent-bg-subtle);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.18);
+            color: var(--text-primary);
+            padding: 6px 8px 6px 12px;
+            border-radius: var(--border-radius-md);
+            font-size: 0.78rem;
+            font-weight: 500;
+            animation: chipIn var(--transition-speed-normal) var(--transition-easing-spring);
+        }
+
+        .chip-remove {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(var(--accent-color-rgb), 0.14);
+            color: var(--accent-color);
+            cursor: pointer;
+            padding: 0;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), color var(--transition-speed-fast) var(--transition-easing);
+
+            & svg {
+                width: 9px;
+                height: 9px;
+            }
+
+            &:hover {
+                background: var(--accent-color);
+                color: var(--text-on-accent);
+                transform: scale(1.12);
+            }
+        }
+
+        .clear-all-chip-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 6px 4px;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            opacity: 0.85;
+            transition: color var(--transition-speed-fast) var(--transition-easing), opacity var(--transition-speed-fast) var(--transition-easing);
+
+            &:hover {
+                color: var(--accent-color);
+                opacity: 1;
+            }
+        }
+
+        @keyframes chipIn {
+            from {
+                opacity: 0;
+                transform: translateY(-4px) scale(0.92);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .filter-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: min(420px, 88vw);
+            max-height: min(70vh, 560px);
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 25px 60px -15px var(--shadow-color-strong), 0 10px 30px -10px var(--shadow-color-medium);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
             opacity: 0;
-            overflow-x: scroll;
-            overflow-y: hidden;
+            visibility: hidden;
+            transform: translateY(-8px) scale(0.98);
+            transform-origin: top right;
+            transition: opacity var(--transition-speed-normal) var(--transition-easing), transform var(--transition-speed-normal) var(--transition-easing-spring), visibility var(--transition-speed-normal);
+            z-index: 1200;
             pointer-events: none;
-            margin-top: 0;
-            padding-top: 0;
-            padding-bottom: 10px;
-            transition: max-height var(--transition-speed-normal), opacity var(--transition-speed-normal), padding-top var(--transition-speed-normal), margin-top var(--transition-speed-normal), border-top-color var(--transition-speed-normal);
-            position: relative;
-            z-index: 1;
-            scrollbar-width: thin;
-            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        }
+
+        .filter-panel.open {
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            pointer-events: auto;
+        }
+
+        .filter-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--glass-border-main);
             flex-shrink: 0;
 
+            & h3 {
+                font-size: 0.95rem;
+                font-weight: 650;
+                margin: 0;
+                color: var(--text-primary);
+            }
+        }
+
+        .filter-panel-close-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+
+            & svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.12);
+                color: var(--text-primary);
+            }
+        }
+
+        .filter-panel-body {
+            padding: 16px 18px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+
             &::-webkit-scrollbar {
-                height: 7px;
+                width: 7px;
             }
 
             &::-webkit-scrollbar-track {
@@ -726,38 +892,86 @@
                 background: var(--scrollbar-thumb);
                 border-radius: 3.5px;
             }
+        }
 
-            &::-webkit-scrollbar-thumb:hover {
-                background: color-mix(in srgb, var(--scrollbar-thumb) 80%, var(--accent-color));
+        .filter-panel-section {
+            display: flex;
+            flex-direction: column;
+
+            & label {
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                font-weight: 650;
+                margin-bottom: 8px;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                opacity: 0.8;
+            }
+        }
+
+        #secondary-filters-container {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .segmented-control {
+            display: flex;
+            background: var(--glass-bg-interactive);
+            border: 1px solid var(--glass-border-interactive);
+            border-radius: var(--border-radius-md);
+            padding: 3px;
+            gap: 2px;
+        }
+
+        .segmented-btn {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 8px 10px;
+            font-size: 0.82rem;
+            font-weight: 550;
+            border-radius: calc(var(--border-radius-md) - 3px);
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+
+            &:not(.active):hover {
+                color: var(--text-primary);
+                background: var(--glass-bg-interactive-hover);
             }
 
-            &.visible {
-                max-height: 150px;
-                opacity: 1;
-                pointer-events: auto;
-                margin-top: 1.25rem;
-                padding-top: 1.25rem;
+            &.active {
+                background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+                color: var(--text-on-accent);
+                box-shadow: 0 4px 12px -3px color-mix(in srgb, var(--accent-color) 40%, transparent);
             }
         }
 
         .filter-group {
             display: flex;
             flex-direction: column;
-            flex-shrink: 0;
-            min-width: 150px;
 
             & label {
-                font-size: 0.85rem;
-                margin-bottom: 0.5rem;
+                font-size: 0.75rem;
+                margin-bottom: 8px;
                 color: var(--text-secondary);
-                font-weight: 500;
-                letter-spacing: 0.02em;
-                opacity: 0.9;
+                font-weight: 650;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                opacity: 0.8;
             }
+        }
+
+        .select-wrap {
+            position: relative;
 
             & select {
-                padding: 8px 12px;
-                border-radius: var(--border-radius-lg);
+                width: 100%;
+                appearance: none;
+                -webkit-appearance: none;
+                padding: 10px 38px 10px 12px;
+                border-radius: var(--border-radius-md);
                 border: 1px solid var(--glass-border-interactive);
                 background: var(--glass-bg-interactive);
                 backdrop-filter: blur(var(--glass-blur-interactive));
@@ -765,6 +979,7 @@
                 color: var(--text-primary);
                 font-size: 0.85rem;
                 outline: none;
+                cursor: pointer;
                 transition: border-color var(--transition-speed-fast), background-color var(--transition-speed-fast), box-shadow var(--transition-speed-fast);
                 box-shadow: 0 4px 12px -5px var(--shadow-color-soft), inset 0 1px 1px rgba(0, 0, 0, 0.05);
 
@@ -784,6 +999,71 @@
                 background-color: var(--select-option-bg);
                 color: var(--select-option-text);
                 padding: 10px;
+            }
+
+            & .select-chevron-svg {
+                position: absolute;
+                inset-inline-end: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 14px;
+                height: 14px;
+                color: var(--text-secondary);
+                pointer-events: none;
+                transition: color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing);
+            }
+
+            & select:focus~.select-chevron-svg {
+                color: var(--accent-color);
+                transform: translateY(-50%) rotate(180deg);
+            }
+        }
+
+        .filter-panel-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 18px;
+            border-top: 1px solid var(--glass-border-main);
+            flex-shrink: 0;
+        }
+
+        .filter-panel-clear-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 8px 10px;
+            border-radius: var(--border-radius-sm);
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.1);
+                color: var(--text-primary);
+            }
+        }
+
+        .filter-panel-done-btn {
+            border: none;
+            background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+            color: var(--text-on-accent);
+            font-size: 0.82rem;
+            font-weight: 650;
+            padding: 9px 18px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--accent-color) 40%, transparent);
+            transition: transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-fast) var(--transition-easing);
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+
+            &:active {
+                transform: translateY(0) scale(0.97);
             }
         }
 
@@ -1074,6 +1354,33 @@
 
             & p {
                 margin-bottom: 0.6rem;
+            }
+        }
+
+        .no-results-filtered strong {
+            color: var(--accent-color);
+            font-weight: 650;
+        }
+
+        .clear-filters-inline-btn {
+            margin-top: 0.5rem;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+            color: var(--text-on-accent);
+            font-size: 0.85rem;
+            font-weight: 650;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            box-shadow: 0 8px 20px -6px color-mix(in srgb, var(--accent-color) 40%, transparent);
+            transition: transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-fast) var(--transition-easing);
+
+            &:hover {
+                transform: translateY(-2px);
+            }
+
+            &:active {
+                transform: translateY(0) scale(0.97);
             }
         }
 
@@ -1757,19 +2064,6 @@
         }
 
         @media (max-width: 1024px) and (min-width: 769px) {
-            #secondary-filters-container {
-                flex-wrap: wrap;
-                overflow-y: auto;
-
-                &.visible {
-                    max-height: 180px;
-                }
-            }
-
-            .filter-group {
-                min-width: calc(50% - 0.75rem);
-            }
-
             .theme-switcher {
                 top: 0.75rem;
                 right: 0.75rem;
@@ -1828,36 +2122,21 @@
                 }
             }
 
-            .primary-filters {
-                margin-top: 1rem;
-                gap: 8px;
+            .search-row {
+                gap: 0.5rem;
             }
 
-            .filter-btn {
+            .filters-trigger-btn {
                 padding: 10px 14px;
-                font-size: 0.85rem;
-                flex-basis: calc(50% - 4px);
-                flex-grow: 1;
-
-                & .filter-icon-svg {
-                    width: 16px;
-                    height: 16px;
-                }
+                font-size: 0.8rem;
             }
 
-            #secondary-filters-container {
-                flex-wrap: wrap;
-                overflow-y: auto;
-
-                &.visible {
-                    margin-top: 1rem;
-                    padding-top: 1rem;
-                    max-height: 200px;
-                }
+            .filters-bar {
+                margin-top: 0.25rem;
             }
 
-            .filter-group {
-                min-width: calc(50% - 0.5rem);
+            .filter-panel {
+                width: min(380px, 92vw);
             }
 
             .result-item {
@@ -1933,81 +2212,35 @@
                 flex-direction: column;
             }
 
-            .search-input-wrapper {
+            .search-row {
+                flex-wrap: nowrap;
                 margin-bottom: 0.75rem;
             }
 
-            .primary-filters {
-                margin-top: 0;
-                margin-bottom: 0.5rem;
-                display: flex;
-                flex-direction: row;
-                flex-wrap: nowrap;
-                gap: 8px;
-                flex-shrink: 0;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                padding-bottom: 2px;
+            .search-input-wrapper {
+                margin-bottom: 0;
             }
 
-            .primary-filters::-webkit-scrollbar {
+            .filters-trigger-btn span:not(.filters-badge) {
                 display: none;
             }
 
-            .filter-btn {
-                width: auto;
-                flex: 0 0 auto;
-                padding: 8px 14px;
-                font-size: 0.85rem;
+            .filters-trigger-btn {
+                width: 50px;
+                height: 50px;
+                padding: 0;
+                justify-content: center;
                 border-radius: var(--border-radius-md);
-                min-height: 38px;
-                & .filter-icon-svg {
-                    width: 15px;
-                    height: 15px;
-                    margin-right: 6px;
-                }
             }
 
-            #secondary-filters-container {
-                flex-direction: row;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                overflow-y: hidden;
-                margin-top: 0;
-                padding-top: 0;
-                border-top: none;
-                flex-grow: 0;
-                min-height: 0;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-                gap: 10px;
-                &.visible {
-                    margin-top: 0.5rem;
-                    padding-top: 0.5rem;
-                    border-top: 1px solid var(--glass-border-main);
-                    max-height: 100px;
-                }
+            .filters-bar {
+                margin-bottom: 0.5rem;
+                gap: 8px;
             }
 
-            #secondary-filters-container::-webkit-scrollbar {
-                display: none;
-            }
-
-            .filter-group {
-                min-width: 140px;
-                flex: 0 0 auto;
-                & label {
-                    font-size: 0.75rem;
-                    margin-bottom: 0.25rem;
-                    white-space: nowrap;
-                }
-                & select {
-                    padding: 8px 12px;
-                    font-size: 0.85rem;
-                    border-radius: var(--border-radius-md);
-                    width: 100%;
-                }
+            .filter-panel {
+                width: min(340px, 95vw);
+                max-height: min(75vh, 480px);
             }
 
             .title {
@@ -2137,7 +2370,7 @@
                 --accent-color: #000;
             }
 
-            :where(.theme-switcher, .primary-filters, #secondary-filters-container, .clear-btn, .search-hint, .result-card-actions, .online-search-options, .side-panel-toggle, .side-panel, .side-panel-overlay, .app-disclaimer, .custom-confirm, .load-more-btn) {
+            :where(.theme-switcher, .filters-bar, .filter-panel, .active-chips, .clear-btn, .search-hint, .result-card-actions, .online-search-options, .side-panel-toggle, .side-panel, .side-panel-overlay, .app-disclaimer, .custom-confirm, .load-more-btn) {
                 display: none !important;
             }
 
@@ -2271,58 +2504,69 @@
         </aside>
         <div id="side-panel-overlay" class="side-panel-overlay"></div>
 
+        <div class="filter-panel" id="filter-panel" role="dialog" aria-hidden="true" aria-label="Filter medications">
+            <div class="filter-panel-header">
+                <h3>Filters</h3>
+                <button type="button" class="filter-panel-close-btn" id="filter-panel-close-btn"
+                    aria-label="Close filters">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="filter-panel-body" id="filter-panel-body">
+                <div class="filter-panel-section">
+                    <label>Availability</label>
+                    <div class="segmented-control" id="availability-segmented">
+                        <button type="button" class="segmented-btn active" data-filter="all">All</button>
+                        <button type="button" class="segmented-btn" data-filter="paid">Paid</button>
+                        <button type="button" class="segmented-btn" data-filter="free">Free</button>
+                    </div>
+                </div>
+                <div id="secondary-filters-container"></div>
+            </div>
+            <div class="filter-panel-footer">
+                <button type="button" class="filter-panel-clear-btn" id="filter-panel-clear-btn">Clear all</button>
+                <button type="button" class="filter-panel-done-btn" id="filter-panel-done-btn">Done</button>
+            </div>
+        </div>
+
         <div class="main-search-card">
-            <div class="search-input-wrapper">
-                <svg class="search-icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input type="text" class="search-input" placeholder="Search medications, e.g., Amaryl" id="search-input"
-                    autocomplete="off">
-                <button class="clear-btn" id="clear-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
+            <div class="search-row">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon-svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M6 18L18 6M6 6l12 12" />
-                    </svg></button>
-                <div class="search-hint" id="search-hint">Press <kbd>/</kbd> to search</div>
-            </div>
-            <div class="primary-filters">
-                <button class="filter-btn active" data-filter="all" id="filter-all">
-                    <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z"
-                            clip-rule="evenodd" />
-                    </svg> All
-                </button>
-                <button class="filter-btn" data-filter="paid" id="filter-paid">
-                    <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor">
-                        <path
-                            d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"
-                            clip-rule="evenodd" />
-                    </svg> Paid
-                </button>
-                <button class="filter-btn" data-filter="free" id="filter-free">
-                    <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor">
-                        <path
-                            d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                    </svg> Free
-                </button>
-                <button class="filter-btn" id="reset-all-filters">
-                    <svg class="filter-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"
-                        fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
-                            clip-rule="evenodd" />
-                    </svg> Reset All
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" class="search-input" placeholder="Search medications, e.g., Amaryl" id="search-input"
+                        autocomplete="off">
+                    <button class="clear-btn" id="clear-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg></button>
+                    <div class="search-hint" id="search-hint">Press <kbd>/</kbd> to search</div>
+                </div>
+                <button type="button" class="filters-trigger-btn" id="filters-trigger-btn" aria-haspopup="true"
+                    aria-expanded="false" aria-controls="filter-panel" title="Filters (Ctrl/⌘ + K)">
+                    <svg class="filters-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M4 6h9M18 6h2M4 12h4M11 12h9M4 18h12M20 18h0" />
+                        <circle cx="15.5" cy="6" r="2" />
+                        <circle cx="7.5" cy="12" r="2" />
+                        <circle cx="15.5" cy="18" r="2" />
+                    </svg>
+                    <span>Filters</span>
+                    <span class="filters-badge" id="filters-badge" hidden>0</span>
                 </button>
             </div>
-            <div id="secondary-filters-container"></div>
+
+            <div class="filters-bar" id="filters-bar">
+                <div class="active-chips" id="active-chips"></div>
+            </div>
         </div>
         <div class="results-section" id="results-section">
             <div id="result-count" class="result-count"></div>
@@ -3538,9 +3782,15 @@ const paidData = [
         const suggestionsContainer = document.getElementById('suggestions-container');
         const noResultsContainer = document.getElementById('no-results-container');
         const resultsList = document.getElementById('results-list');
-        const primaryFilterBtns = document.querySelectorAll('.primary-filters .filter-btn');
         const secondaryFiltersContainer = document.getElementById('secondary-filters-container');
-        const resetAllFiltersBtn = document.getElementById('reset-all-filters');
+        const filtersTriggerBtn = document.getElementById('filters-trigger-btn');
+        const filterPanel = document.getElementById('filter-panel');
+        const filterPanelCloseBtn = document.getElementById('filter-panel-close-btn');
+        const filterPanelClearBtn = document.getElementById('filter-panel-clear-btn');
+        const filterPanelDoneBtn = document.getElementById('filter-panel-done-btn');
+        const availabilitySegmentedBtns = document.querySelectorAll('#availability-segmented .segmented-btn');
+        const activeChipsContainer = document.getElementById('active-chips');
+        const filtersBadge = document.getElementById('filters-badge');
         const searchHint = document.getElementById('search-hint');
         const toggleSidePanelBtn = document.getElementById('toggle-side-panel-btn');
         const closeSidePanelBtn = document.getElementById('close-side-panel-btn');
@@ -3634,6 +3884,7 @@ const paidData = [
 
         let paidBaseResults =[];
         let freeBaseResults =[];
+        let allBaseResults =[];
 
         function normalizeAllData() {
             paidData.forEach((item, index) => { if (!item._uniqueId) item._uniqueId = generateUniqueId(item, 'paid', index); item._type = 'paid'; });
@@ -3643,6 +3894,19 @@ const paidData = [
 
             paidBaseResults = paidData.map(item => ({ item, score: 0, matches:[] }));
             freeBaseResults = freeData.map(item => ({ item, score: 0, matches:[] }));
+            allBaseResults = allDatasetNormalized.map(item => ({ item, score: 0, matches:[] }));
+        }
+
+        function getFuseForAvailability(availability) {
+            if (availability === 'paid') return fusePaid;
+            if (availability === 'free') return fuseFree;
+            return fuseAll;
+        }
+
+        function getDatasetForAvailability(availability) {
+            if (availability === 'paid') return paidData;
+            if (availability === 'free') return freeData;
+            return allDatasetNormalized;
         }
 
         function initializeFuseInstances() {
@@ -3671,6 +3935,64 @@ const paidData = [
             fuseAll = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: strictThreshold });
         }
 
+        const TOKEN_SEARCH_FIELD_PRIORITY = { name: 1, activeIngredient: 2, class: 3, company: 4, authority: 5, concentration: 6, form: 7 };
+        const TOKEN_SEARCH_FIELDS = Object.keys(TOKEN_SEARCH_FIELD_PRIORITY);
+        const TOKEN_SEARCH_MAX_RANK = 7;
+
+        function tokenSearch(query, dataset) {
+            const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+            if (tokens.length === 0 || !dataset || dataset.length === 0) return[];
+
+            const results =[];
+
+            for (let i = 0; i < dataset.length; i++) {
+                const item = dataset[i];
+                let matchedAllTokens = true;
+                let totalRank = 0;
+                const matchesByKey = {};
+
+                for (let t = 0; t < tokens.length; t++) {
+                    const token = tokens[t];
+                    let bestRank = null;
+                    let bestKey = null;
+                    let bestIndex = -1;
+
+                    for (let f = 0; f < TOKEN_SEARCH_FIELDS.length; f++) {
+                        const key = TOKEN_SEARCH_FIELDS[f];
+                        const rawVal = item[key];
+                        if (rawVal === null || rawVal === undefined) continue;
+                        const val = String(rawVal).toLowerCase();
+                        const idx = val.indexOf(token);
+                        if (idx === -1) continue;
+                        const rank = TOKEN_SEARCH_FIELD_PRIORITY[key];
+                        if (bestRank === null || rank < bestRank) {
+                            bestRank = rank;
+                            bestKey = key;
+                            bestIndex = idx;
+                        }
+                    }
+
+                    if (bestRank === null) {
+                        matchedAllTokens = false;
+                        break;
+                    }
+
+                    totalRank += bestRank;
+                    if (!matchesByKey[bestKey]) matchesByKey[bestKey] =[];
+                    matchesByKey[bestKey].push([bestIndex, bestIndex + token.length - 1]);
+                }
+
+                if (!matchedAllTokens) continue;
+
+                const score = totalRank / (tokens.length * TOKEN_SEARCH_MAX_RANK);
+                const matches = Object.keys(matchesByKey).map(key => ({ key, indices: matchesByKey[key] }));
+                results.push({ item, score, matches });
+            }
+
+            results.sort((a, b) => a.score - b.score);
+            return results;
+        }
+
         function getUniqueValues(data, key) {
             if (!data || data.length === 0) return[];
             const values = data.map(item => item[key]).filter(value => value != null && String(value).trim() !== '');
@@ -3682,22 +4004,19 @@ const paidData = [
             let filtersToCreate =[], showContainerMessage = '';
             let dataSourceForFilters;
 
-            if (currentFilterType === 'all') {
-                secondaryFiltersContainer.classList.remove('visible');
-                return;
-            } else if (currentFilterType === 'paid') {
+            if (currentFilterType === 'paid') {
                 dataSourceForFilters = paidData;
                 if (paidData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No paid items available to filter.</div>';
-                else filtersToCreate =[
-                    { key: 'form', label: 'Form', dataContext: paidData },
-                    { key: 'authority', label: 'Authority', dataContext: paidData },
-                    { key: 'company', label: 'Company', dataContext: paidData },
-                    { key: 'class', label: 'Therapeutic Class', dataContext: paidData }
-                ];
             } else if (currentFilterType === 'free') {
                 dataSourceForFilters = freeData;
                 if (freeData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No free items available to filter.</div>';
-                else filtersToCreate =[
+            } else {
+                dataSourceForFilters = allDatasetNormalized;
+                if (allDatasetNormalized.length === 0) showContainerMessage = '<div class="filters-disabled-message">No items available to filter.</div>';
+            }
+
+            if (!showContainerMessage) {
+                filtersToCreate =[
                     { key: 'form', label: 'Form', dataContext: dataSourceForFilters },
                     { key: 'authority', label: 'Authority', dataContext: dataSourceForFilters },
                     { key: 'company', label: 'Company', dataContext: dataSourceForFilters },
@@ -3705,16 +4024,10 @@ const paidData = [
                 ];
             }
 
-            if (showContainerMessage) secondaryFiltersContainer.innerHTML = showContainerMessage;
-
-            if (filtersToCreate.length > 0 || showContainerMessage) {
-                requestAnimationFrame(() => secondaryFiltersContainer.classList.add('visible'));
-            } else {
-                secondaryFiltersContainer.classList.remove('visible');
+            if (showContainerMessage) {
+                secondaryFiltersContainer.innerHTML = showContainerMessage;
                 return;
             }
-
-            if (filtersToCreate.length === 0) return;
 
             filtersToCreate.forEach(filterConfig => {
                 const group = document.createElement('div');
@@ -3723,6 +4036,9 @@ const paidData = [
                 label.htmlFor = `sf-${filterConfig.key}`;
                 label.textContent = filterConfig.label;
                 group.appendChild(label);
+
+                const selectWrap = document.createElement('div');
+                selectWrap.className = 'select-wrap';
 
                 const select = document.createElement('select');
                 select.id = `sf-${filterConfig.key}`;
@@ -3751,9 +4067,23 @@ const paidData = [
                 select.addEventListener('change', (e) => {
                     activeSecondaryFilters[filterConfig.key] = e.target.value;
                     createSecondaryFiltersUI();
+                    renderActiveChips();
                     performSearch(searchInput.value.trim(), 'filter_change');
                 });
-                group.appendChild(select);
+
+                const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                chevron.setAttribute('class', 'select-chevron-svg');
+                chevron.setAttribute('viewBox', '0 0 24 24');
+                chevron.setAttribute('fill', 'none');
+                chevron.setAttribute('stroke', 'currentColor');
+                chevron.setAttribute('stroke-width', '2');
+                chevron.setAttribute('stroke-linecap', 'round');
+                chevron.setAttribute('stroke-linejoin', 'round');
+                chevron.innerHTML = '<path d="M6 9l6 6 6-6"/>';
+
+                selectWrap.appendChild(select);
+                selectWrap.appendChild(chevron);
+                group.appendChild(selectWrap);
                 secondaryFiltersContainer.appendChild(group);
             });
         }
@@ -3857,6 +4187,7 @@ const paidData = [
             activeDOMBatchesStartIndices =[];
             allMatchingResults = [];
             let generatedSuggestions =[];
+            let hiddenByFilterCount = 0;
 
             if (!query && Object.values(activeSecondaryFilters).every(v => !v) && operationType === 'user_input' && currentFilterType === 'all') {
                 renderInitialDOM(query,[]);
@@ -3864,24 +4195,37 @@ const paidData = [
                 return;
             }
 
-            const currentFuse = currentFilterType === 'paid' ? fusePaid : currentFilterType === 'free' ? fuseFree : fuseAll;
+            const currentDataset = getDatasetForAvailability(currentFilterType);
+            const currentFuse = getFuseForAvailability(currentFilterType);
 
             let fuseSearchResults;
             if (query) {
-                fuseSearchResults = currentFuse.search(query);
+                fuseSearchResults = tokenSearch(query, currentDataset);
+                if (fuseSearchResults.length === 0) {
+                    fuseSearchResults = currentFuse.search(query);
+                }
             } else if (currentFilterType === 'paid') {
                 fuseSearchResults = paidBaseResults;
             } else if (currentFilterType === 'free') {
                 fuseSearchResults = freeBaseResults;
             } else {
-                fuseSearchResults =[];
+                fuseSearchResults = allBaseResults;
             }
 
             let filteredStrictResults = applySecondaryFiltersToResults(fuseSearchResults);
             allMatchingResults = filteredStrictResults;
 
+            const filtersAreActive = currentFilterType !== 'all' || Object.values(activeSecondaryFilters).some(v => v);
+
+            if (query && filteredStrictResults.length === 0 && filtersAreActive) {
+                let unrestrictedResults = tokenSearch(query, allDatasetNormalized);
+                if (unrestrictedResults.length === 0) unrestrictedResults = fuseAll.search(query);
+                hiddenByFilterCount = unrestrictedResults.length;
+            }
+
             if (query.length >= MIN_QUERY_LENGTH_FOR_SUGGESTIONS &&
                 filteredStrictResults.length === 0 &&
+                hiddenByFilterCount === 0 &&
                 operationType !== 'suggestion_click') {
 
                 const savedThreshold = currentFuse.options.threshold;
@@ -3906,15 +4250,15 @@ const paidData = [
                 }
             }
 
-            requestAnimationFrame(() => renderInitialDOM(query, generatedSuggestions));
+            requestAnimationFrame(() => renderInitialDOM(query, generatedSuggestions, hiddenByFilterCount));
 
             if (query && query.length >= 2 && (operationType === 'user_input' || operationType === 'suggestion_click') && allMatchingResults.length > 0) {
                 addSearchToHistory(query);
             }
-            searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && generatedSuggestions.length === 0);
+            searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && generatedSuggestions.length === 0 && hiddenByFilterCount === 0);
         }
 
-        function renderInitialDOM(query, suggestions =[]) {
+        function renderInitialDOM(query, suggestions =[], hiddenByFilterCount = 0) {
             if (suggestions.length > 0) {
                 let suggestionHTML = '<div class="did-you-mean-outer"><div class="did-you-mean">Did you mean: <span class="suggestion-list">';
                 suggestions.forEach(term => {
@@ -3932,7 +4276,13 @@ const paidData = [
                 resultsList.style.display = 'none';
                 const rc = document.getElementById('result-count');
                 if (rc) { rc.classList.remove('visible'); rc.textContent = ''; }
-                if (query.length > 0) {
+                if (hiddenByFilterCount > 0) {
+                    noResultsContainer.innerHTML = `
+                        <div class="no-results no-results-filtered">
+                            <p>Found <strong>${hiddenByFilterCount}</strong> match${hiddenByFilterCount !== 1 ? 'es' : ''} for "<strong>${escapeHTML(query)}</strong>", but ${hiddenByFilterCount !== 1 ? 'they\'re' : 'it\'s'} hidden by your current filters.</p>
+                            <button type="button" class="clear-filters-inline-btn" id="clear-filters-inline-btn">Clear filters to see ${hiddenByFilterCount !== 1 ? 'them' : 'it'}</button>
+                        </div>`;
+                } else if (query.length > 0) {
                     noResultsContainer.innerHTML = `
                         <div class="no-results">
                             <p>No local medications found for "<strong>${escapeHTML(query)}</strong>".</p>
@@ -3944,10 +4294,14 @@ const paidData = [
                                 <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="perplexity"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg> P.AI </button>
                             </div>
                         </div>`;
-                } else if (query.length === 0 && Object.values(activeSecondaryFilters).every(v => !v)) {
+                } else if (query.length === 0 && Object.values(activeSecondaryFilters).every(v => !v) && currentFilterType === 'all') {
                     noResultsContainer.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
                 } else {
-                    noResultsContainer.innerHTML = '<div class="no-results">No results found for selected filters.</div>';
+                    noResultsContainer.innerHTML = `
+                        <div class="no-results no-results-filtered">
+                            <p>No results found for the selected filters.</p>
+                            <button type="button" class="clear-filters-inline-btn" id="clear-filters-inline-btn">Clear filters</button>
+                        </div>`;
                 }
                 noResultsContainer.style.display = 'block';
                 loadMoreBtn.style.display = 'none';
@@ -4073,12 +4427,87 @@ const paidData = [
             });
         }
 
-        function setActivePrimaryFilter(type) {
+        function updateAvailabilityUI() {
+            availabilitySegmentedBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === currentFilterType));
+        }
+
+        function setAvailability(type) {
             currentFilterType = type;
-            primaryFilterBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === type));
+            updateAvailabilityUI();
             activeSecondaryFilters = {};
             createSecondaryFiltersUI();
+            renderActiveChips();
             performSearch(searchInput.value.trim(), 'filter_change');
+        }
+
+        function clearAllFilters() {
+            currentFilterType = 'all';
+            activeSecondaryFilters = {};
+            updateAvailabilityUI();
+            createSecondaryFiltersUI();
+            renderActiveChips();
+            performSearch(searchInput.value.trim(), 'filter_change');
+        }
+
+        const SECONDARY_FILTER_LABELS = { form: 'Form', authority: 'Authority', company: 'Company', class: 'Class' };
+
+        function renderActiveChips() {
+            const chips =[];
+            if (currentFilterType !== 'all') {
+                chips.push({ key: '__availability', label: currentFilterType === 'paid' ? 'Paid' : 'Free' });
+            }
+            Object.keys(activeSecondaryFilters).forEach(key => {
+                const val = activeSecondaryFilters[key];
+                if (val) chips.push({ key, label: `${SECONDARY_FILTER_LABELS[key] || key}: ${val}` });
+            });
+
+            if (chips.length === 0) {
+                activeChipsContainer.innerHTML = '';
+            } else {
+                const chipsHTML = chips.map(c => `
+                    <span class="chip" data-chip-key="${escapeHTML(c.key)}">
+                        ${escapeHTML(c.label)}
+                        <button type="button" class="chip-remove" data-chip-key="${escapeHTML(c.key)}" aria-label="Remove filter: ${escapeHTML(c.label)}">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                        </button>
+                    </span>`).join('');
+                activeChipsContainer.innerHTML = chipsHTML + '<button type="button" class="clear-all-chip-btn" id="clear-all-chips-btn">Clear all</button>';
+            }
+
+            const badgeCount = chips.length;
+            filtersBadge.textContent = String(badgeCount);
+            filtersBadge.hidden = badgeCount === 0;
+        }
+
+        function positionFilterPanel() {
+            const rect = filtersTriggerBtn.getBoundingClientRect();
+            const panelWidth = filterPanel.offsetWidth || 420;
+            const viewportPadding = 12;
+            let left = rect.right - panelWidth;
+            left = Math.max(viewportPadding, Math.min(left, window.innerWidth - panelWidth - viewportPadding));
+            let top = rect.bottom + 10;
+            const maxTop = window.innerHeight - viewportPadding - 100;
+            if (top > maxTop) top = Math.max(viewportPadding, rect.top - 10 - filterPanel.offsetHeight);
+            filterPanel.style.left = `${left}px`;
+            filterPanel.style.top = `${top}px`;
+        }
+
+        function openFilterPanel() {
+            filterPanel.classList.add('open');
+            filterPanel.setAttribute('aria-hidden', 'false');
+            filtersTriggerBtn.setAttribute('aria-expanded', 'true');
+            positionFilterPanel();
+            requestAnimationFrame(positionFilterPanel);
+        }
+
+        function closeFilterPanel() {
+            filterPanel.classList.remove('open');
+            filterPanel.setAttribute('aria-hidden', 'true');
+            filtersTriggerBtn.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleFilterPanel() {
+            if (filterPanel.classList.contains('open')) closeFilterPanel(); else openFilterPanel();
         }
 
         const _debouncedSearch = debounce(q => performSearch(q, 'user_input'), 80);
@@ -4107,19 +4536,57 @@ const paidData = [
             searchInput.focus();
         });
 
-        primaryFilterBtns.forEach(btn => {
-            if (btn.id !== 'reset-all-filters') {
-                btn.addEventListener('click', function () {
-                    setActivePrimaryFilter(this.dataset.filter);
-                });
+        availabilitySegmentedBtns.forEach(btn => {
+            btn.addEventListener('click', () => setAvailability(btn.dataset.filter));
+        });
+
+        filtersTriggerBtn.addEventListener('click', toggleFilterPanel);
+        filterPanelCloseBtn.addEventListener('click', closeFilterPanel);
+        filterPanelDoneBtn.addEventListener('click', closeFilterPanel);
+        filterPanelClearBtn.addEventListener('click', clearAllFilters);
+
+        document.addEventListener('click', (e) => {
+            if (!filterPanel.classList.contains('open')) return;
+            if (filterPanel.contains(e.target) || filtersTriggerBtn.contains(e.target)) return;
+            closeFilterPanel();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                toggleFilterPanel();
+                return;
+            }
+            if (e.key === 'Escape' && filterPanel.classList.contains('open')) closeFilterPanel();
+        });
+
+        window.addEventListener('resize', () => {
+            if (filterPanel.classList.contains('open')) positionFilterPanel();
+        });
+
+        window.addEventListener('scroll', () => {
+            if (filterPanel.classList.contains('open')) closeFilterPanel();
+        }, { passive: true, capture: true });
+
+        activeChipsContainer.addEventListener('click', (e) => {
+            const clearAllBtn = e.target.closest('#clear-all-chips-btn');
+            if (clearAllBtn) { clearAllFilters(); return; }
+            const removeBtn = e.target.closest('.chip-remove');
+            if (removeBtn) {
+                const key = removeBtn.dataset.chipKey;
+                if (key === '__availability') {
+                    setAvailability('all');
+                } else {
+                    activeSecondaryFilters[key] = '';
+                    createSecondaryFiltersUI();
+                    renderActiveChips();
+                    performSearch(searchInput.value.trim(), 'filter_change');
+                }
             }
         });
 
-        resetAllFiltersBtn.addEventListener('click', function () {
-            searchInput.value = '';
-            clearBtn.style.display = 'none';
-            setActivePrimaryFilter('all');
-            searchInput.focus();
+        noResultsContainer.addEventListener('click', (e) => {
+            if (e.target.closest('#clear-filters-inline-btn')) clearAllFilters();
         });
 
         document.addEventListener('keydown', function (e) {
@@ -4586,7 +5053,7 @@ const paidData = [
 
             loadPinnedItems();
             loadSearchHistory();
-            setActivePrimaryFilter('all');
+            setAvailability('all');
             
             if (!searchInput.value.trim() && Object.values(activeSecondaryFilters).every(v => !v)) {
                 noResultsContainer.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
