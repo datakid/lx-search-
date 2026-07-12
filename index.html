@@ -801,13 +801,19 @@
             }
         }
 
+        .filter-panel-overlay {
+            display: none;
+        }
+
         .filter-panel {
             position: fixed;
             top: 0;
             left: 0;
-            width: min(420px, 88vw);
-            max-height: min(70vh, 560px);
+            width: min(400px, 92vw);
+            max-height: min(76vh, 620px);
             background: var(--panel-bg);
+            backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            -webkit-backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
             border: 1px solid var(--panel-border);
             border-radius: var(--border-radius-lg);
             box-shadow: 0 25px 60px -15px var(--shadow-color-strong), 0 10px 30px -10px var(--shadow-color-medium);
@@ -830,19 +836,86 @@
             pointer-events: auto;
         }
 
+        .filter-panel-overlay.spotlight {
+            display: block;
+            position: fixed;
+            inset: 0;
+            background: var(--side-panel-overlay-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition-speed-normal) var(--transition-easing), visibility var(--transition-speed-normal);
+            z-index: 1150;
+        }
+
+        .filter-panel-overlay.spotlight.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+
+        .filter-panel.spotlight-mode {
+            top: min(9vh, 92px) !important;
+            left: 50% !important;
+            width: min(680px, 94vw);
+            max-height: min(80vh, 720px);
+            border-radius: 28px;
+            transform: translate(-50%, -10px) scale(0.97);
+            transform-origin: top center;
+            box-shadow: 0 40px 90px -20px var(--shadow-color-strong), 0 16px 40px -12px var(--shadow-color-medium);
+        }
+
+        .filter-panel.spotlight-mode.open {
+            transform: translate(-50%, 0) scale(1);
+        }
+
+        .filter-panel.spotlight-mode .filter-panel-search-input {
+            height: 58px;
+            font-size: 1.05rem;
+        }
+
+        .filter-panel.spotlight-mode .filter-panel-body {
+            padding: 20px 26px 24px;
+            gap: 22px;
+        }
+
+        @media (min-width: 700px) {
+            .filter-panel.spotlight-mode #secondary-filters-container {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px 16px;
+            }
+        }
+
+        .filter-panel.spotlight-mode .filter-search-results {
+            max-height: 480px;
+        }
+
         .filter-panel-header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             justify-content: space-between;
-            padding: 14px 18px;
+            gap: 10px;
+            padding: 16px 18px;
             border-bottom: 1px solid var(--glass-border-main);
             flex-shrink: 0;
+        }
 
+        .filter-panel-heading {
             & h3 {
-                font-size: 0.95rem;
-                font-weight: 650;
+                font-size: 0.98rem;
+                font-weight: 700;
                 margin: 0;
                 color: var(--text-primary);
+            }
+
+            & p {
+                margin: 3px 0 0;
+                font-size: 0.72rem;
+                color: var(--text-secondary);
+                opacity: 0.75;
             }
         }
 
@@ -870,12 +943,81 @@
             }
         }
 
+        .filter-panel-search {
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .filter-panel-search-icon {
+            position: absolute;
+            inset-inline-start: 16px;
+            width: 19px;
+            height: 19px;
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .filter-panel-search-input {
+            width: 100%;
+            height: 50px;
+            padding-inline: 46px 40px;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border-interactive);
+            background: var(--glass-bg-interactive);
+            backdrop-filter: blur(var(--glass-blur-interactive));
+            -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            box-shadow: 0 4px 12px -5px var(--shadow-color-soft), inset 0 1px 1px rgba(0, 0, 0, 0.05);
+            transition: border-color var(--transition-speed-fast) var(--transition-easing), background-color var(--transition-speed-fast) var(--transition-easing), box-shadow var(--transition-speed-fast) var(--transition-easing);
+
+            &::placeholder {
+                color: var(--text-placeholder);
+            }
+
+            &:focus {
+                border-color: var(--glass-border-interactive-focus);
+                background: var(--glass-bg-interactive-hover);
+                box-shadow: 0 0 0 4px rgba(var(--accent-color-rgb), 0.14), 0 4px 12px -3px var(--shadow-color-soft);
+            }
+        }
+
+        .filter-panel-search-clear {
+            position: absolute;
+            inset-inline-end: 10px;
+            width: 28px;
+            height: 28px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+
+            & svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.12);
+                color: var(--text-primary);
+            }
+        }
+
         .filter-panel-body {
             padding: 16px 18px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 16px;
             scrollbar-width: thin;
             scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
@@ -912,10 +1054,11 @@
         #secondary-filters-container {
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 12px;
         }
 
         .segmented-control {
+            position: relative;
             display: flex;
             background: var(--glass-bg-interactive);
             border: 1px solid var(--glass-border-interactive);
@@ -924,7 +1067,22 @@
             gap: 2px;
         }
 
+        .segmented-indicator {
+            position: absolute;
+            top: 3px;
+            bottom: 3px;
+            left: 0;
+            border-radius: calc(var(--border-radius-md) - 3px);
+            background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+            box-shadow: 0 4px 12px -3px color-mix(in srgb, var(--accent-color) 40%, transparent);
+            transition: transform var(--transition-speed-normal) var(--transition-easing-spring), width var(--transition-speed-normal) var(--transition-easing-spring);
+            z-index: 0;
+            pointer-events: none;
+        }
+
         .segmented-btn {
+            position: relative;
+            z-index: 1;
             flex: 1;
             border: none;
             background: transparent;
@@ -934,17 +1092,14 @@
             font-weight: 550;
             border-radius: calc(var(--border-radius-md) - 3px);
             cursor: pointer;
-            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+            transition: color var(--transition-speed-fast) var(--transition-easing);
 
             &:not(.active):hover {
                 color: var(--text-primary);
-                background: var(--glass-bg-interactive-hover);
             }
 
             &.active {
-                background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
                 color: var(--text-on-accent);
-                box-shadow: 0 4px 12px -3px color-mix(in srgb, var(--accent-color) 40%, transparent);
             }
         }
 
@@ -1019,6 +1174,249 @@
             }
         }
 
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            padding: 13px 14px 15px;
+            border-radius: 16px;
+            background: var(--glass-bg-interactive);
+            border: 1px solid var(--glass-border-main);
+        }
+
+        .filter-section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+
+            & label {
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                font-weight: 650;
+                letter-spacing: 0.04em;
+                text-transform: uppercase;
+                opacity: 0.8;
+            }
+        }
+
+        .filter-section-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .filter-section-icon {
+            width: 14px;
+            height: 14px;
+            color: var(--accent-color);
+            opacity: 0.85;
+            flex-shrink: 0;
+        }
+
+        .filter-panel-browse {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .filter-panel-browse[hidden],
+        .filter-search-results[hidden] {
+            display: none !important;
+        }
+
+        .filter-search-results {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            max-height: 420px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+
+            &::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background: var(--scrollbar-thumb);
+                border-radius: 3px;
+            }
+        }
+
+        .filter-search-group-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            opacity: 0.65;
+            padding: 10px 8px 5px;
+
+            &:first-child {
+                padding-top: 2px;
+            }
+        }
+
+        .filter-search-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.87rem;
+            font-family: inherit;
+            text-align: left;
+            padding: 11px 12px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+
+            &.is-focused,
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.14);
+                color: var(--accent-color);
+            }
+
+            &.is-active {
+                font-weight: 650;
+            }
+        }
+
+        .filter-search-item-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+
+            & span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+        }
+
+        .filter-search-item-icon,
+        .filter-search-item-icon-spacer {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            color: var(--text-secondary);
+            opacity: 0.75;
+        }
+
+        .filter-search-item-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .filter-search-item-count {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            opacity: 0.6;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .filter-search-check {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            color: var(--accent-color);
+        }
+
+        .filter-search-empty {
+            padding: 30px 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            opacity: 0.75;
+        }
+
+        .filter-section-count {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            background: var(--accent-bg-subtle);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.18);
+            padding: 1px 7px;
+            border-radius: 999px;
+        }
+
+        .filter-chip-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .filter-chip-grid.scrollable {
+            max-height: 176px;
+            overflow-y: auto;
+            padding-right: 2px;
+            align-content: flex-start;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        }
+
+        .filter-chip-grid.scrollable::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .filter-chip-grid.scrollable::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 3px;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--glass-border-interactive);
+            background: var(--glass-bg-interactive);
+            color: var(--text-secondary);
+            font-size: 0.79rem;
+            font-weight: 550;
+            font-family: inherit;
+            padding: 7px 10px 7px 13px;
+            border-radius: 999px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
+
+            &:hover {
+                border-color: color-mix(in srgb, var(--accent-color) 35%, transparent);
+                color: var(--text-primary);
+                background: var(--glass-bg-interactive-hover);
+                transform: translateY(-1px);
+            }
+
+            &:active {
+                transform: translateY(0) scale(0.97);
+            }
+
+            &.active {
+                background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+                border-color: transparent;
+                color: var(--text-on-accent);
+                box-shadow: 0 4px 12px -3px color-mix(in srgb, var(--accent-color) 40%, transparent);
+            }
+        }
+
+        .filter-chip-count {
+            font-size: 0.7rem;
+            font-weight: 650;
+            opacity: 0.65;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .filter-chip.active .filter-chip-count {
+            opacity: 0.85;
+        }
+
         .filter-panel-footer {
             display: flex;
             align-items: center;
@@ -1027,6 +1425,20 @@
             padding: 14px 18px;
             border-top: 1px solid var(--glass-border-main);
             flex-shrink: 0;
+        }
+
+        .filter-panel-result-count {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+        }
+
+        .filter-panel-footer-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .filter-panel-clear-btn {
@@ -2238,9 +2650,64 @@
                 gap: 8px;
             }
 
+            .filter-panel-overlay {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: var(--side-panel-overlay-bg);
+                backdrop-filter: blur(4px);
+                -webkit-backdrop-filter: blur(4px);
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity var(--transition-speed-normal) var(--transition-easing), visibility var(--transition-speed-normal);
+                z-index: 1150;
+                pointer-events: none;
+            }
+
+            .filter-panel-overlay.open {
+                opacity: 1;
+                visibility: visible;
+                pointer-events: auto;
+            }
+
             .filter-panel {
-                width: min(340px, 95vw);
-                max-height: min(75vh, 480px);
+                left: 0 !important;
+                right: 0;
+                bottom: 0;
+                top: auto !important;
+                width: 100%;
+                max-width: 100%;
+                max-height: 82vh;
+                border-radius: 22px 22px 0 0;
+                transform: translateY(100%);
+                transform-origin: bottom center;
+            }
+
+            .filter-panel.open {
+                transform: translateY(0);
+            }
+
+            .filter-panel-body {
+                padding-bottom: 22px;
+            }
+
+            .filter-chip-grid.scrollable {
+                max-height: 220px;
+            }
+
+            .filter-panel.spotlight-mode #secondary-filters-container {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .filter-panel.spotlight-mode .filter-panel-body {
+                padding: 16px 18px;
+                gap: 16px;
+            }
+
+            .filter-panel.spotlight-mode .filter-panel-search-input {
+                height: 50px;
+                font-size: 1rem;
             }
 
             .title {
@@ -2370,7 +2837,7 @@
                 --accent-color: #000;
             }
 
-            :where(.theme-switcher, .filters-bar, .filter-panel, .active-chips, .clear-btn, .search-hint, .result-card-actions, .online-search-options, .side-panel-toggle, .side-panel, .side-panel-overlay, .app-disclaimer, .custom-confirm, .load-more-btn) {
+            :where(.theme-switcher, .filters-bar, .filter-panel, .filter-panel-overlay, .active-chips, .clear-btn, .search-hint, .result-card-actions, .online-search-options, .side-panel-toggle, .side-panel, .side-panel-overlay, .app-disclaimer, .custom-confirm, .load-more-btn) {
                 display: none !important;
             }
 
@@ -2504,9 +2971,13 @@
         </aside>
         <div id="side-panel-overlay" class="side-panel-overlay"></div>
 
+        <div class="filter-panel-overlay" id="filter-panel-overlay"></div>
         <div class="filter-panel" id="filter-panel" role="dialog" aria-hidden="true" aria-label="Filter medications">
             <div class="filter-panel-header">
-                <h3>Filters</h3>
+                <div class="filter-panel-heading">
+                    <h3>Filters</h3>
+                    <p>Jump to a filter by typing, or tap to toggle</p>
+                </div>
                 <button type="button" class="filter-panel-close-btn" id="filter-panel-close-btn"
                     aria-label="Close filters">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -2516,19 +2987,41 @@
                 </button>
             </div>
             <div class="filter-panel-body" id="filter-panel-body">
-                <div class="filter-panel-section">
-                    <label>Availability</label>
-                    <div class="segmented-control" id="availability-segmented">
-                        <button type="button" class="segmented-btn active" data-filter="all">All</button>
-                        <button type="button" class="segmented-btn" data-filter="paid">Paid</button>
-                        <button type="button" class="segmented-btn" data-filter="free">Free</button>
-                    </div>
+                <div class="filter-panel-search">
+                    <svg class="filter-panel-search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input type="text" class="filter-panel-search-input" id="filter-panel-search-input"
+                        placeholder="Find a filter — tablet, paid, pfizer…" autocomplete="off"
+                        role="combobox" aria-expanded="false" aria-controls="filter-search-results" aria-autocomplete="list">
+                    <button type="button" class="filter-panel-search-clear" id="filter-panel-search-clear" aria-label="Clear">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                 </div>
-                <div id="secondary-filters-container"></div>
+                <div class="filter-search-results" id="filter-search-results" role="listbox" hidden></div>
+                <div class="filter-panel-browse" id="filter-panel-browse">
+                    <div class="filter-section">
+                        <div class="filter-section-head"><label>Availability</label></div>
+                        <div class="segmented-control" id="availability-segmented">
+                            <span class="segmented-indicator" id="availability-indicator" aria-hidden="true"></span>
+                            <button type="button" class="segmented-btn active" data-filter="all">All</button>
+                            <button type="button" class="segmented-btn" data-filter="paid">Paid</button>
+                            <button type="button" class="segmented-btn" data-filter="free">Free</button>
+                        </div>
+                    </div>
+                    <div id="secondary-filters-container"></div>
+                </div>
             </div>
             <div class="filter-panel-footer">
-                <button type="button" class="filter-panel-clear-btn" id="filter-panel-clear-btn">Clear all</button>
-                <button type="button" class="filter-panel-done-btn" id="filter-panel-done-btn">Done</button>
+                <span class="filter-panel-result-count" id="filter-panel-result-count"></span>
+                <div class="filter-panel-footer-actions">
+                    <button type="button" class="filter-panel-clear-btn" id="filter-panel-clear-btn">Clear all</button>
+                    <button type="button" class="filter-panel-done-btn" id="filter-panel-done-btn">Done</button>
+                </div>
             </div>
         </div>
 
@@ -2540,7 +3033,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <input type="text" class="search-input" placeholder="Search medications, e.g., Amaryl" id="search-input"
+                    <input type="text" class="search-input" placeholder="Search anything — name, ingredient, dosage, paid, free…" id="search-input"
                         autocomplete="off">
                     <button class="clear-btn" id="clear-btn"><svg xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -2550,14 +3043,11 @@
                     <div class="search-hint" id="search-hint">Press <kbd>/</kbd> to search</div>
                 </div>
                 <button type="button" class="filters-trigger-btn" id="filters-trigger-btn" aria-haspopup="true"
-                    aria-expanded="false" aria-controls="filter-panel" title="Filters (Ctrl/⌘ + K)">
+                    aria-expanded="false" aria-controls="filter-panel" title="Filters (Ctrl/⌘+K)">
                     <svg class="filters-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                        fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
                         stroke-linejoin="round">
-                        <path d="M4 6h9M18 6h2M4 12h4M11 12h9M4 18h12M20 18h0" />
-                        <circle cx="15.5" cy="6" r="2" />
-                        <circle cx="7.5" cy="12" r="2" />
-                        <circle cx="15.5" cy="18" r="2" />
+                        <path d="M3 5h18M6 12h12M10 19h4" />
                     </svg>
                     <span>Filters</span>
                     <span class="filters-badge" id="filters-badge" hidden>0</span>
@@ -3785,10 +4275,17 @@ const paidData = [
         const secondaryFiltersContainer = document.getElementById('secondary-filters-container');
         const filtersTriggerBtn = document.getElementById('filters-trigger-btn');
         const filterPanel = document.getElementById('filter-panel');
+        const filterPanelOverlay = document.getElementById('filter-panel-overlay');
         const filterPanelCloseBtn = document.getElementById('filter-panel-close-btn');
         const filterPanelClearBtn = document.getElementById('filter-panel-clear-btn');
         const filterPanelDoneBtn = document.getElementById('filter-panel-done-btn');
+        const filterPanelResultCount = document.getElementById('filter-panel-result-count');
+        const filterPanelSearchInput = document.getElementById('filter-panel-search-input');
+        const filterPanelSearchClear = document.getElementById('filter-panel-search-clear');
+        const filterSearchResults = document.getElementById('filter-search-results');
+        const filterPanelBrowse = document.getElementById('filter-panel-browse');
         const availabilitySegmentedBtns = document.querySelectorAll('#availability-segmented .segmented-btn');
+        const availabilityIndicator = document.getElementById('availability-indicator');
         const activeChipsContainer = document.getElementById('active-chips');
         const filtersBadge = document.getElementById('filters-badge');
         const searchHint = document.getElementById('search-hint');
@@ -3935,9 +4432,51 @@ const paidData = [
             fuseAll = new Fuse(allDatasetNormalized, { ...baseFuseOptions, keys: allKeys, threshold: strictThreshold });
         }
 
-        const TOKEN_SEARCH_FIELD_PRIORITY = { name: 1, activeIngredient: 2, class: 3, company: 4, authority: 5, concentration: 6, form: 7 };
+        const TOKEN_SEARCH_FIELD_PRIORITY = { name: 1, activeIngredient: 2, class: 3, company: 4, authority: 5, concentration: 6, form: 7, _type: 8 };
         const TOKEN_SEARCH_FIELDS = Object.keys(TOKEN_SEARCH_FIELD_PRIORITY);
-        const TOKEN_SEARCH_MAX_RANK = 7;
+        const TOKEN_SEARCH_MAX_RANK = 8;
+
+        function boundedEditDistance(a, b, maxDist) {
+            const la = a.length, lb = b.length;
+            if (Math.abs(la - lb) > maxDist) return maxDist + 1;
+            let prevRow = new Array(lb + 1);
+            for (let j = 0; j <= lb; j++) prevRow[j] = j;
+            for (let i = 1; i <= la; i++) {
+                const currRow = new Array(lb + 1);
+                currRow[0] = i;
+                let rowMin = currRow[0];
+                const ai = a.charCodeAt(i - 1);
+                for (let j = 1; j <= lb; j++) {
+                    const cost = ai === b.charCodeAt(j - 1) ? 0 : 1;
+                    const val = Math.min(prevRow[j] + 1, currRow[j - 1] + 1, prevRow[j - 1] + cost);
+                    currRow[j] = val;
+                    if (val < rowMin) rowMin = val;
+                }
+                if (rowMin > maxDist) return maxDist + 1;
+                prevRow = currRow;
+            }
+            return prevRow[lb];
+        }
+
+        function fuzzyMaxDistanceForLength(len) {
+            if (len <= 4) return 0;
+            if (len <= 6) return 1;
+            return 2;
+        }
+
+        function splitIntoWords(value) {
+            return String(value).toLowerCase().split(/[^a-z0-9]+/i).filter(Boolean);
+        }
+
+        function escapeRegexLiteral(s) {
+            return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function buildFlexibleDosageMatcher(token) {
+            const m = token.match(/^(\d+(?:\.\d+)?)([a-z]+)$/i);
+            if (!m) return null;
+            return new RegExp(escapeRegexLiteral(m[1]) + '\\s*' + escapeRegexLiteral(m[2]), 'i');
+        }
 
         function tokenSearch(query, dataset) {
             const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -3949,6 +4488,7 @@ const paidData = [
                 const item = dataset[i];
                 let matchedAllTokens = true;
                 let totalRank = 0;
+                let fuzzyPenalty = 0;
                 const matchesByKey = {};
 
                 for (let t = 0; t < tokens.length; t++) {
@@ -3956,19 +4496,58 @@ const paidData = [
                     let bestRank = null;
                     let bestKey = null;
                     let bestIndex = -1;
+                    let bestLen = token.length;
+                    const dosageMatcher = buildFlexibleDosageMatcher(token);
 
                     for (let f = 0; f < TOKEN_SEARCH_FIELDS.length; f++) {
                         const key = TOKEN_SEARCH_FIELDS[f];
                         const rawVal = item[key];
                         if (rawVal === null || rawVal === undefined) continue;
                         const val = String(rawVal).toLowerCase();
-                        const idx = val.indexOf(token);
+                        let idx = val.indexOf(token);
+                        let matchLen = token.length;
+                        if (idx === -1 && dosageMatcher) {
+                            const flexMatch = val.match(dosageMatcher);
+                            if (flexMatch) {
+                                idx = flexMatch.index;
+                                matchLen = flexMatch[0].length;
+                            }
+                        }
                         if (idx === -1) continue;
                         const rank = TOKEN_SEARCH_FIELD_PRIORITY[key];
                         if (bestRank === null || rank < bestRank) {
                             bestRank = rank;
                             bestKey = key;
                             bestIndex = idx;
+                            bestLen = matchLen;
+                        }
+                    }
+
+                    let isFuzzyMatch = false;
+                    if (bestRank === null && token.length >= 3 && !/^\d/.test(token)) {
+                        const maxDist = fuzzyMaxDistanceForLength(token.length);
+                        let bestDist = null;
+
+                        for (let f = 0; f < TOKEN_SEARCH_FIELDS.length; f++) {
+                            const key = TOKEN_SEARCH_FIELDS[f];
+                            const rawVal = item[key];
+                            if (rawVal === null || rawVal === undefined) continue;
+                            const words = splitIntoWords(rawVal);
+                            for (let w = 0; w < words.length; w++) {
+                                const word = words[w];
+                                if (Math.abs(word.length - token.length) > maxDist) continue;
+                                const dist = boundedEditDistance(token, word, maxDist);
+                                if (dist > maxDist) continue;
+                                const rank = TOKEN_SEARCH_FIELD_PRIORITY[key];
+                                if (bestDist === null || dist < bestDist || (dist === bestDist && rank < bestRank)) {
+                                    bestDist = dist;
+                                    bestRank = rank;
+                                    bestKey = key;
+                                    bestIndex = String(rawVal).toLowerCase().indexOf(word);
+                                    bestLen = word.length;
+                                    isFuzzyMatch = true;
+                                }
+                            }
                         }
                     }
 
@@ -3978,13 +4557,14 @@ const paidData = [
                     }
 
                     totalRank += bestRank;
+                    if (isFuzzyMatch) fuzzyPenalty += 1;
                     if (!matchesByKey[bestKey]) matchesByKey[bestKey] =[];
-                    matchesByKey[bestKey].push([bestIndex, bestIndex + token.length - 1]);
+                    matchesByKey[bestKey].push([bestIndex, bestIndex + bestLen - 1]);
                 }
 
                 if (!matchedAllTokens) continue;
 
-                const score = totalRank / (tokens.length * TOKEN_SEARCH_MAX_RANK);
+                const score = (totalRank + fuzzyPenalty * 1.5) / (tokens.length * (TOKEN_SEARCH_MAX_RANK + 1.5));
                 const matches = Object.keys(matchesByKey).map(key => ({ key, indices: matchesByKey[key] }));
                 results.push({ item, score, matches });
             }
@@ -3999,93 +4579,56 @@ const paidData = [
             return[...new Set(values)].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
         }
 
+        const CHIP_CLOUD_SCROLL_THRESHOLD = 8;
+
+        const SECONDARY_FILTER_CONFIGS =[
+            { key: 'class', label: 'Therapeutic Class', icon: '<path d="M4 4h7l9 9-7 7-9-9V4z"/><circle cx="8.5" cy="8.5" r="1.5"/>' },
+            { key: 'form', label: 'Form', icon: '<rect x="3" y="3" width="8" height="8" rx="4" transform="rotate(-45 7 7)"/><path d="M9.5 9.5l7 7a3.2 3.2 0 004.5-4.5l-7-7"/>' },
+            { key: 'authority', label: 'Authority', icon: '<path d="M12 3l8 4v5c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V7l8-4z"/>' },
+            { key: 'company', label: 'Company', icon: '<rect x="3" y="8" width="18" height="12" rx="1.5"/><path d="M8 8V6a2 2 0 012-2h4a2 2 0 012 2v2"/>' }
+        ];
+
         function createSecondaryFiltersUI() {
             secondaryFiltersContainer.innerHTML = '';
-            let filtersToCreate =[], showContainerMessage = '';
-            let dataSourceForFilters;
-
-            if (currentFilterType === 'paid') {
-                dataSourceForFilters = paidData;
-                if (paidData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No paid items available to filter.</div>';
-            } else if (currentFilterType === 'free') {
-                dataSourceForFilters = freeData;
-                if (freeData.length === 0) showContainerMessage = '<div class="filters-disabled-message">No free items available to filter.</div>';
-            } else {
-                dataSourceForFilters = allDatasetNormalized;
-                if (allDatasetNormalized.length === 0) showContainerMessage = '<div class="filters-disabled-message">No items available to filter.</div>';
-            }
-
-            if (!showContainerMessage) {
-                filtersToCreate =[
-                    { key: 'form', label: 'Form', dataContext: dataSourceForFilters },
-                    { key: 'authority', label: 'Authority', dataContext: dataSourceForFilters },
-                    { key: 'company', label: 'Company', dataContext: dataSourceForFilters },
-                    { key: 'class', label: 'Therapeutic Class', dataContext: dataSourceForFilters }
-                ];
-            }
-
-            if (showContainerMessage) {
-                secondaryFiltersContainer.innerHTML = showContainerMessage;
+            const dataSourceForFilters = getFilterDataSource();
+            if (dataSourceForFilters.length === 0) {
+                secondaryFiltersContainer.innerHTML = '<div class="filters-disabled-message">No items available to filter.</div>';
                 return;
             }
 
-            filtersToCreate.forEach(filterConfig => {
-                const group = document.createElement('div');
-                group.className = 'filter-group';
-                const label = document.createElement('label');
-                label.htmlFor = `sf-${filterConfig.key}`;
-                label.textContent = filterConfig.label;
-                group.appendChild(label);
+            let renderedAny = false;
 
-                const selectWrap = document.createElement('div');
-                selectWrap.className = 'select-wrap';
+            SECONDARY_FILTER_CONFIGS.forEach(filterConfig => {
+                const { uniqueOptions, currentValue, counts } = getFilterFieldOptions(filterConfig, dataSourceForFilters);
+                if (uniqueOptions.length < 2) return;
 
-                const select = document.createElement('select');
-                select.id = `sf-${filterConfig.key}`;
+                renderedAny = true;
+                const section = document.createElement('div');
+                section.className = 'filter-section';
+                section.innerHTML = `<div class="filter-section-head"><div class="filter-section-title"><svg class="filter-section-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${filterConfig.icon}</svg><label>${escapeHTML(filterConfig.label)}</label></div><span class="filter-section-count">${uniqueOptions.length}</span></div>`;
 
-                let optionsData = filterConfig.dataContext;
-                for (const activeFilterKey in activeSecondaryFilters) {
-                    if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
-                        const filterVal = String(activeSecondaryFilters[activeFilterKey]);
-                        optionsData = optionsData.filter(item => String(item[activeFilterKey]) === filterVal);
-                    }
-                }
-                const uniqueOptions = getUniqueValues(optionsData, filterConfig.key);
+                const cloud = document.createElement('div');
+                cloud.className = 'filter-chip-grid' + (uniqueOptions.length > CHIP_CLOUD_SCROLL_THRESHOLD ? ' scrollable' : '');
 
-                select.innerHTML = `<option value="">All ${filterConfig.label}s</option>`;
                 uniqueOptions.forEach(val => {
-                    select.innerHTML += `<option value="${escapeHTML(String(val))}">${escapeHTML(String(val))}</option>`;
+                    const chip = document.createElement('button');
+                    chip.type = 'button';
+                    const isActive = String(val) === String(currentValue);
+                    chip.className = 'filter-chip' + (isActive ? ' active' : '');
+                    chip.setAttribute('aria-pressed', String(isActive));
+                    chip.dataset.filterKey = filterConfig.key;
+                    chip.dataset.value = String(val);
+                    chip.innerHTML = `<span>${escapeHTML(String(val))}</span><span class="filter-chip-count">${counts[String(val)] || 0}</span>`;
+                    cloud.appendChild(chip);
                 });
 
-                if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
-                    select.value = activeSecondaryFilters[filterConfig.key];
-                } else {
-                    activeSecondaryFilters[filterConfig.key] = '';
-                    select.value = '';
-                }
-
-                select.addEventListener('change', (e) => {
-                    activeSecondaryFilters[filterConfig.key] = e.target.value;
-                    createSecondaryFiltersUI();
-                    renderActiveChips();
-                    performSearch(searchInput.value.trim(), 'filter_change');
-                });
-
-                const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                chevron.setAttribute('class', 'select-chevron-svg');
-                chevron.setAttribute('viewBox', '0 0 24 24');
-                chevron.setAttribute('fill', 'none');
-                chevron.setAttribute('stroke', 'currentColor');
-                chevron.setAttribute('stroke-width', '2');
-                chevron.setAttribute('stroke-linecap', 'round');
-                chevron.setAttribute('stroke-linejoin', 'round');
-                chevron.innerHTML = '<path d="M6 9l6 6 6-6"/>';
-
-                selectWrap.appendChild(select);
-                selectWrap.appendChild(chevron);
-                group.appendChild(selectWrap);
-                secondaryFiltersContainer.appendChild(group);
+                section.appendChild(cloud);
+                secondaryFiltersContainer.appendChild(section);
             });
+
+            if (!renderedAny) {
+                secondaryFiltersContainer.innerHTML = '<div class="filters-disabled-message">No additional filters for this selection.</div>';
+            }
         }
 
         function highlightText(textToDisplay, fuseMatches, keyToHighlightInFuseSearch) {
@@ -4184,6 +4727,7 @@ const paidData = [
 
         function performSearch(query, operationType = 'user_input') {
             query = query.trim();
+
             activeDOMBatchesStartIndices =[];
             allMatchingResults = [];
             let generatedSuggestions =[];
@@ -4214,6 +4758,9 @@ const paidData = [
 
             let filteredStrictResults = applySecondaryFiltersToResults(fuseSearchResults);
             allMatchingResults = filteredStrictResults;
+            if (filterPanelResultCount) {
+                filterPanelResultCount.textContent = `${allMatchingResults.length.toLocaleString()} result${allMatchingResults.length !== 1 ? 's' : ''}`;
+            }
 
             const filtersAreActive = currentFilterType !== 'all' || Object.values(activeSecondaryFilters).some(v => v);
 
@@ -4428,7 +4975,54 @@ const paidData = [
         }
 
         function updateAvailabilityUI() {
-            availabilitySegmentedBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.filter === currentFilterType));
+            availabilitySegmentedBtns.forEach(btn => {
+                const isActive = btn.dataset.filter === currentFilterType;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-pressed', String(isActive));
+            });
+            const activeBtn = Array.from(availabilitySegmentedBtns).find(btn => btn.dataset.filter === currentFilterType);
+            if (activeBtn && availabilityIndicator) {
+                availabilityIndicator.style.width = `${activeBtn.offsetWidth}px`;
+                availabilityIndicator.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
+            }
+        }
+
+        function getFilterDataSource() {
+            if (currentFilterType === 'paid') return paidData;
+            if (currentFilterType === 'free') return freeData;
+            return allDatasetNormalized;
+        }
+
+        function getFilterFieldOptions(filterConfig, dataSourceForFilters) {
+            let optionsData = dataSourceForFilters;
+            for (const activeFilterKey in activeSecondaryFilters) {
+                if (activeFilterKey !== filterConfig.key && activeSecondaryFilters[activeFilterKey]) {
+                    const filterVal = String(activeSecondaryFilters[activeFilterKey]);
+                    optionsData = optionsData.filter(item => String(item[activeFilterKey]) === filterVal);
+                }
+            }
+            const uniqueOptions = getUniqueValues(optionsData, filterConfig.key);
+            const counts = {};
+            optionsData.forEach(item => {
+                const v = item[filterConfig.key];
+                if (v == null || String(v).trim() === '') return;
+                const k = String(v);
+                counts[k] = (counts[k] || 0) + 1;
+            });
+            let currentValue = '';
+            if (activeSecondaryFilters[filterConfig.key] && uniqueOptions.includes(String(activeSecondaryFilters[filterConfig.key]))) {
+                currentValue = activeSecondaryFilters[filterConfig.key];
+            } else {
+                activeSecondaryFilters[filterConfig.key] = '';
+            }
+            return { uniqueOptions, currentValue, counts };
+        }
+
+        function toggleSecondaryFilter(key, value) {
+            activeSecondaryFilters[key] = (activeSecondaryFilters[key] === value) ? '' : value;
+            createSecondaryFiltersUI();
+            renderActiveChips();
+            performSearch(searchInput.value.trim(), 'filter_change');
         }
 
         function setAvailability(type) {
@@ -4480,8 +5074,9 @@ const paidData = [
         }
 
         function positionFilterPanel() {
+            if (window.innerWidth <= 480 || filterPanel.classList.contains('spotlight-mode')) return;
             const rect = filtersTriggerBtn.getBoundingClientRect();
-            const panelWidth = filterPanel.offsetWidth || 420;
+            const panelWidth = filterPanel.offsetWidth || 400;
             const viewportPadding = 12;
             let left = rect.right - panelWidth;
             left = Math.max(viewportPadding, Math.min(left, window.innerWidth - panelWidth - viewportPadding));
@@ -4492,35 +5087,51 @@ const paidData = [
             filterPanel.style.top = `${top}px`;
         }
 
-        function openFilterPanel() {
+        function openFilterPanel(opts = {}) {
+            const spotlight = !!opts.spotlight;
+            filterPanel.classList.toggle('spotlight-mode', spotlight);
+            filterPanelOverlay.classList.toggle('spotlight', spotlight);
             filterPanel.classList.add('open');
             filterPanel.setAttribute('aria-hidden', 'false');
             filtersTriggerBtn.setAttribute('aria-expanded', 'true');
-            positionFilterPanel();
-            requestAnimationFrame(positionFilterPanel);
+            filterPanelOverlay.classList.add('open');
+            filterPanelSearchInput.value = '';
+            filterPanelSearchClear.style.display = 'none';
+            exitFilterSearchMode();
+            requestAnimationFrame(updateAvailabilityUI);
+            if (spotlight) {
+                filterPanel.style.left = '';
+                filterPanel.style.top = '';
+                requestAnimationFrame(() => filterPanelSearchInput.focus({ preventScroll: true }));
+            } else {
+                positionFilterPanel();
+                requestAnimationFrame(positionFilterPanel);
+            }
         }
 
         function closeFilterPanel() {
-            filterPanel.classList.remove('open');
+            filterPanel.classList.remove('open', 'spotlight-mode');
             filterPanel.setAttribute('aria-hidden', 'true');
             filtersTriggerBtn.setAttribute('aria-expanded', 'false');
+            filterPanelOverlay.classList.remove('open', 'spotlight');
         }
 
-        function toggleFilterPanel() {
-            if (filterPanel.classList.contains('open')) closeFilterPanel(); else openFilterPanel();
+        function toggleFilterPanel(opts) {
+            if (filterPanel.classList.contains('open')) closeFilterPanel(); else openFilterPanel(opts);
         }
+
+        filterPanelOverlay.addEventListener('click', closeFilterPanel);
+
 
         const _debouncedSearch = debounce(q => performSearch(q, 'user_input'), 80);
-        searchInput.addEventListener('input', function () {
-            const query = this.value;
-            clearBtn.style.display = query.length > 0 ? 'block' : 'none';
-            _debouncedSearch(query);
-        });
 
+        searchInput.addEventListener('input', function () {
+            const value = this.value;
+            clearBtn.style.display = value.length > 0 ? 'block' : 'none';
+            _debouncedSearch(value);
+        });
         searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                performSearch(searchInput.value.trim(), 'user_input');
-            }
+            if (e.key === 'Enter') performSearch(searchInput.value.trim(), 'user_input');
         });
         searchInput.addEventListener('focus', () => searchHint.classList.remove('visible'));
         searchInput.addEventListener('blur', () => {
@@ -4528,7 +5139,6 @@ const paidData = [
                 searchHint.classList.add('visible');
             }
         });
-
         clearBtn.addEventListener('click', function () {
             searchInput.value = '';
             this.style.display = 'none';
@@ -4536,14 +5146,165 @@ const paidData = [
             searchInput.focus();
         });
 
+        function buildFilterSearchIndex() {
+            const entries =[
+                { group: 'Availability', label: 'All medications', count: allDatasetNormalized.length, isActive: () => currentFilterType === 'all', apply: () => setAvailability('all') },
+                { group: 'Availability', label: 'Paid', count: paidData.length, isActive: () => currentFilterType === 'paid', apply: () => setAvailability('paid') },
+                { group: 'Availability', label: 'Free', count: freeData.length, isActive: () => currentFilterType === 'free', apply: () => setAvailability('free') }
+            ];
+            const dataSourceForFilters = getFilterDataSource();
+            if (dataSourceForFilters.length > 0) {
+                SECONDARY_FILTER_CONFIGS.forEach(filterConfig => {
+                    const { uniqueOptions, counts } = getFilterFieldOptions(filterConfig, dataSourceForFilters);
+                    uniqueOptions.forEach(val => {
+                        const value = String(val);
+                        entries.push({
+                            group: filterConfig.label,
+                            label: value,
+                            icon: filterConfig.icon,
+                            count: counts[value] || 0,
+                            isActive: () => activeSecondaryFilters[filterConfig.key] === value,
+                            apply: () => toggleSecondaryFilter(filterConfig.key, value)
+                        });
+                    });
+                });
+            }
+            return entries;
+        }
+
+        function fuzzyMatchScore(label, q) {
+            const l = label.toLowerCase();
+            const idx = l.indexOf(q);
+            if (idx !== -1) return idx === 0 ? 0 : 20 + idx;
+            let li = 0;
+            for (let qi = 0; qi < q.length; qi++) {
+                li = l.indexOf(q[qi], li);
+                if (li === -1) return null;
+                li++;
+            }
+            return 1000 + label.length;
+        }
+
+        function rankFilterEntries(query, entries) {
+            const q = query.trim().toLowerCase();
+            if (!q) return[];
+            const scored =[];
+            entries.forEach(entry => {
+                const score = fuzzyMatchScore(entry.label, q);
+                if (score === null) return;
+                scored.push({ entry, score });
+            });
+            scored.sort((a, b) => a.score - b.score || a.entry.label.length - b.entry.label.length);
+            return scored.slice(0, 40).map(s => s.entry);
+        }
+
+        function enterFilterSearchMode() {
+            filterPanelBrowse.hidden = true;
+            filterSearchResults.hidden = false;
+            filterPanelSearchInput.setAttribute('aria-expanded', 'true');
+        }
+
+        function exitFilterSearchMode() {
+            filterPanelBrowse.hidden = false;
+            filterSearchResults.hidden = true;
+            filterSearchResults.innerHTML = '';
+            filterPanelSearchInput.setAttribute('aria-expanded', 'false');
+        }
+
+        function renderFilterSearchResults(query) {
+            const ranked = rankFilterEntries(query, buildFilterSearchIndex());
+            filterSearchResults.innerHTML = '';
+            if (ranked.length === 0) {
+                filterSearchResults.innerHTML = '<div class="filter-search-empty">No matching filters</div>';
+                return;
+            }
+            let lastGroup = null;
+            ranked.forEach((entry, idx) => {
+                if (entry.group !== lastGroup) {
+                    const groupLabel = document.createElement('div');
+                    groupLabel.className = 'filter-search-group-label';
+                    groupLabel.textContent = entry.group;
+                    filterSearchResults.appendChild(groupLabel);
+                    lastGroup = entry.group;
+                }
+                const active = entry.isActive();
+                const row = document.createElement('button');
+                row.type = 'button';
+                row.className = 'filter-search-item' + (active ? ' is-active' : '') + (idx === 0 ? ' is-focused' : '');
+                row.setAttribute('role', 'option');
+                row.setAttribute('aria-selected', String(active));
+                row.dataset.idx = String(idx);
+                const iconHtml = entry.icon
+                    ? `<svg class="filter-search-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${entry.icon}</svg>`
+                    : '<span class="filter-search-item-icon-spacer"></span>';
+                const checkHtml = active ? '<svg class="filter-search-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>' : '';
+                row.innerHTML = `<span class="filter-search-item-label">${iconHtml}<span>${escapeHTML(entry.label)}</span></span><span class="filter-search-item-meta"><span class="filter-search-item-count">${entry.count}</span>${checkHtml}</span>`;
+                filterSearchResults.appendChild(row);
+            });
+            filterSearchResults._entries = ranked;
+        }
+
+        filterPanelSearchInput.addEventListener('input', function () {
+            const value = this.value;
+            filterPanelSearchClear.style.display = value.length > 0 ? 'flex' : 'none';
+            if (value.trim()) {
+                enterFilterSearchMode();
+                renderFilterSearchResults(value);
+            } else {
+                exitFilterSearchMode();
+            }
+        });
+
+        filterSearchResults.addEventListener('click', (e) => {
+            const row = e.target.closest('.filter-search-item');
+            if (!row) return;
+            const entry = filterSearchResults._entries[Number(row.dataset.idx)];
+            if (entry) entry.apply();
+            filterPanelSearchInput.value = '';
+            filterPanelSearchClear.style.display = 'none';
+            exitFilterSearchMode();
+        });
+
+        filterPanelSearchInput.addEventListener('keydown', (e) => {
+            if (filterSearchResults.hidden) return;
+            const rows = Array.from(filterSearchResults.querySelectorAll('.filter-search-item'));
+            if (rows.length === 0) return;
+            const currentIdx = rows.findIndex(r => r.classList.contains('is-focused'));
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const nextIdx = e.key === 'ArrowDown'
+                    ? Math.min(rows.length - 1, currentIdx + 1)
+                    : Math.max(0, currentIdx - 1);
+                rows.forEach(r => r.classList.remove('is-focused'));
+                rows[nextIdx].classList.add('is-focused');
+                rows[nextIdx].scrollIntoView({ block: 'nearest' });
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                (rows[currentIdx] || rows[0]).click();
+            }
+        });
+
+        filterPanelSearchClear.addEventListener('click', function () {
+            filterPanelSearchInput.value = '';
+            this.style.display = 'none';
+            exitFilterSearchMode();
+            filterPanelSearchInput.focus();
+        });
+
         availabilitySegmentedBtns.forEach(btn => {
             btn.addEventListener('click', () => setAvailability(btn.dataset.filter));
         });
 
-        filtersTriggerBtn.addEventListener('click', toggleFilterPanel);
+        filtersTriggerBtn.addEventListener('click', () => toggleFilterPanel());
         filterPanelCloseBtn.addEventListener('click', closeFilterPanel);
         filterPanelDoneBtn.addEventListener('click', closeFilterPanel);
         filterPanelClearBtn.addEventListener('click', clearAllFilters);
+
+        secondaryFiltersContainer.addEventListener('click', (e) => {
+            const chip = e.target.closest('.filter-chip');
+            if (!chip) return;
+            toggleSecondaryFilter(chip.dataset.filterKey, chip.dataset.value);
+        });
 
         document.addEventListener('click', (e) => {
             if (!filterPanel.classList.contains('open')) return;
@@ -4554,18 +5315,28 @@ const paidData = [
         document.addEventListener('keydown', (e) => {
             if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
-                toggleFilterPanel();
+                if (filterPanel.classList.contains('open') && filterPanel.classList.contains('spotlight-mode')) {
+                    closeFilterPanel();
+                } else {
+                    openFilterPanel({ spotlight: true });
+                }
                 return;
             }
-            if (e.key === 'Escape' && filterPanel.classList.contains('open')) closeFilterPanel();
+            if (e.key === 'Escape' && filterPanel.classList.contains('open')) {
+                closeFilterPanel();
+            }
         });
 
         window.addEventListener('resize', () => {
             if (filterPanel.classList.contains('open')) positionFilterPanel();
+            updateAvailabilityUI();
         });
 
-        window.addEventListener('scroll', () => {
-            if (filterPanel.classList.contains('open')) closeFilterPanel();
+        window.addEventListener('scroll', (e) => {
+            if (!filterPanel.classList.contains('open')) return;
+            const target = e.target;
+            if (target && target.nodeType === 1 && filterPanel.contains(target)) return;
+            closeFilterPanel();
         }, { passive: true, capture: true });
 
         activeChipsContainer.addEventListener('click', (e) => {
@@ -4590,7 +5361,9 @@ const paidData = [
         });
 
         document.addEventListener('keydown', function (e) {
-            if (e.key === '/' && document.activeElement !== searchInput && !e.metaKey && !e.ctrlKey) {
+            const activeTag = document.activeElement && document.activeElement.tagName;
+            const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (document.activeElement && document.activeElement.isContentEditable);
+            if (e.key === '/' && !isTyping && !e.metaKey && !e.ctrlKey) {
                 e.preventDefault();
                 searchInput.focus();
             }
