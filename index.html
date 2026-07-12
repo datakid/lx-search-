@@ -5164,23 +5164,28 @@ const paidData = [
 
         function openFilterPanel(opts = {}) {
             const spotlight = !!opts.spotlight;
+            filterPanel.classList.remove('open');
             filterPanel.classList.toggle('spotlight-mode', spotlight);
             filterPanelOverlay.classList.toggle('spotlight', spotlight);
-            filterPanel.classList.add('open');
             filterPanel.setAttribute('aria-hidden', 'false');
             filtersTriggerBtn.setAttribute('aria-expanded', 'true');
-            filterPanelOverlay.classList.add('open');
             filterPanelSearchInput.value = '';
             filterPanelSearchClear.style.display = 'none';
             exitFilterSearchMode();
-            requestAnimationFrame(updateAvailabilityUI);
             if (spotlight) {
                 filterPanel.style.left = '';
                 filterPanel.style.top = '';
             } else {
                 positionFilterPanel();
-                requestAnimationFrame(positionFilterPanel);
             }
+            // Commit the closed (pre-transition) position/scale as a real rendered frame
+            // before adding .open — otherwise the transition can start from a stale
+            // transform (e.g. leftover anchored-mode position) and jump on open.
+            void filterPanel.offsetWidth;
+            filterPanel.classList.add('open');
+            filterPanelOverlay.classList.add('open');
+            requestAnimationFrame(updateAvailabilityUI);
+            if (!spotlight) requestAnimationFrame(positionFilterPanel);
             requestAnimationFrame(() => filterPanelSearchInput.focus({ preventScroll: true }));
         }
 
