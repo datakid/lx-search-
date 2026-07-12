@@ -881,6 +881,25 @@
             gap: 22px;
         }
 
+        .filter-panel.spotlight-mode .availability-card {
+            padding: 16px 16px 14px;
+            gap: 9px;
+            border-radius: 16px;
+        }
+
+        .filter-panel.spotlight-mode .availability-card-icon {
+            width: 21px;
+            height: 21px;
+        }
+
+        .filter-panel.spotlight-mode .availability-card-label {
+            font-size: 0.92rem;
+        }
+
+        .filter-panel.spotlight-mode .availability-card-count {
+            font-size: 0.75rem;
+        }
+
         @media (min-width: 700px) {
             .filter-panel.spotlight-mode #secondary-filters-container {
                 display: grid;
@@ -1057,49 +1076,94 @@
             gap: 12px;
         }
 
-        .segmented-control {
-            position: relative;
+        .availability-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .availability-card {
             display: flex;
-            background: var(--glass-bg-interactive);
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 7px;
             border: 1px solid var(--glass-border-interactive);
-            border-radius: var(--border-radius-md);
-            padding: 3px;
-            gap: 2px;
-        }
-
-        .segmented-indicator {
-            position: absolute;
-            top: 3px;
-            bottom: 3px;
-            left: 0;
-            border-radius: calc(var(--border-radius-md) - 3px);
-            background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
-            box-shadow: 0 4px 12px -3px color-mix(in srgb, var(--accent-color) 40%, transparent);
-            transition: transform var(--transition-speed-normal) var(--transition-easing-spring), width var(--transition-speed-normal) var(--transition-easing-spring);
-            z-index: 0;
-            pointer-events: none;
-        }
-
-        .segmented-btn {
-            position: relative;
-            z-index: 1;
-            flex: 1;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            padding: 8px 10px;
-            font-size: 0.82rem;
-            font-weight: 550;
-            border-radius: calc(var(--border-radius-md) - 3px);
+            background: var(--glass-bg-interactive);
+            border-radius: 14px;
+            padding: 12px 12px 11px;
             cursor: pointer;
-            transition: color var(--transition-speed-fast) var(--transition-easing);
+            text-align: left;
+            font-family: inherit;
+            transition: border-color var(--transition-speed-fast) var(--transition-easing), background-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-fast) var(--transition-easing);
 
-            &:not(.active):hover {
-                color: var(--text-primary);
+            &:hover {
+                background: var(--glass-bg-interactive-hover);
+                transform: translateY(-1px);
             }
 
-            &.active {
+            &:active {
+                transform: translateY(0) scale(0.98);
+            }
+        }
+
+        .availability-card-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--text-secondary);
+            transition: color var(--transition-speed-fast) var(--transition-easing);
+        }
+
+        .availability-card-label {
+            font-size: 0.83rem;
+            font-weight: 650;
+            color: var(--text-primary);
+        }
+
+        .availability-card-count {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            opacity: 0.7;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .availability-card[data-filter="all"].active {
+            background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+            border-color: transparent;
+            box-shadow: 0 4px 14px -4px color-mix(in srgb, var(--accent-color) 45%, transparent);
+
+            & .availability-card-icon,
+            & .availability-card-label {
                 color: var(--text-on-accent);
+            }
+
+            & .availability-card-count {
+                color: var(--text-on-accent);
+                opacity: 0.85;
+            }
+        }
+
+        .availability-card[data-filter="paid"].active {
+            background: var(--tag-paid-bg);
+            border-color: var(--tag-paid-border);
+
+            & .availability-card-icon,
+            & .availability-card-label,
+            & .availability-card-count {
+                color: var(--tag-paid-text);
+                opacity: 1;
+            }
+        }
+
+        .availability-card[data-filter="free"].active {
+            background: var(--tag-free-bg);
+            border-color: var(--tag-free-border);
+
+            & .availability-card-icon,
+            & .availability-card-label,
+            & .availability-card-count {
+                color: var(--tag-free-text);
+                opacity: 1;
             }
         }
 
@@ -3006,11 +3070,22 @@
                 <div class="filter-panel-browse" id="filter-panel-browse">
                     <div class="filter-section">
                         <div class="filter-section-head"><label>Availability</label></div>
-                        <div class="segmented-control" id="availability-segmented">
-                            <span class="segmented-indicator" id="availability-indicator" aria-hidden="true"></span>
-                            <button type="button" class="segmented-btn active" data-filter="all">All</button>
-                            <button type="button" class="segmented-btn" data-filter="paid">Paid</button>
-                            <button type="button" class="segmented-btn" data-filter="free">Free</button>
+                        <div class="availability-cards" id="availability-segmented">
+                            <button type="button" class="availability-card active" data-filter="all">
+                                <svg class="availability-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                                <span class="availability-card-label">All</span>
+                                <span class="availability-card-count" id="availability-count-all"></span>
+                            </button>
+                            <button type="button" class="availability-card" data-filter="paid">
+                                <svg class="availability-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41L11 3.83A2 2 0 009.59 3.24L4 3a1 1 0 00-1 1l.24 5.59a2 2 0 00.58 1.41l9.58 9.58a2 2 0 002.83 0l4.36-4.36a2 2 0 000-2.83z"/><circle cx="7.5" cy="7.5" r="1.4" fill="currentColor" stroke="none"/></svg>
+                                <span class="availability-card-label">Paid</span>
+                                <span class="availability-card-count" id="availability-count-paid"></span>
+                            </button>
+                            <button type="button" class="availability-card" data-filter="free">
+                                <svg class="availability-card-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v6.5a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 015 18.5V12"/><path d="M7.5 8a2.5 2.5 0 010-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 010 5"/></svg>
+                                <span class="availability-card-label">Free</span>
+                                <span class="availability-card-count" id="availability-count-free"></span>
+                            </button>
                         </div>
                     </div>
                     <div id="secondary-filters-container"></div>
@@ -4284,8 +4359,10 @@ const paidData = [
         const filterPanelSearchClear = document.getElementById('filter-panel-search-clear');
         const filterSearchResults = document.getElementById('filter-search-results');
         const filterPanelBrowse = document.getElementById('filter-panel-browse');
-        const availabilitySegmentedBtns = document.querySelectorAll('#availability-segmented .segmented-btn');
-        const availabilityIndicator = document.getElementById('availability-indicator');
+        const availabilitySegmentedBtns = document.querySelectorAll('#availability-segmented .availability-card');
+        const availabilityCountAll = document.getElementById('availability-count-all');
+        const availabilityCountPaid = document.getElementById('availability-count-paid');
+        const availabilityCountFree = document.getElementById('availability-count-free');
         const activeChipsContainer = document.getElementById('active-chips');
         const filtersBadge = document.getElementById('filters-badge');
         const searchHint = document.getElementById('search-hint');
@@ -4980,11 +5057,9 @@ const paidData = [
                 btn.classList.toggle('active', isActive);
                 btn.setAttribute('aria-pressed', String(isActive));
             });
-            const activeBtn = Array.from(availabilitySegmentedBtns).find(btn => btn.dataset.filter === currentFilterType);
-            if (activeBtn && availabilityIndicator) {
-                availabilityIndicator.style.width = `${activeBtn.offsetWidth}px`;
-                availabilityIndicator.style.transform = `translateX(${activeBtn.offsetLeft}px)`;
-            }
+            if (availabilityCountAll) availabilityCountAll.textContent = allDatasetNormalized.length.toLocaleString();
+            if (availabilityCountPaid) availabilityCountPaid.textContent = paidData.length.toLocaleString();
+            if (availabilityCountFree) availabilityCountFree.textContent = freeData.length.toLocaleString();
         }
 
         function getFilterDataSource() {
@@ -5102,11 +5177,11 @@ const paidData = [
             if (spotlight) {
                 filterPanel.style.left = '';
                 filterPanel.style.top = '';
-                requestAnimationFrame(() => filterPanelSearchInput.focus({ preventScroll: true }));
             } else {
                 positionFilterPanel();
                 requestAnimationFrame(positionFilterPanel);
             }
+            requestAnimationFrame(() => filterPanelSearchInput.focus({ preventScroll: true }));
         }
 
         function closeFilterPanel() {
