@@ -545,7 +545,8 @@
             transform: translateY(-50%);
             color: var(--text-secondary);
             pointer-events: none;
-            opacity: 0.75;
+            opacity: 0.95;
+            z-index: 2;
             transition: opacity var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
         }
 
@@ -999,6 +1000,7 @@
             height: 19px;
             color: var(--text-secondary);
             pointer-events: none;
+            z-index: 2;
             transition: color var(--transition-speed-fast) var(--transition-easing);
         }
 
@@ -3190,7 +3192,7 @@
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                     <input type="text" class="filter-panel-search-input" id="filter-panel-search-input"
-                        placeholder="Find a filter — tablet, paid, pfizer…" autocomplete="off"
+                        placeholder="Find a filter — Tab, Paid, Antibiotic…" autocomplete="off"
                         role="combobox" aria-expanded="false" aria-controls="filter-search-results" aria-autocomplete="list">
                     <button type="button" class="filter-panel-search-clear" id="filter-panel-search-clear" aria-label="Clear">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -18049,8 +18051,6 @@ const paidData = [
             if (filterPanel.classList.contains('open')) closeFilterPanel(); else openFilterPanel(opts);
         }
 
-        filterPanelOverlay.addEventListener('click', closeFilterPanel);
-
         filterPanel.addEventListener('transitionend', (e) => {
             if (e.target === filterPanel && e.propertyName === 'opacity') {
                 focusFilterPanelSearchWhenReady();
@@ -18296,12 +18296,17 @@ const paidData = [
         });
 
         document.addEventListener('keydown', function (e) {
-            const activeTag = document.activeElement && document.activeElement.tagName;
-            const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (document.activeElement && document.activeElement.isContentEditable);
-            if (e.key === '/' && !isTyping && !e.metaKey && !e.ctrlKey) {
+            if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
+            const activeEl = document.activeElement;
+            if (activeEl === searchInput || activeEl === filterPanelSearchInput) {
                 e.preventDefault();
-                searchInput.focus();
+                return;
             }
+            const activeTag = activeEl && activeEl.tagName;
+            const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (activeEl && activeEl.isContentEditable);
+            if (isTyping) return;
+            e.preventDefault();
+            searchInput.focus();
         });
 
         function searchOnline(term, provider) {
