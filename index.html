@@ -18029,9 +18029,6 @@ const paidData = [
             } else {
                 positionFilterPanel();
             }
-            // Commit the closed (pre-transition) position/scale as a real rendered frame
-            // before adding .open — otherwise the transition can start from a stale
-            // transform (e.g. leftover anchored-mode position) and jump on open.
             void filterPanel.offsetWidth;
             filterPanel.classList.add('open');
             filterPanelOverlay.classList.add('open');
@@ -18244,12 +18241,6 @@ const paidData = [
             toggleSecondaryFilter(chip.dataset.filterKey, chip.dataset.value);
         });
 
-        document.addEventListener('click', (e) => {
-            if (!filterPanel.classList.contains('open')) return;
-            if (filterPanel.contains(e.target) || filtersTriggerBtn.contains(e.target)) return;
-            closeFilterPanel();
-        });
-
         document.addEventListener('keydown', (e) => {
             if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
@@ -18260,7 +18251,13 @@ const paidData = [
                 }
                 return;
             }
-            if (e.key === 'Escape' && filterPanel.classList.contains('open')) {
+            if (filterPanel.classList.contains('open') && (e.key === 'Escape' || e.key === 'Backspace')) {
+                if (e.key === 'Backspace') {
+                    const activeEl = document.activeElement;
+                    const isDeletingText = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable) &&
+                        String(activeEl.value ?? activeEl.textContent ?? '').length > 0;
+                    if (isDeletingText) return;
+                }
                 closeFilterPanel();
             }
         });
