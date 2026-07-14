@@ -18038,6 +18038,7 @@ const paidData = [
             if (!spotlight) requestAnimationFrame(positionFilterPanel);
             requestAnimationFrame(focusFilterPanelSearchWhenReady);
             setTimeout(focusFilterPanelSearchWhenReady, 320);
+            document.body.style.overflow = 'hidden';
         }
 
         function closeFilterPanel() {
@@ -18045,6 +18046,7 @@ const paidData = [
             filterPanel.setAttribute('aria-hidden', 'true');
             filtersTriggerBtn.setAttribute('aria-expanded', 'false');
             filterPanelOverlay.classList.remove('open', 'spotlight');
+            document.body.style.overflow = '';
         }
 
         function toggleFilterPanel(opts) {
@@ -18266,13 +18268,6 @@ const paidData = [
             if (filterPanel.classList.contains('open')) positionFilterPanel();
             updateAvailabilityUI();
         });
-
-        window.addEventListener('scroll', (e) => {
-            if (!filterPanel.classList.contains('open')) return;
-            const target = e.target;
-            if (target && target.nodeType === 1 && filterPanel.contains(target)) return;
-            closeFilterPanel();
-        }, { passive: true, capture: true });
 
         activeChipsContainer.addEventListener('click', (e) => {
             const clearAllBtn = e.target.closest('#clear-all-chips-btn');
