@@ -536,6 +536,14 @@
             }
         }
 
+        .search-icon-gradient-stop-start {
+            stop-color: var(--text-primary);
+        }
+
+        .search-icon-gradient-stop-end {
+            stop-color: var(--accent-color);
+        }
+
         .search-icon-svg {
             position: absolute;
             width: 21px;
@@ -543,16 +551,15 @@
             inset-inline-start: 20px;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
+            stroke: url(#search-icon-gradient);
             pointer-events: none;
             opacity: 0.95;
             z-index: 2;
-            transition: opacity var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+            transition: opacity var(--transition-speed-fast) var(--transition-easing);
         }
 
         .search-input:focus~.search-icon-svg {
             opacity: 1;
-            color: var(--accent-color);
         }
 
         .clear-btn {
@@ -675,6 +682,7 @@
                 width: 16px;
                 height: 16px;
                 flex-shrink: 0;
+                stroke: url(#search-icon-gradient);
             }
 
             &:hover {
@@ -804,136 +812,81 @@
         }
 
         .filter-panel-overlay {
-            display: none;
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--side-panel-overlay-bg);
+            z-index: 1150;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition-speed-normal) var(--transition-easing), visibility var(--transition-speed-normal);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+        }
+
+        .filter-panel-overlay.open {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
         }
 
         .filter-panel {
             position: fixed;
             top: 0;
-            left: 0;
+            inset-inline-end: -420px;
             width: min(400px, 92vw);
-            max-height: min(76vh, 620px);
+            height: 100vh;
             background: var(--panel-bg);
             backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
             -webkit-backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
-            border: 1px solid var(--panel-border);
-            border-radius: var(--border-radius-lg);
-            box-shadow: 0 25px 60px -15px var(--shadow-color-strong), 0 10px 30px -10px var(--shadow-color-medium), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            border-inline-start: 1px solid var(--panel-border);
+            box-shadow: -8px 0px 40px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.03);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-8px) scale(0.98);
-            transform-origin: top right;
-            transition: opacity var(--transition-speed-normal) var(--transition-easing), transform var(--transition-speed-normal) var(--transition-easing-spring), visibility var(--transition-speed-normal);
+            transition: inset-inline-end 0.4s cubic-bezier(0.4, 0, 0.2, 1), inset-inline-start 0.4s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-speed-normal) var(--transition-easing), border-color var(--transition-speed-normal) var(--transition-easing);
             z-index: 1200;
-            pointer-events: none;
 
             &::before {
                 content: "";
                 position: absolute;
-                inset: 0 0 auto 0;
-                height: 1px;
-                background: linear-gradient(90deg, transparent 0%, rgba(var(--accent-color-rgb), 0.5) 50%, transparent 100%);
+                inset: 0 auto 0 0;
+                width: 1px;
+                background: linear-gradient(180deg, transparent 0%, rgba(var(--accent-color-rgb), 0.5) 50%, transparent 100%);
                 opacity: 0.6;
                 pointer-events: none;
             }
         }
 
         .filter-panel.open {
-            opacity: 1;
-            visibility: visible;
-            transform: none;
-            pointer-events: auto;
+            inset-inline-end: 0;
         }
 
-        .filter-panel-overlay.spotlight {
-            display: block;
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 12%, rgba(var(--accent-color-rgb), 0.07), transparent 55%), var(--side-panel-overlay-bg);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity var(--transition-speed-normal) var(--transition-easing), visibility var(--transition-speed-normal);
-            z-index: 1150;
-        }
-
-        .filter-panel-overlay.spotlight.open {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .filter-panel.spotlight-mode {
-            top: min(9vh, 92px) !important;
-            left: 50% !important;
-            width: min(680px, 94vw);
-            max-height: min(80vh, 720px);
-            border-radius: 28px;
-            transform: translate(-50%, -10px) scale(0.97);
-            transform-origin: top center;
-            box-shadow: 0 40px 90px -20px var(--shadow-color-strong), 0 16px 40px -12px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.06), 0 30px 70px -25px rgba(var(--accent-color-rgb), 0.22);
+        .filter-panel.dock-left {
+            inset-inline-end: auto;
+            inset-inline-start: -420px;
+            border-inline-start: none;
+            border-inline-end: 1px solid var(--panel-border);
+            box-shadow: 8px 0px 40px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.03);
 
             &::before {
-                height: 1.5px;
-                opacity: 0.85;
-                background: linear-gradient(90deg, transparent 0%, rgba(var(--accent-color-rgb), 0.75) 50%, transparent 100%);
+                inset: 0 0 0 auto;
             }
         }
 
-        .filter-panel.spotlight-mode.open {
-            transform: translate(-50%, 0) scale(1);
+        .filter-panel.dock-left.open {
+            inset-inline-start: 0;
         }
 
-        .filter-panel.spotlight-mode .filter-panel-search-input {
-            height: 58px;
-            font-size: 1.05rem;
-        }
-
-        .filter-panel.spotlight-mode .filter-panel-body {
-            padding: 20px 26px 24px;
-            gap: 22px;
-        }
-
-        .filter-panel.spotlight-mode .availability-card {
-            padding: 12px 14px 12px 12px;
-            gap: 12px;
-            border-radius: 20px;
-        }
-
-        .filter-panel.spotlight-mode .availability-card-icon-wrap {
-            width: 38px;
-            height: 38px;
-            border-radius: 13px;
-        }
-
-        .filter-panel.spotlight-mode .availability-card-icon {
-            width: 19px;
-            height: 19px;
-        }
-
-        .filter-panel.spotlight-mode .availability-card-label {
-            font-size: 0.92rem;
-        }
-
-        .filter-panel.spotlight-mode .availability-card-count {
-            font-size: 0.75rem;
-        }
-
-        @media (min-width: 700px) {
-            .filter-panel.spotlight-mode #secondary-filters-container {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 14px 16px;
+        @media (min-width: 769px) {
+            .filter-panel-overlay,
+            .side-panel-overlay {
+                opacity: 0 !important;
+                visibility: hidden !important;
+                pointer-events: none !important;
             }
-        }
-
-        .filter-panel.spotlight-mode .filter-search-results {
-            max-height: 480px;
         }
 
         .filter-panel-header {
@@ -941,17 +894,68 @@
             align-items: flex-start;
             justify-content: space-between;
             gap: 10px;
-            padding: 16px 18px;
-            border-bottom: 1px solid var(--glass-border-main);
+            padding: 1.35rem 1.5rem;
+            border-bottom: 1px solid var(--panel-border);
+            background: linear-gradient(180deg, var(--bg-gradient-start) 0%, color-mix(in srgb, var(--bg-gradient-start) 60%, var(--bg-gradient-mid) 40%) 100%);
             flex-shrink: 0;
+            transition: background var(--transition-speed-normal) var(--transition-easing), border-color var(--transition-speed-normal) var(--transition-easing);
+            box-shadow: 0 6px 16px -10px var(--shadow-color-medium);
+            position: sticky;
+            top: 0;
+            z-index: 2;
+        }
+
+        .filter-panel-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .panel-swap-side-btn {
+            background: rgba(var(--accent-color-rgb), 0.04);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), border-color var(--transition-speed-fast) var(--transition-easing), box-shadow var(--transition-speed-fast) var(--transition-easing);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background-color: rgba(var(--accent-color-rgb), 0.12);
+                color: var(--accent-color);
+                border-color: rgba(var(--accent-color-rgb), 0.2);
+                box-shadow: 0 4px 10px -2px rgba(var(--accent-color-rgb), 0.18);
+                transform: scale(1.08);
+            }
+
+            &:active {
+                transform: scale(0.98);
+            }
+
+            & svg {
+                width: 17px;
+                height: 17px;
+                stroke-width: 2.2;
+            }
         }
 
         .filter-panel-heading {
             & h3 {
-                font-size: 0.98rem;
-                font-weight: 700;
+                font-size: 1.15rem;
+                font-weight: 650;
                 margin: 0;
+                letter-spacing: -0.015em;
                 color: var(--text-primary);
+                background: linear-gradient(120deg, var(--text-primary) 0%, var(--accent-color) 100%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
 
             & p {
@@ -963,26 +967,36 @@
         }
 
         .filter-panel-close-btn {
-            width: 28px;
-            height: 28px;
+            background: rgba(var(--accent-color-rgb), 0.04);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.08);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), border-color var(--transition-speed-fast) var(--transition-easing), box-shadow var(--transition-speed-fast) var(--transition-easing);
+            width: 32px;
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
 
             & svg {
-                width: 16px;
-                height: 16px;
+                width: 18px;
+                height: 18px;
+                stroke-width: 2.2;
+                transition: transform var(--transition-speed-fast) var(--transition-easing-spring);
             }
 
             &:hover {
-                background: rgba(var(--accent-color-rgb), 0.12);
-                color: var(--text-primary);
+                background-color: rgba(var(--accent-color-rgb), 0.12);
+                color: var(--accent-color);
+                transform: scale(1.12) rotate(90deg);
+                border-color: rgba(var(--accent-color-rgb), 0.2);
+                box-shadow: 0 4px 10px -2px rgba(var(--accent-color-rgb), 0.18);
+            }
+
+            &:active {
+                transform: scale(1) rotate(90deg);
             }
         }
 
@@ -998,14 +1012,15 @@
             inset-inline-start: 16px;
             width: 19px;
             height: 19px;
-            color: var(--text-secondary);
+            stroke: url(#search-icon-gradient);
             pointer-events: none;
             z-index: 2;
-            transition: color var(--transition-speed-fast) var(--transition-easing);
+            opacity: 0.85;
+            transition: opacity var(--transition-speed-fast) var(--transition-easing);
         }
 
         .filter-panel-search:focus-within .filter-panel-search-icon {
-            color: var(--accent-color);
+            opacity: 1;
         }
 
         .filter-panel-search-input {
@@ -1067,6 +1082,7 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
+            flex: 1 1 auto;
             scrollbar-width: thin;
             scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 
@@ -2204,7 +2220,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 20px -5px var(--shadow-color-medium), 0 2px 8px -2px var(--shadow-color-soft), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), inset-inline-start var(--transition-speed-fast) var(--transition-easing), inset-inline-end var(--transition-speed-fast) var(--transition-easing);
 
             &:hover {
                 background: var(--glass-bg-interactive-hover);
@@ -2230,6 +2246,11 @@
             }
         }
 
+        .side-panel-toggle.dock-right {
+            inset-inline-start: auto;
+            inset-inline-end: 1.25rem;
+        }
+
         .side-panel {
             position: fixed;
             top: 0;
@@ -2242,7 +2263,7 @@
             z-index: 1005;
             display: flex;
             flex-direction: column;
-            transition: inset-inline-start 0.4s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-speed-normal) var(--transition-easing), border-color var(--transition-speed-normal) var(--transition-easing), box-shadow var(--transition-speed-normal) var(--transition-easing);
+            transition: inset-inline-start 0.4s cubic-bezier(0.4, 0, 0.2, 1), inset-inline-end 0.4s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-speed-normal) var(--transition-easing), border-color var(--transition-speed-normal) var(--transition-easing), box-shadow var(--transition-speed-normal) var(--transition-easing);
             color: var(--text-primary);
             overflow-y: auto;
             backdrop-filter: blur(16px) saturate(var(--glass-saturation));
@@ -2251,6 +2272,18 @@
             &.open {
                 inset-inline-start: 0;
             }
+        }
+
+        .side-panel.dock-right {
+            inset-inline-start: auto;
+            inset-inline-end: -360px;
+            border-inline-end: none;
+            border-inline-start: 1px solid var(--panel-border);
+            box-shadow: -8px 0px 40px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.03);
+        }
+
+        .side-panel.dock-right.open {
+            inset-inline-end: 0;
         }
 
         .side-panel-header {
@@ -2277,6 +2310,13 @@
                 background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
+        }
+
+        .side-panel-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
         }
 
         .close-panel-btn {
@@ -2849,26 +2889,6 @@
                 gap: 8px;
             }
 
-            .filter-panel-overlay {
-                display: block;
-                position: fixed;
-                inset: 0;
-                background: var(--side-panel-overlay-bg);
-                backdrop-filter: blur(4px);
-                -webkit-backdrop-filter: blur(4px);
-                opacity: 0;
-                visibility: hidden;
-                transition: opacity var(--transition-speed-normal) var(--transition-easing), visibility var(--transition-speed-normal);
-                z-index: 1150;
-                pointer-events: none;
-            }
-
-            .filter-panel-overlay.open {
-                opacity: 1;
-                visibility: visible;
-                pointer-events: auto;
-            }
-
             .filter-panel {
                 left: 0 !important;
                 right: 0;
@@ -2876,6 +2896,7 @@
                 top: auto !important;
                 width: 100%;
                 max-width: 100%;
+                height: auto;
                 max-height: 82vh;
                 border-radius: 22px 22px 0 0;
                 transform: translateY(100%);
@@ -2892,21 +2913,6 @@
 
             .filter-chip-grid.scrollable {
                 max-height: 220px;
-            }
-
-            .filter-panel.spotlight-mode #secondary-filters-container {
-                display: flex;
-                flex-direction: column;
-            }
-
-            .filter-panel.spotlight-mode .filter-panel-body {
-                padding: 16px 18px;
-                gap: 16px;
-            }
-
-            .filter-panel.spotlight-mode .filter-panel-search-input {
-                height: 50px;
-                font-size: 1rem;
             }
 
             .title {
@@ -3088,6 +3094,14 @@
 </head>
 
 <body>
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <linearGradient id="search-icon-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop class="search-icon-gradient-stop-start" offset="0%" />
+                <stop class="search-icon-gradient-stop-end" offset="100%" />
+            </linearGradient>
+        </defs>
+    </svg>
     <div class="theme-switcher">
         <button id="theme-light-btn" aria-label="Switch to light theme" title="Light Mode">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -3126,12 +3140,19 @@
         <aside id="side-panel" class="side-panel" aria-hidden="true">
             <div class="side-panel-header">
                 <h3>Activity & Data</h3>
-                <button id="close-side-panel-btn" class="close-panel-btn" aria-label="Close panel">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" width="20" height="20">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <div class="side-panel-header-actions">
+                    <button type="button" id="swap-side-panel-btn" class="panel-swap-side-btn" aria-label="Move this panel to the other side">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7l-4 4m0 0l4 4m-4-4h13m-1 5l4-4m0 0l-4-4m4 4H6" />
+                        </svg>
+                    </button>
+                    <button id="close-side-panel-btn" class="close-panel-btn" aria-label="Close panel">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" width="20" height="20">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class="side-panel-content">
                 <section id="pinned-items-section">
@@ -3177,13 +3198,20 @@
                     <h3>Filters</h3>
                     <p>Jump to a filter by typing, or tap to toggle</p>
                 </div>
-                <button type="button" class="filter-panel-close-btn" id="filter-panel-close-btn"
-                    aria-label="Close filters">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                <div class="filter-panel-header-actions">
+                    <button type="button" id="swap-filter-panel-btn" class="panel-swap-side-btn" aria-label="Move this panel to the other side">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 7l-4 4m0 0l4 4m-4-4h13m-1 5l4-4m0 0l-4-4m4 4H6" />
+                        </svg>
+                    </button>
+                    <button type="button" class="filter-panel-close-btn" id="filter-panel-close-btn"
+                        aria-label="Close filters">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
             <div class="filter-panel-body" id="filter-panel-body">
                 <div class="filter-panel-search">
@@ -17211,6 +17239,8 @@ const paidData = [
         const closeSidePanelBtn = document.getElementById('close-side-panel-btn');
         const sidePanel = document.getElementById('side-panel');
         const sidePanelOverlay = document.getElementById('side-panel-overlay');
+        const swapSidePanelBtn = document.getElementById('swap-side-panel-btn');
+        const swapFilterPanelBtn = document.getElementById('swap-filter-panel-btn');
         const pinnedItemsList = document.getElementById('pinned-items-list');
         const searchHistoryList = document.getElementById('search-history-list');
         const clearPinnedBtn = document.getElementById('clear-pinned-btn');
@@ -17996,61 +18026,39 @@ const paidData = [
             filtersBadge.hidden = badgeCount === 0;
         }
 
-        function positionFilterPanel() {
-            if (window.innerWidth <= 480 || filterPanel.classList.contains('spotlight-mode')) return;
-            const rect = filtersTriggerBtn.getBoundingClientRect();
-            const panelWidth = filterPanel.offsetWidth || 400;
-            const viewportPadding = 12;
-            let left = rect.right - panelWidth;
-            left = Math.max(viewportPadding, Math.min(left, window.innerWidth - panelWidth - viewportPadding));
-            let top = rect.bottom + 10;
-            const maxTop = window.innerHeight - viewportPadding - 100;
-            if (top > maxTop) top = Math.max(viewportPadding, rect.top - 10 - filterPanel.offsetHeight);
-            filterPanel.style.left = `${left}px`;
-            filterPanel.style.top = `${top}px`;
-        }
-
         function focusFilterPanelSearchWhenReady() {
             if (!filterPanel.classList.contains('open')) return;
             filterPanelSearchInput.focus({ preventScroll: true });
         }
 
-        function openFilterPanel(opts = {}) {
-            const spotlight = !!opts.spotlight;
-            filterPanel.classList.remove('open');
-            filterPanel.classList.toggle('spotlight-mode', spotlight);
-            filterPanelOverlay.classList.toggle('spotlight', spotlight);
+        function isFilterPanelModal() {
+            return window.matchMedia('(max-width: 768px)').matches;
+        }
+
+        function openFilterPanel() {
             filterPanel.setAttribute('aria-hidden', 'false');
             filtersTriggerBtn.setAttribute('aria-expanded', 'true');
             filterPanelSearchInput.value = '';
             filterPanelSearchClear.style.display = 'none';
             exitFilterSearchMode();
-            if (spotlight) {
-                filterPanel.style.left = '';
-                filterPanel.style.top = '';
-            } else {
-                positionFilterPanel();
-            }
-            void filterPanel.offsetWidth;
             filterPanel.classList.add('open');
             filterPanelOverlay.classList.add('open');
             requestAnimationFrame(updateAvailabilityUI);
-            if (!spotlight) requestAnimationFrame(positionFilterPanel);
             requestAnimationFrame(focusFilterPanelSearchWhenReady);
-            setTimeout(focusFilterPanelSearchWhenReady, 320);
-            document.body.style.overflow = 'hidden';
+            setTimeout(focusFilterPanelSearchWhenReady, 420);
+            if (isFilterPanelModal()) document.body.style.overflow = 'hidden';
         }
 
         function closeFilterPanel() {
             filterPanel.classList.remove('open');
             filterPanel.setAttribute('aria-hidden', 'true');
             filtersTriggerBtn.setAttribute('aria-expanded', 'false');
-            filterPanelOverlay.classList.remove('open', 'spotlight');
+            filterPanelOverlay.classList.remove('open');
             document.body.style.overflow = '';
         }
 
-        function toggleFilterPanel(opts) {
-            if (filterPanel.classList.contains('open')) closeFilterPanel(); else openFilterPanel(opts);
+        function toggleFilterPanel() {
+            if (filterPanel.classList.contains('open')) closeFilterPanel(); else openFilterPanel();
         }
 
         filterPanel.addEventListener('transitionend', (e) => {
@@ -18235,6 +18243,7 @@ const paidData = [
         filtersTriggerBtn.addEventListener('click', () => toggleFilterPanel());
         filterPanelCloseBtn.addEventListener('click', closeFilterPanel);
         filterPanelDoneBtn.addEventListener('click', closeFilterPanel);
+        filterPanelOverlay.addEventListener('click', closeFilterPanel);
         filterPanelClearBtn.addEventListener('click', clearAllFilters);
 
         secondaryFiltersContainer.addEventListener('click', (e) => {
@@ -18246,11 +18255,7 @@ const paidData = [
         document.addEventListener('keydown', (e) => {
             if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
-                if (filterPanel.classList.contains('open') && filterPanel.classList.contains('spotlight-mode')) {
-                    closeFilterPanel();
-                } else {
-                    openFilterPanel({ spotlight: true });
-                }
+                toggleFilterPanel();
                 return;
             }
             if (filterPanel.classList.contains('open') && (e.key === 'Escape' || e.key === 'Backspace')) {
@@ -18265,7 +18270,6 @@ const paidData = [
         });
 
         window.addEventListener('resize', () => {
-            if (filterPanel.classList.contains('open')) positionFilterPanel();
             updateAvailabilityUI();
         });
 
@@ -18718,6 +18722,38 @@ const paidData = [
                 closeSidePanel();
             }
         });
+
+        function getStoredPanelSides() {
+            try {
+                const raw = localStorage.getItem('panelDockSides');
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed && (parsed.history === 'left' || parsed.history === 'right') &&
+                    (parsed.filter === 'left' || parsed.filter === 'right') &&
+                    parsed.history !== parsed.filter) {
+                    return parsed;
+                }
+            } catch (e) { /* ignore malformed storage */ }
+            return null;
+        }
+
+        let panelSides = getStoredPanelSides() || { history: 'left', filter: 'right' };
+
+        function applyPanelSides() {
+            sidePanel.classList.toggle('dock-right', panelSides.history === 'right');
+            toggleSidePanelBtn.classList.toggle('dock-right', panelSides.history === 'right');
+            filterPanel.classList.toggle('dock-left', panelSides.filter === 'left');
+        }
+
+        function swapPanelSides() {
+            panelSides = { history: panelSides.filter, filter: panelSides.history };
+            try { localStorage.setItem('panelDockSides', JSON.stringify(panelSides)); } catch (e) { /* ignore */ }
+            applyPanelSides();
+        }
+
+        applyPanelSides();
+        swapSidePanelBtn.addEventListener('click', swapPanelSides);
+        swapFilterPanelBtn.addEventListener('click', swapPanelSides);
 
         function showCustomConfirm(message, callback, options = {}) {
             customConfirmMessage.textContent = message;
