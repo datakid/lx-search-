@@ -947,6 +947,8 @@
 
         .filter-panel-heading {
             & h3 {
+                position: relative;
+                isolation: isolate;
                 font-size: 1.15rem;
                 font-weight: 650;
                 margin: 0;
@@ -3416,7 +3418,7 @@
         <div class="filter-panel" id="filter-panel" role="dialog" aria-hidden="true" aria-label="Filter medications">
             <div class="filter-panel-header">
                 <div class="filter-panel-heading">
-                    <h3>Filters</h3>
+                    <h3>Filter Options</h3>
                     <p>Jump to a filter by typing, or tap to toggle</p>
                 </div>
                 <div class="filter-panel-header-actions">
