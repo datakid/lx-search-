@@ -1346,9 +1346,15 @@
             display: flex;
             flex-direction: column;
             padding: 13px 14px 15px;
-            border-radius: 18px;
-            background: var(--glass-bg-interactive);
-            border: 1px solid var(--glass-border-main);
+            border-radius: var(--border-radius-md);
+            background: rgba(var(--accent-color-rgb), 0.025);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.09);
+            transition: border-color var(--transition-speed-normal) var(--transition-easing), background-color var(--transition-speed-normal) var(--transition-easing);
+
+            &:focus-within,
+            &:hover {
+                border-color: rgba(var(--accent-color-rgb), 0.18);
+            }
         }
 
         .filter-section-head {
@@ -1420,7 +1426,7 @@
             opacity: 0.65;
             padding: 12px 8px 5px;
             margin-top: 4px;
-            border-top: 1px solid var(--glass-border-main);
+            border-top: 1px solid rgba(var(--accent-color-rgb), 0.08);
 
             &:first-child {
                 padding-top: 2px;
@@ -2249,6 +2255,7 @@
         .side-panel-toggle.dock-right {
             inset-inline-start: auto;
             inset-inline-end: 1.25rem;
+            top: 5.25rem;
         }
 
         .side-panel {
@@ -2260,7 +2267,7 @@
             background: var(--panel-bg);
             border-inline-end: 1px solid var(--panel-border);
             box-shadow: 8px 0px 40px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.03);
-            z-index: 1005;
+            z-index: 1200;
             display: flex;
             flex-direction: column;
             transition: inset-inline-start 0.4s cubic-bezier(0.4, 0, 0.2, 1), inset-inline-end 0.4s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition-speed-normal) var(--transition-easing), border-color var(--transition-speed-normal) var(--transition-easing), box-shadow var(--transition-speed-normal) var(--transition-easing);
@@ -2529,6 +2536,51 @@
 
             &:active {
                 transform: translateY(-1px) scale(0.98);
+            }
+        }
+
+        .panel-section-hint {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            opacity: 0.75;
+            margin: -0.4rem 0 0;
+        }
+
+        .engine-option-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.65rem;
+            margin-top: 0.85rem;
+        }
+
+        .engine-option-btn {
+            padding: 0.65rem 0.5rem;
+            background-color: var(--glass-bg-interactive);
+            border: 1px solid rgba(var(--accent-color-rgb), 0.12);
+            color: var(--text-secondary);
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 550;
+            text-align: center;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing);
+
+            &:hover {
+                background-color: var(--glass-bg-interactive-hover);
+                color: var(--text-primary);
+                border-color: rgba(var(--accent-color-rgb), 0.25);
+                transform: translateY(-2px);
+            }
+
+            &.active {
+                color: var(--accent-color);
+                background-color: var(--accent-bg-active);
+                border-color: rgba(var(--accent-color-rgb), 0.4);
+                box-shadow: 0 0 0 1px rgba(var(--accent-color-rgb), 0.15);
+            }
+
+            &:active {
+                transform: translateY(0) scale(0.98);
             }
         }
 
@@ -3186,6 +3238,17 @@
                     <h4>Manage All Data</h4>
                     <button id="export-all-data-btn" class="panel-action-btn">Export All Data to CSV</button>
                     <button id="view-in-sheets-btn" class="panel-action-btn">View Source Data in Sheets</button>
+                </section>
+                <hr class="panel-divider">
+                <section id="search-engine-section">
+                    <h4>Preferred Search Engine</h4>
+                    <p class="panel-section-hint">Used by the "Web" and "Images" online search buttons.</p>
+                    <div class="engine-option-grid" id="engine-option-grid">
+                        <button type="button" class="engine-option-btn" data-engine="google">Google</button>
+                        <button type="button" class="engine-option-btn" data-engine="ddg">DuckDuckGo</button>
+                        <button type="button" class="engine-option-btn" data-engine="brave">Brave</button>
+                        <button type="button" class="engine-option-btn" data-engine="startpage">Startpage</button>
+                    </div>
                 </section>
             </div>
         </aside>
@@ -17241,6 +17304,7 @@ const paidData = [
         const sidePanelOverlay = document.getElementById('side-panel-overlay');
         const swapSidePanelBtn = document.getElementById('swap-side-panel-btn');
         const swapFilterPanelBtn = document.getElementById('swap-filter-panel-btn');
+        const themeSwitcherEl = document.querySelector('.theme-switcher');
         const pinnedItemsList = document.getElementById('pinned-items-list');
         const searchHistoryList = document.getElementById('search-history-list');
         const clearPinnedBtn = document.getElementById('clear-pinned-btn');
@@ -17662,8 +17726,8 @@ const paidData = [
                         <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="perplexity" title="Search Perplexity">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google" title="Search Google">
-                            <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.84 0-5.22-1.9-6.08-4.48H2.15v2.84C3.97 20.98 7.72 23 12 23z"/><path d="M5.92 14.01c-.21-.66-.33-1.34-.33-2.04s.12-1.38.33-2.04V7.13H2.15C1.43 8.53 1 10.22 1 12s.43 3.47 1.15 4.87l3.77-2.86z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.72 1 3.97 3.02 2.15 7.13l3.77 2.84C6.78 7.28 9.16 5.38 12 5.38z"/></svg>
+                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google" title="Search the web">
+                            <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><path stroke-linecap="round" d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"/></svg>
                         </button>
                         <span class="item-type-tag ${safeItemType}">${safeItemType}</span>
                     </div>
@@ -17783,7 +17847,7 @@ const paidData = [
                             <p>No local medications found for "<strong>${escapeHTML(query)}</strong>".</p>
                             <p>Try searching online:</p>
                             <div class="online-search-options">
-                                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="google"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.84 0-5.22-1.9-6.08-4.48H2.15v2.84C3.97 20.98 7.72 23 12 23z"/><path d="M5.92 14.01c-.21-.66-.33-1.34-.33-2.04s.12-1.38.33-2.04V7.13H2.15C1.43 8.53 1 10.22 1 12s.43 3.47 1.15 4.87l3.77-2.86z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.72 1 3.97 3.02 2.15 7.13l3.77 2.84C6.78 7.28 9.16 5.38 12 5.38z"/></svg> Google </button>
+                                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="google"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><path stroke-linecap="round" d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"/></svg> Web </button>
                                 <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="google-images"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg> Images </button>
                                 <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="drugs.com"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 6.5C17.5 4.57 15.93 3 14 3H10C8.07 3 6.5 4.57 6.5 6.5V17.5C6.5 19.43 8.07 21 10 21H14C15.93 21 17.5 19.43 17.5 17.5V6.5ZM8.5 6.5C8.5 5.67 9.17 5 10 5H12V12H8.5V6.5ZM15.5 17.5C15.5 18.33 14.83 19 14 19H10C9.17 19 8.5 18.33 8.5 17.5V14H15.5V17.5ZM15.5 12H12V5H14C14.83 5 15.5 5.67 15.5 6.5V12Z"/></svg> Rx </button>
                                 <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="perplexity"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg> P.AI </button>
@@ -17968,6 +18032,7 @@ const paidData = [
             const activeEl = document.activeElement;
             const shouldRefocus = !!(activeEl && secondaryFiltersContainer.contains(activeEl));
             activeSecondaryFilters[key] = (activeSecondaryFilters[key] === value) ? '' : value;
+            invalidateFilterSearchIndex();
             createSecondaryFiltersUI();
             renderActiveChips();
             performSearch(searchInput.value.trim(), 'filter_change');
@@ -17982,6 +18047,7 @@ const paidData = [
             currentFilterType = type;
             updateAvailabilityUI();
             activeSecondaryFilters = {};
+            invalidateFilterSearchIndex();
             createSecondaryFiltersUI();
             renderActiveChips();
             performSearch(searchInput.value.trim(), 'filter_change');
@@ -17990,6 +18056,7 @@ const paidData = [
         function clearAllFilters() {
             currentFilterType = 'all';
             activeSecondaryFilters = {};
+            invalidateFilterSearchIndex();
             updateAvailabilityUI();
             createSecondaryFiltersUI();
             renderActiveChips();
@@ -18055,6 +18122,9 @@ const paidData = [
             filtersTriggerBtn.setAttribute('aria-expanded', 'false');
             filterPanelOverlay.classList.remove('open');
             document.body.style.overflow = '';
+            if (document.activeElement === filterPanelSearchInput) {
+                filterPanelSearchInput.blur();
+            }
         }
 
         function toggleFilterPanel() {
@@ -18091,7 +18161,16 @@ const paidData = [
             searchInput.focus();
         });
 
+        let filterSearchIndexCache = null;
+        let filterSearchFuseCache = null;
+
+        function invalidateFilterSearchIndex() {
+            filterSearchIndexCache = null;
+            filterSearchFuseCache = null;
+        }
+
         function buildFilterSearchIndex() {
+            if (filterSearchIndexCache) return filterSearchIndexCache;
             const entries =[
                 { group: 'Availability', label: 'All medications', count: allDatasetNormalized.length, isActive: () => currentFilterType === 'all', apply: () => setAvailability('all') },
                 { group: 'Availability', label: 'Paid', count: paidData.length, isActive: () => currentFilterType === 'paid', apply: () => setAvailability('paid') },
@@ -18114,33 +18193,29 @@ const paidData = [
                     });
                 });
             }
+            filterSearchIndexCache = entries;
             return entries;
         }
 
-        function fuzzyMatchScore(label, q) {
-            const l = label.toLowerCase();
-            const idx = l.indexOf(q);
-            if (idx !== -1) return idx === 0 ? 0 : 20 + idx;
-            let li = 0;
-            for (let qi = 0; qi < q.length; qi++) {
-                li = l.indexOf(q[qi], li);
-                if (li === -1) return null;
-                li++;
-            }
-            return 1000 + label.length;
+        function getFilterSearchFuse(entries) {
+            if (filterSearchFuseCache) return filterSearchFuseCache;
+            filterSearchFuseCache = new Fuse(entries, {
+                keys: ['label'],
+                includeScore: true,
+                minMatchCharLength: 1,
+                ignoreLocation: true,
+                threshold: 0.4,
+                distance: 100
+            });
+            return filterSearchFuseCache;
         }
 
         function rankFilterEntries(query, entries) {
-            const q = query.trim().toLowerCase();
+            const q = query.trim();
             if (!q) return[];
-            const scored =[];
-            entries.forEach(entry => {
-                const score = fuzzyMatchScore(entry.label, q);
-                if (score === null) return;
-                scored.push({ entry, score });
-            });
-            scored.sort((a, b) => a.score - b.score || a.entry.label.length - b.entry.label.length);
-            return scored.slice(0, 40).map(s => s.entry);
+            const fuse = getFilterSearchFuse(entries);
+            const results = fuse.search(q, { limit: 40 });
+            return results.map(r => r.item);
         }
 
         function enterFilterSearchMode() {
@@ -18271,6 +18346,7 @@ const paidData = [
 
         window.addEventListener('resize', () => {
             updateAvailabilityUI();
+            positionDockedSideToggle();
         });
 
         activeChipsContainer.addEventListener('click', (e) => {
@@ -18308,13 +18384,70 @@ const paidData = [
             searchInput.focus();
         });
 
+        const SEARCH_ENGINES = {
+            google: {
+                label: 'Google',
+                web: (q) => `https://www.google.com/search?q=${q}`,
+                images: (q) => `https://www.google.com/search?tbm=isch&q=${q}`
+            },
+            ddg: {
+                label: 'DuckDuckGo',
+                web: (q) => `https://duckduckgo.com/?q=${q}`,
+                images: (q) => `https://duckduckgo.com/?q=${q}&iax=images&ia=images`
+            },
+            brave: {
+                label: 'Brave',
+                web: (q) => `https://search.brave.com/search?q=${q}`,
+                images: (q) => `https://search.brave.com/images?q=${q}`
+            },
+            startpage: {
+                label: 'Startpage',
+                web: (q) => `https://www.startpage.com/sp/search?query=${q}`,
+                images: (q) => `https://www.startpage.com/sp/search?query=${q}&cat=images`
+            }
+        };
+
+        function getStoredSearchEngine() {
+            try {
+                const stored = localStorage.getItem('preferredSearchEngine');
+                if (stored && SEARCH_ENGINES[stored]) return stored;
+            } catch (e) { /* ignore malformed storage */ }
+            return 'google';
+        }
+
+        let preferredSearchEngine = getStoredSearchEngine();
+
+        function applyPreferredSearchEngineUI() {
+            document.querySelectorAll('.engine-option-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.engine === preferredSearchEngine);
+            });
+        }
+
+        function setPreferredSearchEngine(key) {
+            if (!SEARCH_ENGINES[key]) return;
+            preferredSearchEngine = key;
+            try { localStorage.setItem('preferredSearchEngine', key); } catch (e) { /* ignore */ }
+            applyPreferredSearchEngineUI();
+        }
+
+        const engineOptionGrid = document.getElementById('engine-option-grid');
+        if (engineOptionGrid) {
+            engineOptionGrid.addEventListener('click', (e) => {
+                const btn = e.target.closest('.engine-option-btn');
+                if (!btn) return;
+                setPreferredSearchEngine(btn.dataset.engine);
+            });
+        }
+        applyPreferredSearchEngineUI();
+
         function searchOnline(term, provider) {
             const encodedTerm = encodeURIComponent(term);
+            const engine = SEARCH_ENGINES[preferredSearchEngine] || SEARCH_ENGINES.google;
             let url;
             if (provider === 'google') {
-                url = `https://www.google.com/search?q=${encodedTerm}`;
+                url = engine.web(encodedTerm);
             } else if (provider === 'google-images') {
-                url = `https://www.google.com/search?tbm=isch&q=${encodedTerm}`;
+                url = engine.images(encodedTerm);
             } else if (provider === 'drugs.com') {
                 url = `https://www.drugs.com/search.php?searchterm=${encodedTerm}`;
             } else if (provider === 'perplexity') {
@@ -18743,6 +18876,16 @@ const paidData = [
             sidePanel.classList.toggle('dock-right', panelSides.history === 'right');
             toggleSidePanelBtn.classList.toggle('dock-right', panelSides.history === 'right');
             filterPanel.classList.toggle('dock-left', panelSides.filter === 'left');
+            positionDockedSideToggle();
+        }
+
+        function positionDockedSideToggle() {
+            if (panelSides.history === 'right' && themeSwitcherEl) {
+                const rect = themeSwitcherEl.getBoundingClientRect();
+                toggleSidePanelBtn.style.top = `${Math.round(rect.bottom + 12)}px`;
+            } else {
+                toggleSidePanelBtn.style.top = '';
+            }
         }
 
         function swapPanelSides() {
