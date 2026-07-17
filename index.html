@@ -632,6 +632,15 @@
             }
         }
 
+        #search-hint-text {
+            display: inline-block;
+            transition: opacity 0.22s var(--transition-easing);
+
+            &.fading {
+                opacity: 0;
+            }
+        }
+
         .search-row {
             display: flex;
             align-items: stretch;
@@ -2869,6 +2878,69 @@
             }
         }
 
+        .shortcut-hint-toast {
+            position: fixed;
+            left: 50%;
+            bottom: 64px;
+            z-index: 2100;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 20px 48px -12px var(--shadow-color-strong), 0 4px 16px -4px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.06);
+            backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            -webkit-backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transform: translate(-50%, 10px) scale(0.94);
+            transition: opacity 0.18s var(--transition-easing), transform 0.22s var(--transition-easing-spring);
+
+            &.visible {
+                opacity: 1;
+                transform: translate(-50%, 0) scale(1);
+            }
+
+            & kbd {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 20px;
+                height: 20px;
+                padding: 0 5px;
+                border-radius: 6px;
+                background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 85%, #000) 100%);
+                color: var(--text-on-accent);
+                font-family: inherit;
+                font-size: 0.72rem;
+                font-weight: 700;
+                box-shadow: 0 2px 6px rgba(var(--accent-color-rgb), 0.35);
+                animation: shortcutKeyPulse 0.9s var(--transition-easing);
+            }
+
+            & b {
+                color: var(--text-primary);
+                font-weight: 700;
+            }
+
+            & i {
+                font-style: normal;
+                opacity: 0.35;
+            }
+        }
+
+        @keyframes shortcutKeyPulse {
+            0% { box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0.5), 0 2px 6px rgba(var(--accent-color-rgb), 0.35); }
+            70% { box-shadow: 0 0 0 8px rgba(var(--accent-color-rgb), 0), 0 2px 6px rgba(var(--accent-color-rgb), 0.35); }
+            100% { box-shadow: 0 0 0 0 rgba(var(--accent-color-rgb), 0), 0 2px 6px rgba(var(--accent-color-rgb), 0.35); }
+        }
+
         .side-panel-overlay {
             position: fixed;
             inset: 0;
@@ -2994,10 +3066,13 @@
         }
 
         .app-disclaimer {
-            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
             font-size: 0.78rem;
             color: var(--text-placeholder);
-            padding: 1rem;
+            padding: 0.85rem 1rem;
             margin-top: auto;
             width: 100%;
             background-color: var(--disclaimer-bg);
@@ -3009,6 +3084,162 @@
             left: 0;
             z-index: 50;
             transition: background-color var(--transition-speed-normal) var(--transition-easing), border-color var(--transition-speed-normal) var(--transition-easing), color var(--transition-speed-normal) var(--transition-easing);
+        }
+
+        .app-disclaimer-text {
+            text-align: center;
+        }
+
+        .shortcuts-help-btn {
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            border: 1px solid rgba(var(--accent-color-rgb), 0.14);
+            background: rgba(var(--accent-color-rgb), 0.05);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 600;
+            padding: 5px 10px 5px 8px;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
+
+            & svg {
+                width: 13px;
+                height: 13px;
+            }
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.12);
+                border-color: rgba(var(--accent-color-rgb), 0.3);
+                color: var(--accent-color);
+                transform: translateY(-1px);
+            }
+
+            &[aria-expanded="true"] {
+                background: var(--accent-bg-active);
+                border-color: rgba(var(--accent-color-rgb), 0.4);
+                color: var(--accent-color);
+            }
+        }
+
+        .shortcuts-popover {
+            position: fixed;
+            right: 1rem;
+            bottom: 62px;
+            z-index: 1300;
+            width: min(280px, calc(100vw - 2rem));
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 24px 56px -14px var(--shadow-color-strong), 0 6px 20px -6px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.05);
+            backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            -webkit-backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(8px) scale(0.96);
+            transform-origin: bottom right;
+            transition: opacity 0.18s var(--transition-easing), transform 0.2s var(--transition-easing-spring), visibility 0.18s;
+            overflow: hidden;
+
+            &.open {
+                opacity: 1;
+                visibility: visible;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .shortcuts-popover-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--panel-border);
+
+            & h4 {
+                font-size: 0.88rem;
+                font-weight: 650;
+                color: var(--text-primary);
+                letter-spacing: -0.01em;
+            }
+        }
+
+        .shortcuts-popover-close {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(var(--accent-color-rgb), 0.06);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
+
+            & svg {
+                width: 12px;
+                height: 12px;
+            }
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.14);
+                color: var(--accent-color);
+                transform: rotate(90deg);
+            }
+        }
+
+        .shortcuts-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 8px;
+        }
+
+        .shortcuts-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 8px;
+            border-radius: var(--border-radius-sm);
+            transition: background-color var(--transition-speed-fast) var(--transition-easing);
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.08);
+            }
+
+            & kbd {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                min-width: 20px;
+                height: 20px;
+                padding: 0 5px;
+                border-radius: 6px;
+                background: rgba(var(--accent-color-rgb), 0.1);
+                border: 1px solid rgba(var(--accent-color-rgb), 0.18);
+                color: var(--text-primary);
+                font-family: inherit;
+                font-size: 0.68rem;
+                font-weight: 700;
+            }
+
+            & i {
+                font-style: normal;
+                font-size: 0.68rem;
+                color: var(--text-secondary);
+                opacity: 0.6;
+            }
+
+            & span {
+                margin-inline-start: auto;
+                font-size: 0.78rem;
+                color: var(--text-secondary);
+                text-align: right;
+            }
         }
 
         .load-more-btn {
@@ -3159,6 +3390,34 @@
         }
 
         @media (max-width: 480px) {
+            .app-disclaimer {
+                padding: 0.7rem 0.75rem;
+                gap: 8px;
+            }
+
+            .app-disclaimer-text {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-size: 0.72rem;
+            }
+
+            .shortcuts-help-btn span {
+                display: none;
+            }
+
+            .shortcuts-help-btn {
+                padding: 6px;
+                width: 26px;
+                height: 26px;
+                justify-content: center;
+            }
+
+            .shortcuts-popover {
+                right: 0.75rem;
+                bottom: 54px;
+            }
+
             .theme-switcher {
                 top: 0.5rem;
                 right: 0.5rem;
@@ -3372,7 +3631,7 @@
                 --accent-color: #000;
             }
 
-            :where(.theme-switcher, .filters-bar, .filter-panel, .filter-panel-overlay, .active-chips, .clear-btn, .search-hint, .result-card-actions, .online-search-options, .side-panel-toggle, .side-panel, .side-panel-overlay, .app-disclaimer, .custom-confirm, .load-more-btn) {
+            :where(.theme-switcher, .filters-bar, .filter-panel, .filter-panel-overlay, .active-chips, .clear-btn, .search-hint, .result-card-actions, .online-search-options, .side-panel-toggle, .side-panel, .side-panel-overlay, .app-disclaimer, .shortcuts-popover, .custom-confirm, .load-more-btn) {
                 display: none !important;
             }
 
@@ -3459,7 +3718,7 @@
         <h1 class="title">Lx Search a1-experimental</h1>
 
         <button id="toggle-side-panel-btn" class="side-panel-toggle" aria-label="Toggle history and pinned items panel"
-            aria-expanded="false">
+            title="History & Pinned (Ctrl/⌘+\)" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                 <path fill-rule="evenodd"
                     d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75zM2 9.75A.75.75 0 012.75 9h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 9.75z"
@@ -3648,7 +3907,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M6 18L18 6M6 6l12 12" />
                         </svg></button>
-                    <div class="search-hint" id="search-hint">Press <kbd>/</kbd> to search</div>
+                    <div class="search-hint" id="search-hint"><span id="search-hint-text">Press <kbd>/</kbd> to search</span></div>
                 </div>
                 <button type="button" class="filters-trigger-btn" id="filters-trigger-btn" aria-haspopup="true"
                     aria-expanded="false" aria-controls="filter-panel" title="Filters (Ctrl/⌘+K)">
@@ -3677,7 +3936,27 @@
     </div>
 
     <div class="app-disclaimer">
-        Note: This list is experimental and might not be comprehensive or up to date.
+        <span class="app-disclaimer-text">Note: This list is experimental and might not be comprehensive or up to date.</span>
+        <button type="button" class="shortcuts-help-btn" id="shortcuts-help-btn" aria-haspopup="dialog" aria-expanded="false" title="Keyboard shortcuts">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M18 13h.01M9 13h6"/></svg>
+            <span>Shortcuts</span>
+        </button>
+    </div>
+
+    <div class="shortcuts-popover" id="shortcuts-popover" role="dialog" aria-hidden="true" aria-label="Keyboard shortcuts">
+        <div class="shortcuts-popover-header">
+            <h4>Keyboard Shortcuts</h4>
+            <button type="button" class="shortcuts-popover-close" id="shortcuts-popover-close" aria-label="Close">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+        </div>
+        <ul class="shortcuts-list">
+            <li><kbd>/</kbd><i>focus</i><span>Search</span></li>
+            <li><kbd>Ctrl</kbd><i>/</i><kbd>⌘</kbd><i>+</i><kbd>K</kbd><span>Toggle filters</span></li>
+            <li><kbd>Ctrl</kbd><i>/</i><kbd>⌘</kbd><i>+</i><kbd>\</kbd><span>History &amp; pinned</span></li>
+            <li><kbd>?</kbd><i>toggle</i><span>This menu</span></li>
+            <li><kbd>Esc</kbd><i>close</i><span>Any panel</span></li>
+        </ul>
     </div>
 
     <div id="custom-confirm-dialog" class="custom-confirm" style="display: none;">
@@ -17616,6 +17895,9 @@ const freeData = [
         const customConfirmMessage = document.getElementById('custom-confirm-message');
         const customConfirmYesBtn = document.getElementById('custom-confirm-yes');
         const customConfirmNoBtn = document.getElementById('custom-confirm-no');
+        const shortcutsHelpBtn = document.getElementById('shortcuts-help-btn');
+        const shortcutsPopover = document.getElementById('shortcuts-popover');
+        const shortcutsPopoverClose = document.getElementById('shortcuts-popover-close');
         const loadMoreBtn = document.getElementById('load-more-btn');
         const lightBtn = document.getElementById('theme-light-btn');
         const darkBtn = document.getElementById('theme-dark-btn');
@@ -18399,6 +18681,7 @@ const freeData = [
         }
 
         function openFilterPanel() {
+            closeShortcutsPopover();
             filterPanel.setAttribute('aria-hidden', 'false');
             filtersTriggerBtn.setAttribute('aria-expanded', 'true');
             filterPanelSearchInput.value = '';
@@ -18450,7 +18733,11 @@ const freeData = [
                 commitToHistoryIfEligible(value);
             }
         });
-        searchInput.addEventListener('focus', () => searchHint.classList.remove('visible'));
+        searchInput.addEventListener('focus', () => {
+            searchHint.classList.remove('visible');
+            searchHintRotationIndex = 0;
+            if (searchHintTextEl) searchHintTextEl.innerHTML = SEARCH_HINT_MESSAGES[0];
+        });
         searchInput.addEventListener('blur', () => {
             commitToHistoryIfEligible(searchInput.value);
             if (!searchInput.value && !resultsSection.querySelector('.result-item') && !resultsSection.querySelector('.did-you-mean')) {
@@ -18630,26 +18917,109 @@ const freeData = [
             toggleSecondaryFilter(chip.dataset.filterKey, chip.dataset.value);
         });
 
+        function isTypingInField(el) {
+            if (!el) return false;
+            const tag = el.tagName;
+            return tag === 'INPUT' || tag === 'TEXTAREA' || el.isContentEditable;
+        }
+
+        function focusMainSearchViaShortcut() {
+            closeFilterPanel();
+            closeSidePanel();
+            closeEngineSwitchPopover();
+            closeShortcutsPopover();
+            searchInput.focus();
+            searchInput.select();
+        }
+
+        function toggleSidePanelViaShortcut() {
+            closeFilterPanel();
+            closeShortcutsPopover();
+            if (sidePanel.classList.contains('open')) {
+                closeSidePanel();
+                searchInput.focus();
+            } else {
+                openSidePanel();
+                closeSidePanelBtn.focus({ preventScroll: true });
+            }
+        }
+
         document.addEventListener('keydown', (e) => {
+            if (customConfirmDialog && customConfirmDialog.style.display === 'flex' && e.key !== 'Escape') return;
+            const activeEl = document.activeElement;
+            const typing = isTypingInField(activeEl);
+
             if (engineSwitchPopover && engineSwitchPopover.classList.contains('open') && e.key === 'Escape') {
                 closeEngineSwitchPopover();
                 return;
             }
-            if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
+
+            if (shortcutsPopover && shortcutsPopover.classList.contains('open') && e.key === 'Escape') {
+                closeShortcutsPopover();
+                return;
+            }
+
+            if (e.key === '?' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                e.preventDefault();
+                toggleShortcutsPopover();
+                return;
+            }
+
+            if (e.code === 'KeyK' && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 toggleFilterPanel();
                 return;
             }
-            if (filterPanel.classList.contains('open') && (e.key === 'Escape' || e.key === 'Backspace')) {
-                if (e.key === 'Backspace') {
-                    const activeEl = document.activeElement;
-                    const isDeletingText = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable) &&
-                        String(activeEl.value ?? activeEl.textContent ?? '').length > 0;
-                    if (isDeletingText) return;
+
+            if (e.code === 'Backslash' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                toggleSidePanelViaShortcut();
+                return;
+            }
+
+            if (e.key === 'Escape') {
+                if (filterPanel.classList.contains('open')) {
+                    closeFilterPanel();
+                    searchInput.focus();
+                    return;
                 }
-                closeFilterPanel();
+                if (sidePanel.classList.contains('open')) {
+                    closeSidePanel();
+                    searchInput.focus();
+                    return;
+                }
+            }
+
+            if (filterPanel.classList.contains('open') && e.key === 'Backspace') {
+                const isDeletingText = typing && String(activeEl.value ?? activeEl.textContent ?? '').length > 0;
+                if (!isDeletingText) closeFilterPanel();
+                return;
+            }
+
+            if (e.code === 'Slash' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                if (typing) return;
+                e.preventDefault();
+                focusMainSearchViaShortcut();
             }
         });
+
+        const searchHintTextEl = document.getElementById('search-hint-text');
+        const SEARCH_HINT_MESSAGES = [
+            'Press <kbd>/</kbd> to search',
+            '<kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>K</kbd> for filters',
+            '<kbd>Ctrl</kbd>/<kbd>⌘</kbd><kbd>\\</kbd> for history',
+            'Press <kbd>?</kbd> for all shortcuts'
+        ];
+        let searchHintRotationIndex = 0;
+        setInterval(() => {
+            if (!searchHintTextEl || !searchHint.classList.contains('visible')) return;
+            searchHintTextEl.classList.add('fading');
+            setTimeout(() => {
+                searchHintRotationIndex = (searchHintRotationIndex + 1) % SEARCH_HINT_MESSAGES.length;
+                searchHintTextEl.innerHTML = SEARCH_HINT_MESSAGES[searchHintRotationIndex];
+                searchHintTextEl.classList.remove('fading');
+            }, 220);
+        }, 3600);
 
         window.addEventListener('resize', () => {
             updateAvailabilityUI();
@@ -18675,20 +19045,6 @@ const freeData = [
 
         noResultsContainer.addEventListener('click', (e) => {
             if (e.target.closest('#clear-filters-inline-btn')) clearAllFilters();
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key !== '/' || e.metaKey || e.ctrlKey) return;
-            const activeEl = document.activeElement;
-            if (activeEl === searchInput || activeEl === filterPanelSearchInput) {
-                e.preventDefault();
-                return;
-            }
-            const activeTag = activeEl && activeEl.tagName;
-            const isTyping = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || (activeEl && activeEl.isContentEditable);
-            if (isTyping) return;
-            e.preventDefault();
-            searchInput.focus();
         });
 
         const SEARCH_ENGINES = {
@@ -18801,6 +19157,7 @@ const freeData = [
 
         function openEngineSwitchPopover(anchorEl) {
             closeEngineSwitchPopover();
+            closeShortcutsPopover();
             const pop = document.createElement('div');
             pop.className = 'engine-switch-popover';
             pop.setAttribute('role', 'listbox');
@@ -18846,6 +19203,43 @@ const freeData = [
             engineSwitchPopover = null;
             document.removeEventListener('click', handleOutsideEngineClick);
         }
+
+        function openShortcutsPopover() {
+            if (!shortcutsPopover || !shortcutsHelpBtn) return;
+            closeFilterPanel();
+            closeEngineSwitchPopover();
+            shortcutsPopover.classList.add('open');
+            shortcutsPopover.setAttribute('aria-hidden', 'false');
+            shortcutsHelpBtn.setAttribute('aria-expanded', 'true');
+            setTimeout(() => document.addEventListener('click', handleOutsideShortcutsClick), 0);
+        }
+
+        function closeShortcutsPopover() {
+            if (!shortcutsPopover || !shortcutsHelpBtn) return;
+            shortcutsPopover.classList.remove('open');
+            shortcutsPopover.setAttribute('aria-hidden', 'true');
+            shortcutsHelpBtn.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('click', handleOutsideShortcutsClick);
+        }
+
+        function toggleShortcutsPopover() {
+            if (shortcutsPopover && shortcutsPopover.classList.contains('open')) closeShortcutsPopover();
+            else openShortcutsPopover();
+        }
+
+        function handleOutsideShortcutsClick(e) {
+            if (!shortcutsPopover) return;
+            if (shortcutsPopover.contains(e.target) || e.target.closest('#shortcuts-help-btn')) return;
+            closeShortcutsPopover();
+        }
+
+        if (shortcutsHelpBtn) {
+            shortcutsHelpBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleShortcutsPopover();
+            });
+        }
+        if (shortcutsPopoverClose) shortcutsPopoverClose.addEventListener('click', closeShortcutsPopover);
 
         document.addEventListener('DOMContentLoaded', () => {
             const quickBtn = document.getElementById('engine-quick-switch');
@@ -19286,6 +19680,7 @@ const freeData = [
         clearHistoryBtn.addEventListener('click', clearSearchHistory);
 
         function openSidePanel() {
+            closeShortcutsPopover();
             sidePanel.classList.add('open');
             sidePanelOverlay.classList.add('open');
             toggleSidePanelBtn.setAttribute('aria-expanded', 'true');
@@ -19310,11 +19705,6 @@ const freeData = [
         });
         closeSidePanelBtn.addEventListener('click', closeSidePanel);
         sidePanelOverlay.addEventListener('click', closeSidePanel);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && sidePanel.classList.contains('open')) {
-                closeSidePanel();
-            }
-        });
 
         function getStoredPanelSides() {
             try {
@@ -19391,6 +19781,24 @@ const freeData = [
             confirmCallback = null;
         });
 
+        let onboardingHintEl = null;
+        function maybeShowOnboardingShortcutHint() {
+            let alreadySeen = false;
+            try { alreadySeen = !!localStorage.getItem('lxShortcutsHintSeen'); } catch (e) {}
+            if (alreadySeen) return;
+            setTimeout(() => {
+                if (!onboardingHintEl) {
+                    onboardingHintEl = document.createElement('div');
+                    onboardingHintEl.className = 'shortcut-hint-toast';
+                    document.body.appendChild(onboardingHintEl);
+                }
+                onboardingHintEl.innerHTML = '<kbd>/</kbd><span>search</span><i>·</i><kbd>Ctrl</kbd><kbd>K</kbd><span>filters</span><i>·</i><kbd>?</kbd><span>all shortcuts</span>';
+                onboardingHintEl.classList.add('visible');
+                setTimeout(() => onboardingHintEl.classList.remove('visible'), 3200);
+                try { localStorage.setItem('lxShortcutsHintSeen', '1'); } catch (e) {}
+            }, 1100);
+        }
+
         function initializeApp() {
             if (searchInput) searchInput.disabled = true;
             
@@ -19412,6 +19820,7 @@ const freeData = [
             
             if (searchInput) searchInput.focus();
             searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && !document.querySelector('.did-you-mean'));
+            maybeShowOnboardingShortcutHint();
         }
 
         initializeApp();
