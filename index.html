@@ -429,6 +429,7 @@
             margin-bottom: 1.25rem;
             flex-shrink: 0;
             position: relative;
+            isolation: isolate;
             background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-color) 100%);
             -webkit-background-clip: text;
             background-clip: text;
@@ -2027,6 +2028,12 @@
             flex-wrap: wrap;
         }
 
+        .engine-aware-glyph {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .online-search-provider-btn {
             background: var(--glass-bg-interactive);
             border: 1px solid var(--glass-border-interactive);
@@ -2312,6 +2319,8 @@
             & h3 {
                 font-size: 1.15rem;
                 font-weight: 650;
+                position: relative;
+                isolation: isolate;
                 color: var(--text-primary);
                 letter-spacing: -0.015em;
                 background: linear-gradient(120deg, var(--text-primary) 0%, var(--accent-color) 100%);
@@ -2391,79 +2400,93 @@
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                gap: 0.5rem;
-                font-size: 0.98rem;
-                font-weight: 620;
+                gap: 8px;
+                font-size: 1.05rem;
+                font-weight: 600;
                 color: var(--text-primary);
                 margin-bottom: 1rem;
                 border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.1);
-                padding-bottom: 0.65rem;
+                padding-bottom: 0.6rem;
                 letter-spacing: -0.01em;
             }
 
             & ul {
                 list-style: none;
-                padding: 0;
+                padding: 5px;
                 margin-bottom: 1.25rem;
                 border-radius: var(--border-radius-md);
                 overflow: hidden;
-                border: 1px solid rgba(var(--accent-color-rgb), 0.08);
-                background: rgba(var(--accent-color-rgb), 0.02);
+                border: 1px solid rgba(var(--accent-color-rgb), 0.09);
+                background: rgba(var(--accent-color-rgb), 0.025);
+                box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+                display: flex;
+                flex-direction: column;
+                gap: 2px;
             }
 
             & li {
-                padding: 0.75rem 1rem;
+                padding: 9px 10px 9px 12px;
                 cursor: pointer;
-                transition: background-color var(--transition-speed-fast), padding-inline-start var(--transition-speed-fast);
-                font-size: 0.95rem;
+                transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing);
+                font-size: 0.87rem;
+                font-weight: 500;
                 color: var(--text-primary);
-                word-break: break-word;
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-start;
                 align-items: center;
-                border-bottom: 1px solid rgba(var(--accent-color-rgb), 0.05);
+                gap: 9px;
+                border-radius: var(--border-radius-sm);
                 position: relative;
 
-                &:last-child {
-                    border-bottom: none;
+                &::before {
+                    content: "";
+                    position: absolute;
+                    inset-inline-start: 2px;
+                    top: 50%;
+                    width: 3px;
+                    height: 0;
+                    border-radius: 999px;
+                    background: var(--accent-color);
+                    transform: translateY(-50%);
+                    transition: height var(--transition-speed-fast) var(--transition-easing);
                 }
 
                 &:hover {
-                    background-color: var(--accent-bg-subtle);
-                    padding-inline-start: 1.25rem;
+                    background: linear-gradient(90deg, rgba(var(--accent-color-rgb), 0.14) 0%, rgba(var(--accent-color-rgb), 0.05) 100%);
+                    color: var(--accent-color);
 
                     &::before {
+                        height: 60%;
+                    }
+
+                    & .panel-list-icon {
+                        background: rgba(var(--accent-color-rgb), 0.18);
+                        color: var(--accent-color);
                         opacity: 1;
                     }
-                }
-
-                &::before {
-                    content: '';
-                    position: absolute;
-                    inset-inline-start: 0;
-                    top: 0;
-                    bottom: 0;
-                    width: 3px;
-                    background: var(--accent-color);
-                    opacity: 0;
-                    transition: opacity var(--transition-speed-fast);
                 }
 
                 &.empty-state {
                     color: var(--text-placeholder);
                     font-style: italic;
                     cursor: default;
-                    padding: 1rem;
+                    padding: 1.6rem 1rem;
                     text-align: center;
                     justify-content: center;
+                    flex-direction: column;
+                    gap: 8px;
+
+                    & svg {
+                        opacity: 0.35;
+                    }
 
                     &:hover {
                         background-color: transparent;
-                        padding-inline-start: 1rem;
-                    }
+                        color: var(--text-placeholder);
 
-                    &::before {
-                        display: none;
+                        &::before {
+                            display: none;
+                        }
                     }
                 }
             }
@@ -2587,64 +2610,38 @@
             }
         }
 
-        .engine-option-grid {
+        .engine-picker-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.55rem;
+            gap: 8px;
             margin-top: 0.85rem;
         }
 
-        .engine-option-btn {
+        .engine-pick-btn {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 0.45rem;
-            padding: 0.7rem 0.3rem 0.6rem;
-            background-color: var(--glass-bg-interactive);
+            gap: 6px;
+            padding: 12px 6px 10px;
+            background: var(--glass-bg-interactive);
             border: 1px solid rgba(var(--accent-color-rgb), 0.1);
             color: var(--text-secondary);
             border-radius: var(--border-radius-md);
             cursor: pointer;
             font-family: inherit;
-            text-align: center;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
-            transition: background-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing);
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-fast) var(--transition-easing);
 
             @media (hover: hover) and (pointer: fine) {
                 &:hover {
-                    background-color: var(--glass-bg-interactive-hover);
-                    border-color: rgba(var(--accent-color-rgb), 0.22);
+                    background: var(--glass-bg-interactive-hover);
+                    color: var(--text-primary);
+                    border-color: rgba(var(--accent-color-rgb), 0.25);
                     transform: translateY(-2px);
 
-                    & .engine-icon-wrap {
+                    & .engine-pick-icon {
                         transform: scale(1.07);
-                    }
-                }
-            }
-
-            &.active {
-                border-color: rgba(var(--accent-color-rgb), 0.45);
-                background-color: var(--accent-bg-active);
-                box-shadow: 0 0 0 1px rgba(var(--accent-color-rgb), 0.18), 0 6px 16px -8px rgba(var(--accent-color-rgb), 0.45);
-
-                & .engine-option-label {
-                    color: var(--accent-color);
-                    font-weight: 650;
-                }
-
-                & .engine-icon-wrap {
-                    background: linear-gradient(135deg, var(--accent-color) 0%, color-mix(in srgb, var(--accent-color) 82%, #000) 100%);
-                    border-color: transparent;
-                    box-shadow: 0 0 0 3px var(--accent-bg-active), 0 4px 10px -3px rgba(0, 0, 0, 0.4);
-
-                    & .engine-icon-glyph {
-                        color: var(--text-on-accent);
-                    }
-
-                    &::after {
-                        opacity: 1;
-                        transform: scale(1);
                     }
                 }
             }
@@ -2652,54 +2649,200 @@
             &:active {
                 transform: translateY(0) scale(0.97);
             }
-        }
 
-        .engine-icon-wrap {
-            position: relative;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(var(--accent-color-rgb), 0.09);
-            border: 1px solid rgba(var(--accent-color-rgb), 0.16);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-fast) var(--transition-easing);
+            &.active {
+                border-color: rgba(var(--accent-color-rgb), 0.45);
+                background: var(--accent-bg-active);
+                color: var(--text-primary);
+                box-shadow: 0 4px 14px -5px rgba(var(--accent-color-rgb), 0.35);
 
-            &::after {
-                content: '';
-                position: absolute;
-                bottom: -2px;
-                right: -2px;
-                width: 12px;
-                height: 12px;
-                border-radius: 50%;
-                background: var(--accent-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 9 17 20 6'/%3E%3C/svg%3E") center / 8px 8px no-repeat;
-                box-shadow: 0 0 0 2px var(--panel-bg);
-                opacity: 0;
-                transform: scale(0.4);
-                transition: opacity var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
+                & .engine-pick-label {
+                    color: var(--accent-color);
+                    font-weight: 650;
+                }
+
+                & .engine-pick-icon::after {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            & .engine-pick-icon {
+                position: relative;
+                display: flex;
+                pointer-events: none;
+                transition: transform var(--transition-speed-fast) var(--transition-easing-spring);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -2px;
+                    right: -2px;
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    background: var(--accent-color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='4 12 9 17 20 6'/%3E%3C/svg%3E") center / 8px 8px no-repeat;
+                    box-shadow: 0 0 0 2px var(--panel-bg);
+                    opacity: 0;
+                    transform: scale(0.4);
+                    transition: opacity var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
+                }
+            }
+
+            & .engine-pick-label {
+                font-size: 0.72rem;
+                font-weight: 600;
+                letter-spacing: -0.01em;
+                pointer-events: none;
+                transition: color var(--transition-speed-fast) var(--transition-easing);
             }
         }
 
-        .engine-icon-glyph {
-            font-size: 0.66rem;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: var(--text-secondary);
-            transition: color var(--transition-speed-fast) var(--transition-easing);
+        .engine-quick-switch {
+            flex-shrink: 0;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(160deg, var(--glass-bg-interactive-hover) 0%, var(--glass-bg-interactive) 55%);
+            backdrop-filter: blur(var(--glass-blur-interactive));
+            -webkit-backdrop-filter: blur(var(--glass-blur-interactive));
+            border: 1px solid var(--glass-border-interactive);
+            border-radius: var(--border-radius-lg);
+            cursor: pointer;
+            box-shadow: 0 4px 14px -5px var(--shadow-color-soft), inset 0 1px 0 rgba(255, 255, 255, 0.055);
+            transition: background-color var(--transition-speed-fast) var(--transition-easing), border-color var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), box-shadow var(--transition-speed-normal) var(--transition-easing);
+
+            & svg {
+                display: block;
+                transition: transform var(--transition-speed-fast) var(--transition-easing-spring);
+            }
+
+            &:hover {
+                border-color: rgba(var(--accent-color-rgb), 0.3);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px -5px var(--shadow-color-medium);
+
+                & svg {
+                    transform: scale(1.1) rotate(-6deg);
+                }
+            }
+
+            &:active {
+                transform: translateY(-1px) scale(0.97);
+            }
         }
 
-        .engine-option-label {
-            font-size: 0.68rem;
-            font-weight: 560;
-            line-height: 1;
-            transition: color var(--transition-speed-fast) var(--transition-easing);
+        .engine-switch-popover {
+            position: fixed;
+            z-index: 1400;
+            width: 190px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 20px 48px -12px var(--shadow-color-strong), 0 4px 16px -4px var(--shadow-color-medium), 0 0 0 1px rgba(var(--accent-color-rgb), 0.04);
+            backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            -webkit-backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            opacity: 0;
+            transform: translateY(-6px) scale(0.96);
+            transform-origin: top center;
+            transition: opacity 0.16s var(--transition-easing), transform 0.16s var(--transition-easing-spring);
+            pointer-events: none;
+
+            &.open {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                pointer-events: auto;
+            }
         }
 
-        .engine-option-btn:hover .engine-icon-glyph {
+        .engine-switch-option {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            width: 100%;
+            border: none;
+            background: transparent;
             color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: left;
+            padding: 8px 9px;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--transition-easing);
+
+            &:hover {
+                background: rgba(var(--accent-color-rgb), 0.1);
+            }
+
+            &.active {
+                font-weight: 650;
+                background: var(--accent-bg-subtle);
+            }
+
+            & svg:first-child {
+                flex-shrink: 0;
+            }
+
+            & span {
+                flex: 1;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            & .engine-switch-check {
+                width: 14px;
+                height: 14px;
+                color: var(--accent-color);
+                flex-shrink: 0;
+            }
+        }
+
+        .panel-list-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: rgba(var(--accent-color-rgb), 0.08);
+            color: var(--accent-color);
+            opacity: 0.85;
+
+            & svg {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        .panel-list-icon-pin {
+            background: var(--accent-bg-active);
+        }
+
+        .panel-list-text {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .panel-list-meta {
+            flex-shrink: 0;
+            font-size: 0.68rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            opacity: 0.55;
+            white-space: nowrap;
         }
 
         .copy-feedback {
@@ -2747,23 +2890,34 @@
 
         .unpin-btn-side-panel,
         .remove-history-btn-side-panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background: transparent;
             border: none;
             color: var(--text-placeholder);
             cursor: pointer;
-            padding: 4px;
-            margin-left: 0.5rem;
-            opacity: 0.65;
+            padding: 5px;
+            width: 24px;
+            height: 24px;
+            margin-left: auto;
+            flex-shrink: 0;
+            opacity: 0.6;
             line-height: 1;
-            font-size: 1.15em;
-            transition: color var(--transition-speed-fast) var(--transition-easing), opacity var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring);
+            transition: color var(--transition-speed-fast) var(--transition-easing), opacity var(--transition-speed-fast) var(--transition-easing), transform var(--transition-speed-fast) var(--transition-easing-spring), background-color var(--transition-speed-fast) var(--transition-easing);
             border-radius: 50%;
+
+            & svg {
+                width: 12px;
+                height: 12px;
+                pointer-events: none;
+            }
 
             &:hover {
                 color: var(--accent-color);
                 opacity: 1;
                 transform: scale(1.15);
-                background: rgba(var(--accent-color-rgb), 0.08);
+                background: rgba(var(--accent-color-rgb), 0.12);
             }
 
             &:active {
@@ -3051,6 +3205,12 @@
                 height: 50px;
                 padding: 0;
                 justify-content: center;
+                border-radius: var(--border-radius-md);
+            }
+
+            .engine-quick-switch {
+                width: 50px;
+                height: 50px;
                 border-radius: var(--border-radius-md);
             }
 
@@ -3382,33 +3542,8 @@
                             Preferred Search Engine
                         </span>
                     </h4>
-                    <p class="panel-section-hint">Used by the "Web" and "Images" online search buttons.</p>
-                    <div class="engine-option-grid" id="engine-option-grid">
-                        <button type="button" class="engine-option-btn" data-engine="google" title="Google">
-                            <span class="engine-icon-wrap"><span class="engine-icon-glyph">Go</span></span>
-                            <span class="engine-option-label">Google</span>
-                        </button>
-                        <button type="button" class="engine-option-btn" data-engine="bing" title="Bing">
-                            <span class="engine-icon-wrap"><span class="engine-icon-glyph">Bi</span></span>
-                            <span class="engine-option-label">Bing</span>
-                        </button>
-                        <button type="button" class="engine-option-btn" data-engine="ddg" title="DuckDuckGo">
-                            <span class="engine-icon-wrap"><span class="engine-icon-glyph">DG</span></span>
-                            <span class="engine-option-label">DuckDuckGo</span>
-                        </button>
-                        <button type="button" class="engine-option-btn" data-engine="brave" title="Brave">
-                            <span class="engine-icon-wrap"><span class="engine-icon-glyph">Br</span></span>
-                            <span class="engine-option-label">Brave</span>
-                        </button>
-                        <button type="button" class="engine-option-btn" data-engine="startpage" title="Startpage">
-                            <span class="engine-icon-wrap"><span class="engine-icon-glyph">SP</span></span>
-                            <span class="engine-option-label">Startpage</span>
-                        </button>
-                        <button type="button" class="engine-option-btn" data-engine="kagi" title="Kagi">
-                            <span class="engine-icon-wrap"><span class="engine-icon-glyph">Ka</span></span>
-                            <span class="engine-option-label">Kagi</span>
-                        </button>
-                    </div>
+                    <p class="panel-section-hint">Powers every "Web" and "Images" search button. Tap the pill next to the search bar for an instant switch.</p>
+                    <div class="engine-picker-grid" id="engine-picker-grid"></div>
                 </section>
             </div>
         </aside>
@@ -3418,7 +3553,7 @@
         <div class="filter-panel" id="filter-panel" role="dialog" aria-hidden="true" aria-label="Filter medications">
             <div class="filter-panel-header">
                 <div class="filter-panel-heading">
-                    <h3>Filter Options</h3>
+                    <h3>Filters</h3>
                     <p>Jump to a filter by typing, or tap to toggle</p>
                 </div>
                 <div class="filter-panel-header-actions">
@@ -3525,6 +3660,7 @@
                     <span>Filters</span>
                     <span class="filters-badge" id="filters-badge" hidden>0</span>
                 </button>
+                <button type="button" class="engine-quick-switch" id="engine-quick-switch" aria-haspopup="listbox" title="Search engine"></button>
             </div>
 
             <div class="filters-bar" id="filters-bar">
@@ -5263,7 +5399,7 @@ const paidData = [
   }
 ];
 
-        const freeData = [
+const freeData = [
   {
     "name": "9- Fluorohydrocortisone",
     "activeIngredient": "---",
@@ -17432,7 +17568,6 @@ const paidData = [
   }
 ];
 
-
         const searchInput = document.getElementById('search-input');
         const clearBtn = document.getElementById('clear-btn');
         const resultsSection = document.getElementById('results-section');
@@ -17516,16 +17651,11 @@ const paidData = [
         darkBtn.addEventListener('click', () => applyTheme('dark'));
         systemBtn.addEventListener('click', () => applyTheme('system'));
 
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if (localStorage.getItem('theme') === 'system') {
-            }
-        });
-
         let confirmCallback = null;
         let currentFilterType = 'all';
         let fusePaid, fuseFree, fuseAll;
         let activeSecondaryFilters = {};
-        let allDatasetNormalized =[];
+        let allDatasetNormalized = [];
         const MAX_HISTORY_ITEMS = 10;
         const MAX_PINNED_ITEMS = 10;
         const MIN_QUERY_LENGTH_FOR_SUGGESTIONS = 3;
@@ -17533,8 +17663,8 @@ const paidData = [
         const LENIENT_THRESHOLD_FOR_SUGGESTIONS = 0.55;
         const RESULTS_PER_PAGE = 20;
         const MAX_BATCHES_IN_DOM = 3;
-        let allMatchingResults =[];
-        let activeDOMBatchesStartIndices =[];
+        let allMatchingResults = [];
+        let activeDOMBatchesStartIndices = [];
         let _debounceTimer = null;
         function debounce(fn, ms) { return function(...args) { clearTimeout(_debounceTimer); _debounceTimer = setTimeout(() => fn.apply(this, args), ms); }; }
 
@@ -17553,9 +17683,9 @@ const paidData = [
             return `${type}_${namePart}_${concPart}`.toLowerCase();
         }
 
-        let paidBaseResults =[];
-        let freeBaseResults =[];
-        let allBaseResults =[];
+        let paidBaseResults = [];
+        let freeBaseResults = [];
+        let allBaseResults = [];
 
         function normalizeAllData() {
             paidData.forEach((item, index) => { if (!item._uniqueId) item._uniqueId = generateUniqueId(item, 'paid', index); item._type = 'paid'; });
@@ -17563,9 +17693,9 @@ const paidData = [
 
             allDatasetNormalized = paidData.concat(freeData);
 
-            paidBaseResults = paidData.map(item => ({ item, score: 0, matches:[] }));
-            freeBaseResults = freeData.map(item => ({ item, score: 0, matches:[] }));
-            allBaseResults = allDatasetNormalized.map(item => ({ item, score: 0, matches:[] }));
+            paidBaseResults = paidData.map(item => ({ item, score: 0, matches: [] }));
+            freeBaseResults = freeData.map(item => ({ item, score: 0, matches: [] }));
+            allBaseResults = allDatasetNormalized.map(item => ({ item, score: 0, matches: [] }));
         }
 
         function getFuseForAvailability(availability) {
@@ -17582,18 +17712,18 @@ const paidData = [
 
         function initializeFuseInstances() {
             normalizeAllData();
-            const paidKeys =[
+            const paidKeys = [
                 { name: 'name', weight: 0.30 }, { name: 'activeIngredient', weight: 0.25 },
                 { name: 'class', weight: 0.20 }, { name: 'company', weight: 0.10 },
                 { name: 'authority', weight: 0.05 }, { name: 'concentration', weight: 0.05 },
                 { name: 'form', weight: 0.05 }
             ];
-            const freeKeys =[
+            const freeKeys = [
                 { name: 'name', weight: 0.5 }, { name: 'activeIngredient', weight: 0.2 }, { name: 'class', weight: 0.15 },
                 { name: 'concentration', weight: 0.05 }, { name: 'form', weight: 0.05 },
                 { name: 'authority', weight: 0.05 }
             ];
-            const allKeys =[
+            const allKeys = [
                 { name: 'name', weight: 0.35 }, { name: 'activeIngredient', weight: 0.20 },
                 { name: 'class', weight: 0.20 }, { name: 'company', weight: 0.075 },
                 { name: 'authority', weight: 0.075 }, { name: 'concentration', weight: 0.05 },
@@ -17654,9 +17784,9 @@ const paidData = [
 
         function tokenSearch(query, dataset) {
             const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-            if (tokens.length === 0 || !dataset || dataset.length === 0) return[];
+            if (tokens.length === 0 || !dataset || dataset.length === 0) return [];
 
-            const results =[];
+            const results = [];
 
             for (let i = 0; i < dataset.length; i++) {
                 const item = dataset[i];
@@ -17732,7 +17862,7 @@ const paidData = [
 
                     totalRank += bestRank;
                     if (isFuzzyMatch) fuzzyPenalty += 1;
-                    if (!matchesByKey[bestKey]) matchesByKey[bestKey] =[];
+                    if (!matchesByKey[bestKey]) matchesByKey[bestKey] = [];
                     matchesByKey[bestKey].push([bestIndex, bestIndex + bestLen - 1]);
                 }
 
@@ -17748,14 +17878,14 @@ const paidData = [
         }
 
         function getUniqueValues(data, key) {
-            if (!data || data.length === 0) return[];
+            if (!data || data.length === 0) return [];
             const values = data.map(item => item[key]).filter(value => value != null && String(value).trim() !== '');
-            return[...new Set(values)].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
+            return [...new Set(values)].sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' }));
         }
 
         const CHIP_CLOUD_SCROLL_THRESHOLD = 8;
 
-        const SECONDARY_FILTER_CONFIGS =[
+        const SECONDARY_FILTER_CONFIGS = [
             { key: 'class', label: 'Therapeutic Class', icon: '<path d="M4 4h7l9 9-7 7-9-9V4z"/><circle cx="8.5" cy="8.5" r="1.5"/>' },
             { key: 'form', label: 'Form', icon: '<rect x="3" y="3" width="8" height="8" rx="4" transform="rotate(-45 7 7)"/><path d="M9.5 9.5l7 7a3.2 3.2 0 004.5-4.5l-7-7"/>' },
             { key: 'authority', label: 'Authority', icon: '<path d="M12 3l8 4v5c0 4.5-3.2 8-8 9-4.8-1-8-4.5-8-9V7l8-4z"/>' },
@@ -17879,7 +18009,7 @@ const paidData = [
                         <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${safeItemType}" title="Copy Details">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google-images" title="Search Images">
+                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="images" title="Search Images">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                         </button>
                         <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="drugs.com" title="Search Drugs.com">
@@ -17888,8 +18018,8 @@ const paidData = [
                         <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="perplexity" title="Search Perplexity">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="google" title="Search the web">
-                            <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><path stroke-linecap="round" d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"/></svg>
+                        <button class="card-action-btn search-online-card engine-aware-btn" data-item-name="${itemNameForSearch}" data-provider="web" title="Search the web">
+                            <span class="engine-aware-glyph" aria-hidden="true"></span>
                         </button>
                         <span class="item-type-tag ${safeItemType}">${safeItemType}</span>
                     </div>
@@ -17902,13 +18032,13 @@ const paidData = [
         function performSearch(query, operationType = 'user_input') {
             query = query.trim();
 
-            activeDOMBatchesStartIndices =[];
+            activeDOMBatchesStartIndices = [];
             allMatchingResults = [];
-            let generatedSuggestions =[];
+            let generatedSuggestions = [];
             let hiddenByFilterCount = 0;
 
             if (!query && Object.values(activeSecondaryFilters).every(v => !v) && operationType === 'user_input' && currentFilterType === 'all') {
-                renderInitialDOM(query,[]);
+                renderInitialDOM(query, []);
                 searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
                 return;
             }
@@ -17973,13 +18103,20 @@ const paidData = [
 
             requestAnimationFrame(() => renderInitialDOM(query, generatedSuggestions, hiddenByFilterCount));
 
-            if (query && query.length >= 2 && (operationType === 'user_input' || operationType === 'suggestion_click') && allMatchingResults.length > 0) {
+            if (query && query.length >= 2 && operationType === 'suggestion_click' && allMatchingResults.length > 0) {
                 addSearchToHistory(query);
             }
             searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value && allMatchingResults.length === 0 && generatedSuggestions.length === 0 && hiddenByFilterCount === 0);
         }
 
-        function renderInitialDOM(query, suggestions =[], hiddenByFilterCount = 0) {
+        function commitToHistoryIfEligible(query) {
+            query = (query || '').trim();
+            if (query.length >= 2 && allMatchingResults.length > 0 && searchInput.value.trim() === query) {
+                addSearchToHistory(query);
+            }
+        }
+
+        function renderInitialDOM(query, suggestions = [], hiddenByFilterCount = 0) {
             if (suggestions.length > 0) {
                 let suggestionHTML = '<div class="did-you-mean-outer"><div class="did-you-mean">Did you mean: <span class="suggestion-list">';
                 suggestions.forEach(term => {
@@ -18008,13 +18145,9 @@ const paidData = [
                         <div class="no-results">
                             <p>No local medications found for "<strong>${escapeHTML(query)}</strong>".</p>
                             <p>Try searching online:</p>
-                            <div class="online-search-options">
-                                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="google"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9.5"/><path stroke-linecap="round" d="M2.5 12h19M12 2.5c2.6 2.6 4 6 4 9.5s-1.4 6.9-4 9.5c-2.6-2.6-4-6-4-9.5s1.4-6.9 4-9.5z"/></svg> Web </button>
-                                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="google-images"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg> Images </button>
-                                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="drugs.com"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 6.5C17.5 4.57 15.93 3 14 3H10C8.07 3 6.5 4.57 6.5 6.5V17.5C6.5 19.43 8.07 21 10 21H14C15.93 21 17.5 19.43 17.5 17.5V6.5ZM8.5 6.5C8.5 5.67 9.17 5 10 5H12V12H8.5V6.5ZM15.5 17.5C15.5 18.33 14.83 19 14 19H10C9.17 19 8.5 18.33 8.5 17.5V14H15.5V17.5ZM15.5 12H12V5H14C14.83 5 15.5 5.67 15.5 6.5V12Z"/></svg> Rx </button>
-                                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="perplexity"> <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg> P.AI </button>
-                            </div>
+                            <div class="online-search-options" id="no-results-online-options"></div>
                         </div>`;
+                    renderOnlineSearchOptionsInto(document.getElementById('no-results-online-options'), query);
                 } else if (query.length === 0 && Object.values(activeSecondaryFilters).every(v => !v) && currentFilterType === 'all') {
                     noResultsContainer.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
                 } else {
@@ -18076,10 +18209,10 @@ const paidData = [
             activeDOMBatchesStartIndices = [0];
             updateLoadMoreButton();
             updatePinButtonsInResults();
+            updateEngineAwareGlyphs();
         }
 
         function updateLoadMoreButton() {
-            const currentQuery = searchInput.value.trim();
             const lastLoadedBatchStartIndex = activeDOMBatchesStartIndices.length > 0 ? activeDOMBatchesStartIndices[activeDOMBatchesStartIndices.length - 1] : -1;
             const nextItemIndex = lastLoadedBatchStartIndex + RESULTS_PER_PAGE;
 
@@ -18129,6 +18262,7 @@ const paidData = [
             }
             updateLoadMoreButton();
             updatePinButtonsInResults();
+            updateEngineAwareGlyphs();
         }
 
         loadMoreBtn.addEventListener('click', handleLoadMore);
@@ -18228,7 +18362,7 @@ const paidData = [
         const SECONDARY_FILTER_LABELS = { form: 'Form', authority: 'Authority', company: 'Company', class: 'Class' };
 
         function renderActiveChips() {
-            const chips =[];
+            const chips = [];
             if (currentFilterType !== 'all') {
                 chips.push({ key: '__availability', label: currentFilterType === 'paid' ? 'Paid' : 'Free' });
             }
@@ -18301,17 +18435,24 @@ const paidData = [
 
 
         const _debouncedSearch = debounce(q => performSearch(q, 'user_input'), 80);
+        const _debouncedHistoryCommit = debounce(q => commitToHistoryIfEligible(q), 900);
 
         searchInput.addEventListener('input', function () {
             const value = this.value;
             clearBtn.style.display = value.length > 0 ? 'block' : 'none';
             _debouncedSearch(value);
+            _debouncedHistoryCommit(value);
         });
         searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') performSearch(searchInput.value.trim(), 'user_input');
+            if (e.key === 'Enter') {
+                const value = searchInput.value.trim();
+                performSearch(value, 'user_input');
+                commitToHistoryIfEligible(value);
+            }
         });
         searchInput.addEventListener('focus', () => searchHint.classList.remove('visible'));
         searchInput.addEventListener('blur', () => {
+            commitToHistoryIfEligible(searchInput.value);
             if (!searchInput.value && !resultsSection.querySelector('.result-item') && !resultsSection.querySelector('.did-you-mean')) {
                 searchHint.classList.add('visible');
             }
@@ -18333,7 +18474,7 @@ const paidData = [
 
         function buildFilterSearchIndex() {
             if (filterSearchIndexCache) return filterSearchIndexCache;
-            const entries =[
+            const entries = [
                 { group: 'Availability', label: 'All medications', count: allDatasetNormalized.length, isActive: () => currentFilterType === 'all', apply: () => setAvailability('all') },
                 { group: 'Availability', label: 'Paid', count: paidData.length, isActive: () => currentFilterType === 'paid', apply: () => setAvailability('paid') },
                 { group: 'Availability', label: 'Free', count: freeData.length, isActive: () => currentFilterType === 'free', apply: () => setAvailability('free') }
@@ -18374,7 +18515,7 @@ const paidData = [
 
         function rankFilterEntries(query, entries) {
             const q = query.trim();
-            if (!q) return[];
+            if (!q) return [];
             const fuse = getFilterSearchFuse(entries);
             const results = fuse.search(q, { limit: 40 });
             return results.map(r => r.item);
@@ -18490,6 +18631,10 @@ const paidData = [
         });
 
         document.addEventListener('keydown', (e) => {
+            if (engineSwitchPopover && engineSwitchPopover.classList.contains('open') && e.key === 'Escape') {
+                closeEngineSwitchPopover();
+                return;
+            }
             if ((e.key === 'k' || e.key === 'K') && (e.ctrlKey || e.metaKey)) {
                 e.preventDefault();
                 toggleFilterPanel();
@@ -18549,76 +18694,198 @@ const paidData = [
         const SEARCH_ENGINES = {
             google: {
                 label: 'Google',
+                mono: 'G',
+                accent: '#4285f4',
                 web: (q) => `https://www.google.com/search?q=${q}`,
                 images: (q) => `https://www.google.com/search?tbm=isch&q=${q}`
             },
             bing: {
                 label: 'Bing',
+                mono: 'B',
+                accent: '#00897b',
                 web: (q) => `https://www.bing.com/search?q=${q}`,
                 images: (q) => `https://www.bing.com/images/search?q=${q}`
             },
             ddg: {
                 label: 'DuckDuckGo',
+                mono: 'D',
+                accent: '#de5833',
                 web: (q) => `https://duckduckgo.com/?q=${q}`,
                 images: (q) => `https://duckduckgo.com/?q=${q}&iax=images&ia=images`
             },
             brave: {
                 label: 'Brave',
+                mono: 'R',
+                accent: '#fb542b',
                 web: (q) => `https://search.brave.com/search?q=${q}`,
                 images: (q) => `https://search.brave.com/images?q=${q}`
             },
             startpage: {
                 label: 'Startpage',
+                mono: 'S',
+                accent: '#7450fe',
                 web: (q) => `https://www.startpage.com/sp/search?query=${q}`,
                 images: (q) => `https://www.startpage.com/sp/search?query=${q}&cat=images`
             },
             kagi: {
                 label: 'Kagi',
+                mono: 'K',
+                accent: '#ffb703',
                 web: (q) => `https://kagi.com/search?q=${q}`,
-                images: (q) => `https://kagi.com/images?q=${q}`
+                images: (q) => `https://kagi.com/search?q=${q}`
             }
         };
+
+        const ENGINE_ORDER = ['google', 'bing', 'ddg', 'brave', 'startpage', 'kagi'];
 
         function getStoredSearchEngine() {
             try {
                 const stored = localStorage.getItem('preferredSearchEngine');
                 if (stored && SEARCH_ENGINES[stored]) return stored;
+                if (stored === 'google-images') return 'google';
             } catch (e) { /* ignore malformed storage */ }
             return 'google';
         }
 
         let preferredSearchEngine = getStoredSearchEngine();
+        let engineSwitchPopover = null;
 
-        function applyPreferredSearchEngineUI() {
-            document.querySelectorAll('.engine-option-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.engine === preferredSearchEngine);
-            });
+        function engineMonogramSVG(key, size) {
+            const eng = SEARCH_ENGINES[key];
+            const s = size || 18;
+            return `<svg width="${s}" height="${s}" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="16" cy="16" r="15" fill="${eng.accent}" fill-opacity="0.16" stroke="${eng.accent}" stroke-opacity="0.55" stroke-width="1.4"/>
+                <text x="16" y="21.5" text-anchor="middle" font-size="14" font-weight="700" font-family="Inter, sans-serif" fill="${eng.accent}">${eng.mono}</text>
+            </svg>`;
+        }
+
+        function renderEnginePickerGrid() {
+            const grid = document.getElementById('engine-picker-grid');
+            if (!grid) return;
+            grid.innerHTML = ENGINE_ORDER.map(key => {
+                const eng = SEARCH_ENGINES[key];
+                const active = key === preferredSearchEngine;
+                return `<button type="button" class="engine-pick-btn${active ? ' active' : ''}" data-engine="${key}" aria-pressed="${active}" title="${escapeHTML(eng.label)}">
+                    <span class="engine-pick-icon">${engineMonogramSVG(key, 20)}</span>
+                    <span class="engine-pick-label">${escapeHTML(eng.label)}</span>
+                </button>`;
+            }).join('');
         }
 
         function setPreferredSearchEngine(key) {
             if (!SEARCH_ENGINES[key]) return;
             preferredSearchEngine = key;
             try { localStorage.setItem('preferredSearchEngine', key); } catch (e) { /* ignore */ }
-            applyPreferredSearchEngineUI();
+            renderEnginePickerGrid();
+            updateEngineQuickSwitchButton();
+            updateEngineAwareGlyphs();
         }
 
-        const engineOptionGrid = document.getElementById('engine-option-grid');
-        if (engineOptionGrid) {
-            engineOptionGrid.addEventListener('click', (e) => {
-                const btn = e.target.closest('.engine-option-btn');
-                if (!btn) return;
-                setPreferredSearchEngine(btn.dataset.engine);
+        function updateEngineQuickSwitchButton() {
+            const btn = document.getElementById('engine-quick-switch');
+            if (!btn) return;
+            const eng = SEARCH_ENGINES[preferredSearchEngine];
+            btn.innerHTML = engineMonogramSVG(preferredSearchEngine, 18);
+            btn.title = `Web search engine: ${eng.label} — click to change`;
+            btn.setAttribute('aria-label', `Search engine: ${eng.label}. Click to change.`);
+        }
+
+        function updateEngineAwareGlyphs() {
+            const eng = SEARCH_ENGINES[preferredSearchEngine];
+            document.querySelectorAll('.engine-aware-btn').forEach(btn => {
+                btn.title = `Search the web (${eng.label})`;
+                const glyph = btn.querySelector('.engine-aware-glyph');
+                if (glyph) glyph.innerHTML = engineMonogramSVG(preferredSearchEngine, 16);
             });
         }
-        applyPreferredSearchEngineUI();
+
+        function openEngineSwitchPopover(anchorEl) {
+            closeEngineSwitchPopover();
+            const pop = document.createElement('div');
+            pop.className = 'engine-switch-popover';
+            pop.setAttribute('role', 'listbox');
+            pop.innerHTML = ENGINE_ORDER.map(key => {
+                const eng = SEARCH_ENGINES[key];
+                const active = key === preferredSearchEngine;
+                return `<button type="button" class="engine-switch-option${active ? ' active' : ''}" data-engine="${key}" role="option" aria-selected="${active}">
+                    ${engineMonogramSVG(key, 20)}<span>${escapeHTML(eng.label)}</span>
+                    ${active ? '<svg class="engine-switch-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>' : ''}
+                </button>`;
+            }).join('');
+            document.body.appendChild(pop);
+            const rect = anchorEl.getBoundingClientRect();
+            const popWidth = 190;
+            let left = rect.left + rect.width / 2 - popWidth / 2;
+            left = Math.max(10, Math.min(left, window.innerWidth - popWidth - 10));
+            pop.style.left = `${left}px`;
+            pop.style.top = `${rect.bottom + 8}px`;
+            requestAnimationFrame(() => pop.classList.add('open'));
+            engineSwitchPopover = pop;
+
+            pop.addEventListener('click', (e) => {
+                const opt = e.target.closest('.engine-switch-option');
+                if (!opt) return;
+                setPreferredSearchEngine(opt.dataset.engine);
+                closeEngineSwitchPopover();
+            });
+
+            setTimeout(() => {
+                document.addEventListener('click', handleOutsideEngineClick);
+            }, 0);
+        }
+
+        function handleOutsideEngineClick(e) {
+            if (!engineSwitchPopover) return;
+            if (engineSwitchPopover.contains(e.target) || e.target.closest('#engine-quick-switch')) return;
+            closeEngineSwitchPopover();
+        }
+
+        function closeEngineSwitchPopover() {
+            if (!engineSwitchPopover) return;
+            engineSwitchPopover.remove();
+            engineSwitchPopover = null;
+            document.removeEventListener('click', handleOutsideEngineClick);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const quickBtn = document.getElementById('engine-quick-switch');
+            if (quickBtn) {
+                quickBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    if (engineSwitchPopover) { closeEngineSwitchPopover(); return; }
+                    openEngineSwitchPopover(quickBtn);
+                });
+            }
+            const grid = document.getElementById('engine-picker-grid');
+            if (grid) {
+                grid.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.engine-pick-btn');
+                    if (!btn) return;
+                    setPreferredSearchEngine(btn.dataset.engine);
+                });
+            }
+            renderEnginePickerGrid();
+            updateEngineQuickSwitchButton();
+        });
+
+        function renderOnlineSearchOptionsInto(container, query) {
+            if (!container) return;
+            const eng = SEARCH_ENGINES[preferredSearchEngine];
+            container.innerHTML = `
+                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="web">${engineMonogramSVG(preferredSearchEngine, 18)}<span>Web</span></button>
+                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="images"><svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg><span>Images</span></button>
+                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="drugs.com"><svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 6.5C17.5 4.57 15.93 3 14 3H10C8.07 3 6.5 4.57 6.5 6.5V17.5C6.5 19.43 8.07 21 10 21H14C15.93 21 17.5 19.43 17.5 17.5V6.5ZM8.5 6.5C8.5 5.67 9.17 5 10 5H12V12H8.5V6.5ZM15.5 17.5C15.5 18.33 14.83 19 14 19H10C9.17 19 8.5 18.33 8.5 17.5V14H15.5V17.5ZM15.5 12H12V5H14C14.83 5 15.5 5.67 15.5 6.5V12Z"/></svg><span>Rx</span></button>
+                <button class="online-search-provider-btn" data-query="${escapeHTML(query)}" data-provider="perplexity"><svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg><span>P.AI</span></button>
+            `;
+        }
 
         function searchOnline(term, provider) {
             const encodedTerm = encodeURIComponent(term);
             const engine = SEARCH_ENGINES[preferredSearchEngine] || SEARCH_ENGINES.google;
             let url;
-            if (provider === 'google') {
+            if (provider === 'web') {
                 url = engine.web(encodedTerm);
-            } else if (provider === 'google-images') {
+            } else if (provider === 'images') {
                 url = engine.images(encodedTerm);
             } else if (provider === 'drugs.com') {
                 url = `https://www.drugs.com/search.php?searchterm=${encodedTerm}`;
@@ -18632,7 +18899,7 @@ const paidData = [
 
 
         function generateCopyText(itemObject, itemType) {
-            const textLines =[`Name: ${itemObject.name || 'N/A'}`];
+            const textLines = [`Name: ${itemObject.name || 'N/A'}`];
 
             if (itemObject.activeIngredient) textLines.push(`Active Ingredient: ${itemObject.activeIngredient}`);
             if (itemObject.concentration) textLines.push(`Concentration: ${itemObject.concentration}`);
@@ -18650,7 +18917,6 @@ const paidData = [
 
         function copyDetailsToClipboard(textToCopy, buttonElement) {
             navigator.clipboard.writeText(textToCopy).then(() => {
-                const originalButtonContent = buttonElement.innerHTML;
                 const originalTitle = buttonElement.title;
                 buttonElement.setAttribute('title', 'Copied!');
                 buttonElement.style.color = 'var(--accent-color)';
@@ -18658,7 +18924,7 @@ const paidData = [
                     buttonElement.setAttribute('title', originalTitle);
                     buttonElement.style.color = '';
                 }, 1500);
-            }).catch(err => {
+            }).catch(() => {
                 showCustomConfirm("Failed to copy details. Please try again.", null, { yesText: "OK", noText: null });
             });
         }
@@ -18711,7 +18977,7 @@ const paidData = [
             }
         });
 
-        function getFromLocalStorage(key, defaultValue =[]) {
+        function getFromLocalStorage(key, defaultValue = []) {
             try {
                 const item = localStorage.getItem(key);
                 return item ? JSON.parse(item) : defaultValue;
@@ -18728,7 +18994,7 @@ const paidData = [
 
         function addSearchToHistory(query) {
             if (!query || query.length < 2) return;
-            let history = getFromLocalStorage('searchHistory',[]);
+            let history = getFromLocalStorage('searchHistory', []);
             history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
             history.unshift(query);
             if (history.length > MAX_HISTORY_ITEMS) {
@@ -18740,29 +19006,42 @@ const paidData = [
             }
         }
 
+        function timeAgoLabel(timestamp) {
+            const diffMs = Date.now() - timestamp;
+            const mins = Math.floor(diffMs / 60000);
+            if (mins < 1) return 'just now';
+            if (mins < 60) return `${mins}m ago`;
+            const hours = Math.floor(mins / 60);
+            if (hours < 24) return `${hours}h ago`;
+            const days = Math.floor(hours / 24);
+            if (days < 7) return `${days}d ago`;
+            return new Date(timestamp).toLocaleDateString();
+        }
+
         function loadSearchHistory() {
-            const history = getFromLocalStorage('searchHistory',[]);
+            const history = getFromLocalStorage('searchHistory', []);
             searchHistoryList.innerHTML = '';
             if (historyCountBadge) {
                 historyCountBadge.textContent = history.length;
                 historyCountBadge.classList.toggle('visible', history.length > 0);
             }
             if (history.length === 0) {
-                searchHistoryList.innerHTML = '<li class="empty-state">Search history is empty.</li>';
+                searchHistoryList.innerHTML = '<li class="empty-state"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="26" height="26"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3.2 3.2"/></svg><span>Search history is empty.</span></li>';
                 clearHistoryBtn.style.display = 'none';
                 copyHistoryBtn.style.display = 'none';
             } else {
                 history.forEach(item => {
                     const li = document.createElement('li');
-                    li.textContent = escapeHTML(item);
                     li.dataset.query = item;
                     li.title = `Search for: ${escapeHTML(item)}`;
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-history-btn-side-panel';
-                    removeBtn.innerHTML = '&times;';
-                    removeBtn.title = 'Remove from history';
-                    removeBtn.dataset.query = item;
-                    li.appendChild(removeBtn);
+                    li.innerHTML = `
+                        <span class="panel-list-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3 2"/></svg>
+                        </span>
+                        <span class="panel-list-text">${escapeHTML(item)}</span>
+                        <button class="remove-history-btn-side-panel" title="Remove from history" data-query="${escapeHTML(item)}" aria-label="Remove from history">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                        </button>`;
                     searchHistoryList.appendChild(li);
                 });
                 clearHistoryBtn.style.display = 'block';
@@ -18773,14 +19052,14 @@ const paidData = [
         function clearSearchHistory() {
             showCustomConfirm('Are you sure you want to clear all search history?', (confirmed) => {
                 if (confirmed) {
-                    saveToLocalStorage('searchHistory',[]);
+                    saveToLocalStorage('searchHistory', []);
                     loadSearchHistory();
                 }
             });
         }
 
         function togglePinItem(itemId, itemName) {
-            let pinnedItems = getFromLocalStorage('pinnedItems',[]);
+            let pinnedItems = getFromLocalStorage('pinnedItems', []);
             const existingPinIndex = pinnedItems.findIndex(pin => pin.id === itemId);
 
             if (existingPinIndex > -1) {
@@ -18803,31 +19082,30 @@ const paidData = [
         }
 
         function loadPinnedItems() {
-            const pinnedItems = getFromLocalStorage('pinnedItems',[]);
+            const pinnedItems = getFromLocalStorage('pinnedItems', []);
             pinnedItemsList.innerHTML = '';
             if (pinnedCountBadge) {
                 pinnedCountBadge.textContent = pinnedItems.length;
                 pinnedCountBadge.classList.toggle('visible', pinnedItems.length > 0);
             }
             if (pinnedItems.length === 0) {
-                pinnedItemsList.innerHTML = '<li class="empty-state">No items pinned yet.</li>';
+                pinnedItemsList.innerHTML = '<li class="empty-state"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H6.5v4L4.5 9v2h4.5v7l1 1 1-1v-7h4.5V9l-2-2V3z"/></svg><span>No items pinned yet.</span></li>';
                 clearPinnedBtn.style.display = 'none';
                 copyPinnedBtn.style.display = 'none';
             } else {
                 pinnedItems.forEach(pin => {
                     const li = document.createElement('li');
-                    li.textContent = escapeHTML(pin.name);
                     li.dataset.itemId = pin.id;
-                    li.dataset.itemName = pin.name;
-                    li.title = `Pinned: ${escapeHTML(pin.name)} (Timestamp: ${new Date(pin.timestamp).toLocaleString()})`;
-
-                    const unpinBtn = document.createElement('button');
-                    unpinBtn.className = 'unpin-btn-side-panel';
-                    unpinBtn.innerHTML = '&times;';
-                    unpinBtn.title = 'Unpin item';
-                    unpinBtn.dataset.itemId = pin.id;
-                    unpinBtn.dataset.itemName = pin.name;
-                    li.appendChild(unpinBtn);
+                    li.title = `Pinned ${timeAgoLabel(pin.timestamp)}`;
+                    li.innerHTML = `
+                        <span class="panel-list-icon panel-list-icon-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" width="15" height="15"><path d="M13.5 3H6.5v4L4.5 9v2h4.5v7l1 1 1-1v-7h4.5V9l-2-2V3z"/></svg>
+                        </span>
+                        <span class="panel-list-text">${escapeHTML(pin.name)}</span>
+                        <span class="panel-list-meta">${timeAgoLabel(pin.timestamp)}</span>
+                        <button class="unpin-btn-side-panel" title="Unpin item" data-item-id="${escapeHTML(pin.id)}" data-item-name="${escapeHTML(pin.name)}" aria-label="Unpin item">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                        </button>`;
                     pinnedItemsList.appendChild(li);
                 });
                 clearPinnedBtn.style.display = 'block';
@@ -18838,7 +19116,7 @@ const paidData = [
         function clearPinnedItems() {
             showCustomConfirm('Are you sure you want to clear all pinned items?', (confirmed) => {
                 if (confirmed) {
-                    saveToLocalStorage('pinnedItems',[]);
+                    saveToLocalStorage('pinnedItems', []);
                     loadPinnedItems();
                     updatePinButtonsInResults();
                 }
@@ -18846,7 +19124,7 @@ const paidData = [
         }
 
         function updatePinButtonsInResults() {
-            const pinnedItems = getFromLocalStorage('pinnedItems',[]);
+            const pinnedItems = getFromLocalStorage('pinnedItems', []);
             const currentPinBtns = document.querySelectorAll('.result-item .pin-item-btn');
             currentPinBtns.forEach(btn => {
                 const itemId = btn.dataset.itemId;
@@ -18870,7 +19148,8 @@ const paidData = [
                 const itemName = unpinButton.dataset.itemName;
                 togglePinItem(itemId, itemName);
             } else if (targetLi) {
-                const itemName = targetLi.dataset.itemName || targetLi.textContent.replace(/×$/, '').trim();
+                const textEl = targetLi.querySelector('.panel-list-text');
+                const itemName = textEl ? textEl.textContent : '';
                 searchInput.value = itemName;
                 performSearch(itemName, 'suggestion_click');
                 closeSidePanel();
@@ -18884,7 +19163,7 @@ const paidData = [
             if (removeButton) {
                 event.stopPropagation();
                 const queryToRemove = removeButton.dataset.query;
-                let history = getFromLocalStorage('searchHistory',[]);
+                let history = getFromLocalStorage('searchHistory', []);
                 history = history.filter(item => item !== queryToRemove);
                 saveToLocalStorage('searchHistory', history);
                 loadSearchHistory();
@@ -18908,7 +19187,7 @@ const paidData = [
         }
 
         function convertArrayOfObjectsToCSV(data, headers) {
-            const csvRows =[];
+            const csvRows = [];
             csvRows.push(headers.map(escapeCSVField).join(','));
 
             data.forEach(item => {
@@ -18941,24 +19220,24 @@ const paidData = [
         }
 
         copyPinnedBtn.addEventListener('click', () => {
-            const pinnedItems = getFromLocalStorage('pinnedItems',[]);
+            const pinnedItems = getFromLocalStorage('pinnedItems', []);
             if (pinnedItems.length > 0) {
                 const textToCopy = pinnedItems.map(item => item.name).join('\n');
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     showCopyFeedback(copyPinnedFeedback);
-                }).catch(err => {
+                }).catch(() => {
                     showCustomConfirm("Failed to copy.", null, { yesText: "OK", noText: null });
                 });
             }
         });
 
         copyHistoryBtn.addEventListener('click', () => {
-            const history = getFromLocalStorage('searchHistory',[]);
+            const history = getFromLocalStorage('searchHistory', []);
             if (history.length > 0) {
                 const textToCopy = history.join('\n');
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     showCopyFeedback(copyHistoryFeedback);
-                }).catch(err => {
+                }).catch(() => {
                     showCustomConfirm("Failed to copy.", null, { yesText: "OK", noText: null });
                 });
             }
@@ -18981,7 +19260,7 @@ const paidData = [
                 return;
             }
 
-            const predefinedHeaders =['_uniqueId', 'source_type', 'name', 'activeIngredient', 'concentration', 'form', 'price', 'company', 'class', 'authority'];
+            const predefinedHeaders = ['_uniqueId', 'source_type', 'name', 'activeIngredient', 'concentration', 'form', 'price', 'company', 'class', 'authority'];
             const allKeysEncountered = new Set(predefinedHeaders);
             allExportData.forEach(item => Object.keys(item).forEach(key => allKeysEncountered.add(key)));
             const finalHeaders = [...allKeysEncountered].sort((a, b) => {
@@ -19122,6 +19401,8 @@ const paidData = [
             loadPinnedItems();
             loadSearchHistory();
             setAvailability('all');
+            renderEnginePickerGrid();
+            updateEngineQuickSwitchButton();
             
             if (!searchInput.value.trim() && Object.values(activeSecondaryFilters).every(v => !v)) {
                 noResultsContainer.innerHTML = '<div class="no-results">Start typing to search for medications.</div>';
