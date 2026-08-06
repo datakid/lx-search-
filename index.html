@@ -293,6 +293,26 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
 
         html {
             scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+            scrollbar-gutter: stable;
+        }
+
+        html::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        html::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        html::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 8px;
+        }
+
+        html::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
         }
 
         body {
@@ -2153,33 +2173,6 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
             &:active {
                 transform: translateY(-1px) scale(1);
             }
-
-            &:hover::after {
-                content: attr(title);
-                position: absolute;
-                bottom: 125%;
-                left: 50%;
-                transform: translateX(-50%) translateY(4px);
-                background-color: var(--tooltip-bg);
-                color: var(--tooltip-text);
-                padding: 5px 10px;
-                font-size: 11px;
-                border-radius: 6px;
-                white-space: nowrap;
-                pointer-events: none;
-                opacity: 0;
-                animation: tooltipFadeIn 0.25s var(--transition-easing) forwards;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-                z-index: 10;
-                font-weight: 500;
-            }
-        }
-
-        @keyframes tooltipFadeIn {
-            to {
-                opacity: 1;
-                transform: translateX(-50%) translateY(0);
-            }
         }
 
         .pin-item-btn {
@@ -2230,26 +2223,6 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
             &.pinned svg {
                 fill: var(--accent-color);
                 stroke: var(--accent-color);
-            }
-
-            &:hover::after {
-                content: attr(aria-label);
-                position: absolute;
-                bottom: 125%;
-                left: 50%;
-                transform: translateX(-50%) translateY(4px);
-                background-color: var(--tooltip-bg);
-                color: var(--tooltip-text);
-                padding: 5px 10px;
-                font-size: 11px;
-                border-radius: 6px;
-                white-space: nowrap;
-                pointer-events: none;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-                z-index: 10;
-                font-weight: 500;
-                opacity: 0;
-                animation: tooltipFadeIn 0.25s var(--transition-easing) forwards;
             }
         }
 
@@ -3967,6 +3940,8 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
 
         .results-table-wrap {
             overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
             border-radius: var(--border-radius-lg);
             border: 1px solid var(--glass-border-card);
             background: var(--glass-bg-card);
@@ -3974,8 +3949,26 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
             -webkit-backdrop-filter: blur(var(--glass-blur-card)) saturate(var(--glass-saturation));
         }
 
+        .results-table-wrap::-webkit-scrollbar {
+            height: 10px;
+        }
+
+        .results-table-wrap::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+
+        .results-table-wrap::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            border-radius: 8px;
+        }
+
+        .results-table-wrap::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
         .results-table {
             width: 100%;
+            table-layout: fixed;
             border-collapse: collapse;
             font-size: 0.86rem;
 
@@ -3989,6 +3982,8 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
                 padding: 10px 14px;
                 border-bottom: 1px solid var(--glass-border-card);
                 white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 position: sticky;
                 top: 0;
                 background: var(--glass-bg-card);
@@ -4000,12 +3995,15 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
                 border-bottom: 1px solid var(--glass-border-card);
                 color: var(--text-primary);
                 vertical-align: top;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             & tbody tr {
                 scroll-margin-top: 100px;
                 content-visibility: auto;
-                contain-intrinsic-size: auto 42px;
+                contain-intrinsic-size: auto;
                 cursor: pointer;
                 transition: background-color var(--transition-speed-fast) var(--transition-easing);
             }
@@ -4021,24 +4019,184 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
 
             & .table-row-name {
                 font-weight: 600;
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+                display: flex;
+                align-items: flex-start;
+                gap: 8px;
+
+                & .pin-item-btn {
+                    flex-shrink: 0;
+                    margin-top: -2px;
+                    width: 26px;
+                    height: 26px;
+                    padding: 4px;
+
+                    & svg { width: 14px; height: 14px; }
+                }
+
+                & .table-row-name-text {
+                    min-width: 0;
+                }
             }
 
             & .table-row-price {
                 font-variant-numeric: tabular-nums;
                 color: var(--price-text-color);
                 font-weight: 650;
-                white-space: nowrap;
             }
 
             & .table-expand-row td {
                 padding: 0;
                 border-bottom: 1px solid var(--glass-border-card);
                 cursor: default;
+                white-space: normal;
+                overflow: visible;
             }
         }
 
         .table-expand-content {
             padding: 0.9rem 1.2rem 1.1rem;
+
+            & > .result-card-actions {
+                margin-bottom: 0.85rem;
+            }
+        }
+
+        .table-row-actions {
+            padding: 6px 8px;
+            text-align: right;
+
+            & .card-action-btn {
+                width: 26px;
+                height: 26px;
+                padding: 4px;
+
+                & svg { width: 14px; height: 14px; }
+            }
+        }
+
+        .table-actions-popover {
+            position: fixed;
+            z-index: 1400;
+            width: 190px;
+            padding: 6px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 20px 48px -12px var(--shadow-color-strong), 0 4px 16px -4px var(--shadow-color-medium);
+            backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            -webkit-backdrop-filter: blur(var(--glass-blur-main)) saturate(var(--glass-saturation));
+            opacity: 0;
+            transform: translateY(-6px) scale(0.96);
+            transform-origin: top right;
+            transition: opacity 0.16s var(--transition-easing), transform 0.16s var(--transition-easing-spring);
+            pointer-events: none;
+
+            &.open {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                pointer-events: auto;
+            }
+
+            & button {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                width: 100%;
+                border: none;
+                background: transparent;
+                color: var(--text-primary);
+                font-family: inherit;
+                font-size: 0.83rem;
+                text-align: left;
+                padding: 8px 10px;
+                border-radius: 8px;
+                cursor: pointer;
+
+                & svg { width: 15px; height: 15px; flex-shrink: 0; color: var(--text-secondary); }
+
+                &:hover, &:focus-visible {
+                    background: var(--accent-bg-subtle);
+                }
+            }
+        }
+
+        .letter-divider,
+        .letter-divider-row td {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-placeholder);
+            background: var(--glass-bg-card);
+        }
+
+        .letter-divider {
+            list-style: none;
+            padding: 7px 0.3rem 5px;
+            position: sticky;
+            top: 0;
+        }
+
+        .letter-divider-row td {
+            padding: 5px 14px;
+        }
+
+        .skipped-results-sentinel {
+            list-style: none;
+
+            & button {
+                display: block;
+                width: 100%;
+                border: 1px dashed var(--glass-border-interactive);
+                background: var(--accent-bg-subtle);
+                color: var(--accent-color);
+                font-family: inherit;
+                font-size: 0.82rem;
+                font-weight: 600;
+                text-align: center;
+                padding: 10px;
+                border-radius: var(--border-radius-md);
+                cursor: pointer;
+                margin-bottom: 0.85rem;
+
+                &:hover, &:focus-visible {
+                    background: var(--accent-bg-active);
+                }
+            }
+        }
+
+        tr.skipped-results-sentinel td {
+            padding: 8px 14px;
+            border-bottom: 1px solid var(--glass-border-card);
+
+            & button { margin-bottom: 0; }
+        }
+
+        .az-rail.inactive {
+            opacity: 0.55;
+        }
+
+        .az-rail-btn.is-current {
+            color: var(--accent-color);
+            background: var(--accent-bg-active);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         .bridge-badge {
@@ -4402,6 +4560,37 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
             }
         }
 
+        #ui-tooltip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1500;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 6px;
+            white-space: nowrap;
+            max-width: 260px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transform: translateY(4px);
+            transition: opacity 0.15s var(--transition-easing), transform 0.15s var(--transition-easing);
+
+            &.visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            &:empty {
+                display: none;
+            }
+        }
+
         .data-version-line {
             font-size: 0.68rem;
             color: var(--text-placeholder);
@@ -4470,27 +4659,10 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
             vertical-align: middle;
         }
 
-        .card-action-btn:focus-visible::after,
-        .pin-item-btn:focus-visible::after {
-            content: attr(title);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--tooltip-bg);
-            color: var(--tooltip-text);
-            padding: 5px 10px;
-            font-size: 11px;
-            border-radius: 6px;
-            white-space: nowrap;
-            pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-            z-index: 10;
-            font-weight: 500;
-        }
-
-        .pin-item-btn:focus-visible::after {
-            content: attr(aria-label);
+        .card-action-btn:focus-visible,
+        .pin-item-btn:focus-visible {
+            outline: 2px solid var(--accent-color);
+            outline-offset: 2px;
         }
 
         .result-item:focus-visible,
@@ -4850,15 +5022,23 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
                     </div>
                 </div>
             </div>
-            <div class="az-rail-mobile" id="az-rail-mobile" aria-label="Jump to letter" hidden></div>
+            <div class="az-rail-mobile" id="az-rail-mobile" role="navigation" aria-label="Jump to letter" hidden></div>
             <div id="suggestions-container"></div>
             <div id="no-results-container"></div>
             <div id="pinned-deeplink-notice"></div>
             <div style="position: relative;">
-                <div class="az-rail" id="az-rail" aria-label="Jump to letter" hidden></div>
+                <div class="az-rail" id="az-rail" role="navigation" aria-label="Jump to letter" hidden></div>
                 <ul id="results-list" role="list"></ul>
                 <div class="results-table-wrap" id="results-table-wrap" style="display: none;" tabindex="-1">
                     <table class="results-table" aria-label="Search results, compact view">
+                        <colgroup>
+                            <col>
+                            <col style="width: 100px">
+                            <col style="width: 100px">
+                            <col style="width: 120px">
+                            <col style="width: 90px">
+                            <col style="width: 44px">
+                        </colgroup>
                         <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -4866,6 +5046,7 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
                                 <th scope="col">Form</th>
                                 <th scope="col">Authority</th>
                                 <th scope="col">Price</th>
+                                <th scope="col"><span class="sr-only">Actions</span></th>
                             </tr>
                         </thead>
                         <tbody id="results-table-body"></tbody>
@@ -4877,6 +5058,7 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
     </div>
 
     <div class="pin-limit-notice" id="pin-limit-notice" role="status" aria-live="polite"></div>
+    <div id="ui-tooltip" role="tooltip"></div>
 
     <div class="app-disclaimer">
         <div>
@@ -19010,7 +19192,7 @@ const freeData = [
         const LENIENT_THRESHOLD_FOR_SUGGESTIONS = 0.55;
         const RESULTS_PER_PAGE = 20;
         let allMatchingResults = [];
-        let activeDOMBatchesStartIndices = [];
+        let renderedCount = 0;
         function debounce(fn, ms) {
             let timer = null;
             return function (...args) {
@@ -19863,43 +20045,38 @@ const freeData = [
             return { detailsHTML, tagsHTML, bridgeHTML, reportHTML };
         }
 
-        function buildItemHTML(displayItem, itemType, fuseMatches, uniqueItemId) {
-            const nameValue = displayItem.name;
-            const itemNameForSearch = escapeHTML(nameValue);
-            const safeItemId = escapeHTML(uniqueItemId);
+        function buildItemActionsHTML(displayItem, itemType, variant) {
+            const itemNameForSearch = escapeHTML(displayItem.name);
+            const safeItemId = escapeHTML(displayItem._uniqueId);
             const safeItemType = escapeHTML(itemType);
-            const title = highlightText(nameValue, fuseMatches, 'name');
-
-            const { detailsHTML, tagsHTML, bridgeHTML, reportHTML } = buildDetailAndTagsHTML(displayItem, itemType, fuseMatches);
-
             const rawDetailsForSharing = JSON.stringify(displayItem);
 
-            return `
-                <div class="result-header">
+            const pinHTML = `
                     <button class="pin-item-btn" data-item-id="${safeItemId}" data-item-name="${itemNameForSearch}" aria-label="Pin this item">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 3H6.5v4L4.5 9v2h4.5v7l1 1 1-1v-7h4.5V9l-2-2V3z" />
                         </svg>
-                    </button>
-                    <div class="result-title">${title || 'Unknown Item'}</div>
+                    </button>`;
+
+            const cardActionsHTML = `
                     <div class="result-card-actions">
-                        <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${safeItemType}" title="Copy Details">
+                        <button class="card-action-btn copy-details-card" data-item-name="${itemNameForSearch}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' data-item-type="${safeItemType}" data-tooltip="Copy Details" aria-label="Copy Details">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="images" title="Search Images">
+                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="images" data-tooltip="Search Images" aria-label="Search Images">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="drugs.com" title="Search Drugs.com">
+                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="drugs.com" data-tooltip="Search Drugs.com" aria-label="Search Drugs.com">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 6.5C17.5 4.57 15.93 3 14 3H10C8.07 3 6.5 4.57 6.5 6.5V17.5C6.5 19.43 8.07 21 10 21H14C15.93 21 17.5 19.43 17.5 17.5V6.5ZM8.5 6.5C8.5 5.67 9.17 5 10 5H12V12H8.5V6.5ZM15.5 17.5C15.5 18.33 14.83 19 14 19H10C9.17 19 8.5 18.33 8.5 17.5V14H15.5V17.5ZM15.5 12H12V5H14C14.83 5 15.5 5.67 15.5 6.5V12Z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="perplexity" title="Search Perplexity">
+                        <button class="card-action-btn search-online-card" data-item-name="${itemNameForSearch}" data-provider="perplexity" data-tooltip="Search Perplexity" aria-label="Search Perplexity">
                             <svg class="online-provider-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg>
                         </button>
-                        <button class="card-action-btn search-online-card engine-aware-btn" data-item-name="${itemNameForSearch}" data-provider="web" title="Search the web">
+                        <button class="card-action-btn search-online-card engine-aware-btn" data-item-name="${itemNameForSearch}" data-provider="web" data-tooltip="Search the web" aria-label="Search the web">
                             <span class="engine-aware-glyph" aria-hidden="true"></span>
                         </button>
                         <div class="card-overflow-wrap">
-                            <button type="button" class="card-action-btn card-overflow-trigger" aria-haspopup="true" aria-expanded="false" title="More search options">
+                            <button type="button" class="card-action-btn card-overflow-trigger" aria-haspopup="true" aria-expanded="false" data-tooltip="More search options" aria-label="More search options">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
                             </button>
                             <div class="card-overflow-menu">
@@ -19910,7 +20087,34 @@ const freeData = [
                             </div>
                         </div>
                         <span class="item-type-tag ${safeItemType}">${safeItemType}</span>
-                    </div>
+                    </div>`;
+
+            if (variant === 'card') {
+                return { pin: pinHTML, actions: cardActionsHTML };
+            }
+            if (variant === 'table-expand') {
+                return { pin: '', actions: cardActionsHTML };
+            }
+            if (variant === 'table-cell') {
+                const triggerHTML = `<button type="button" class="card-action-btn table-overflow-trigger" data-item-id="${safeItemId}" data-item-name="${itemNameForSearch}" data-item-type="${safeItemType}" data-item-raw-details='${escapeHTML(rawDetailsForSharing)}' aria-haspopup="true" aria-expanded="false" data-tooltip="More actions" aria-label="More actions">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+                    </button>`;
+                return { pin: pinHTML, actions: triggerHTML };
+            }
+            return { pin: '', actions: '' };
+        }
+
+        function buildItemHTML(displayItem, itemType, fuseMatches, uniqueItemId) {
+            const nameValue = displayItem.name;
+            const title = highlightText(nameValue, fuseMatches, 'name');
+
+            const { detailsHTML, tagsHTML, bridgeHTML, reportHTML } = buildDetailAndTagsHTML(displayItem, itemType, fuseMatches);
+
+            const { pin, actions } = buildItemActionsHTML(displayItem, itemType, 'card');
+
+            return `
+                <div class="result-header">${pin}
+                    <div class="result-title">${title || 'Unknown Item'}</div>${actions}
                 </div>
                 <div class="result-details">${detailsHTML}</div>
                 <div class="result-tags-container">${tagsHTML}</div>
@@ -19921,12 +20125,14 @@ const freeData = [
 
         function buildItemRow(displayItem, itemType, uniqueItemId) {
             const safeItemId = escapeHTML(uniqueItemId);
-            return `<tr class="table-row" data-item-id="${safeItemId}" tabindex="0" aria-expanded="false">
-                <td class="table-row-name">${escapeHTML(displayItem.name)}</td>
+            const { pin, actions } = buildItemActionsHTML(displayItem, itemType, 'table-cell');
+            return `<tr class="table-row" data-item-id="${safeItemId}" tabindex="0" aria-expanded="false" aria-controls="expand-${safeItemId}">
+                <td class="table-row-name">${pin}<span class="table-row-name-text">${escapeHTML(displayItem.name)}</span></td>
                 <td>${escapeHTML(displayItem.concentration || '—')}</td>
                 <td>${escapeHTML(displayItem.form || '—')}</td>
                 <td>${escapeHTML(displayItem.authority || '—')}</td>
                 <td class="table-row-price">${itemType === 'paid' ? formatPrice(displayItem.price) : 'Free'}</td>
+                <td class="table-row-actions">${actions}</td>
             </tr>`;
         }
 
@@ -19945,13 +20151,14 @@ const freeData = [
             return results.filter(r => itemMatchesPrefixFilters(r.item, filters));
         }
 
-        function performSearch(rawQuery, operationType = 'user_input') {
+        function performSearch(rawQuery, operationType = 'user_input', { immediate = false } = {}) {
             rawQuery = rawQuery.trim();
             const { filters: prefixFilters, remainingQuery } = parseQueryPrefixes(rawQuery);
             const query = preprocessQueryText(remainingQuery);
             const hasPrefixFilters = Object.keys(prefixFilters).length > 0;
 
-            activeDOMBatchesStartIndices = [];
+            renderedCount = 0;
+            renderWindowStart = 0;
             allMatchingResults = [];
             let generatedSuggestions = [];
             let hiddenByFilterCount = 0;
@@ -20027,7 +20234,11 @@ const freeData = [
                 }
             }
 
-            requestAnimationFrame(() => renderInitialDOM(rawQuery, generatedSuggestions, hiddenByFilterCount));
+            if (immediate) {
+                renderInitialDOM(rawQuery, generatedSuggestions, hiddenByFilterCount);
+            } else {
+                requestAnimationFrame(() => renderInitialDOM(rawQuery, generatedSuggestions, hiddenByFilterCount));
+            }
 
             if (rawQuery && rawQuery.length >= 2 && operationType === 'suggestion_click' && allMatchingResults.length > 0) {
                 addSearchToHistory(rawQuery);
@@ -20054,67 +20265,131 @@ const freeData = [
             const railDesktop = document.getElementById('az-rail');
             const railMobile = document.getElementById('az-rail-mobile');
             if (!railDesktop || !railMobile) return;
-            const showRail = isBrowsingModeForRail();
-            if (!showRail) {
+
+            if (allMatchingResults.length < 30) {
                 railDesktop.hidden = true;
                 railMobile.hidden = true;
                 return;
             }
-            const present = new Set();
+
+            const nameSorted = currentSortMode === 'name-asc' || currentSortMode === 'name-desc';
+
+            const counts = new Map();
             allMatchingResults.forEach(r => {
-                const c = (r.item.name || '').trim().charAt(0).toUpperCase();
-                if (/[A-Z]/.test(c)) present.add(c);
-                else if (/[0-9]/.test(c)) present.add('#');
+                const bucket = bucketForName(r.item.name);
+                counts.set(bucket, (counts.get(bucket) || 0) + 1);
             });
-            const letters = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
-            const buttonsHTML = letters.map(l => `<button type="button" class="az-rail-btn" data-letter="${l}" ${present.has(l) ? '' : 'disabled'}>${l}</button>`).join('');
+
+            const buckets = ['#', ...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')];
+            if (counts.has('\u2022')) buckets.push('\u2022');
+
+            const buttonsHTML = buckets.map(b => {
+                const count = counts.get(b) || 0;
+                const isEmpty = count === 0;
+                const label = b === '\u2022' ? 'Other' : b;
+                const a11yLabel = isEmpty ? 'No items' : `Jump to ${label} \u2014 ${count} item${count !== 1 ? 's' : ''}`;
+                const safeLabel = escapeHTML(a11yLabel);
+                return `<button type="button" class="az-rail-btn" data-letter="${b}" ${isEmpty ? 'disabled aria-disabled="true"' : ''} data-tooltip="${safeLabel}" aria-label="${safeLabel}">${b}</button>`;
+            }).join('');
+
             railDesktop.innerHTML = buttonsHTML;
             railMobile.innerHTML = buttonsHTML;
+            railDesktop.classList.toggle('inactive', !nameSorted);
+            railMobile.classList.toggle('inactive', !nameSorted);
             railDesktop.hidden = false;
             railMobile.hidden = false;
         }
 
-        function isBrowsingModeForRail() {
-            return searchInput.value.trim().length === 0;
+        function findResultForLetter(letter) {
+            return allMatchingResults.find(r => bucketForName(r.item.name) === letter);
         }
 
-        function findResultForLetter(letter) {
-            const matches = letter === '#'
-                ? (c) => /[0-9]/.test(c)
-                : (c) => c === letter;
-            return allMatchingResults.find(r => matches((r.item.name || '').trim().charAt(0).toUpperCase()));
+        // renderWindowStart tracks where the CONTIGUOUS rendered run actually begins.
+        // Normally 0. A far jump (see below) skips the gap instead of rendering it,
+        // which means renderedCount alone can no longer answer "is index X in the DOM?" —
+        // an index before renderWindowStart looks "already rendered" by renderedCount's
+        // count but isn't actually there.
+        let renderWindowStart = 0;
+
+        function buildSkippedResultsSentinel(skippedCount, bucket) {
+            const label = bucket === '\u2022' ? 'Other' : bucket;
+            const text = `\u2191 Show the ${skippedCount} result${skippedCount !== 1 ? 's' : ''} before ${label}`;
+            const usingTable = currentDensityMode === 'table';
+            const el = document.createElement(usingTable ? 'tr' : 'li');
+            el.className = 'skipped-results-sentinel';
+            el.innerHTML = usingTable
+                ? `<td colspan="6"><button type="button">${escapeHTML(text)}</button></td>`
+                : `<button type="button">${escapeHTML(text)}</button>`;
+            el.querySelector('button').addEventListener('click', restoreTopDownBrowsing);
+            return el;
+        }
+
+        function restoreTopDownBrowsing() {
+            renderWindowStart = 0;
+            renderedCount = 0;
+            const container = currentDensityMode === 'table' ? resultsTableBody : resultsList;
+            container.innerHTML = '';
+            appendResultsUpTo(Math.min(RESULTS_PER_PAGE, allMatchingResults.length));
         }
 
         function jumpToTargetResult(targetResult) {
             if (!targetResult) return;
             const targetId = targetResult.item._uniqueId;
             const targetIndex = allMatchingResults.indexOf(targetResult);
-            const batchStartIndex = Math.floor(targetIndex / RESULTS_PER_PAGE) * RESULTS_PER_PAGE;
+            if (targetIndex === -1) return;
             const container = currentDensityMode === 'table' ? resultsTableBody : resultsList;
 
-            if (!activeDOMBatchesStartIndices.includes(batchStartIndex)) {
-                container.innerHTML = '';
-                activeDOMBatchesStartIndices = [batchStartIndex - RESULTS_PER_PAGE];
-                handleLoadMore();
-                activeDOMBatchesStartIndices = activeDOMBatchesStartIndices.filter(idx => idx >= 0);
+            function scrollToTarget() {
+                requestAnimationFrame(() => {
+                    const existing = Array.from(container.children).find(el => el.dataset && el.dataset.itemId === targetId);
+                    if (existing) {
+                        existing.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                        if (typeof existing.focus === 'function') existing.focus({ preventScroll: true });
+                    }
+                });
             }
 
-            requestAnimationFrame(() => {
-                const existing = Array.from(container.children).find(el => el.dataset && el.dataset.itemId === targetId);
-                if (existing) {
-                    existing.scrollIntoView({ block: 'center', behavior: 'smooth' });
-                    if (typeof existing.focus === 'function') existing.focus({ preventScroll: true });
-                }
-            });
+            if (targetIndex >= renderWindowStart && targetIndex < renderedCount) {
+                scrollToTarget();
+                return;
+            }
+
+            if (targetIndex < renderWindowStart || targetIndex > renderedCount + RESULTS_PER_PAGE) {
+                // Far jump: rendering everything between here and there would mean
+                // hundreds of throwaway nodes just to reach one target (the "600 items"
+                // problem). Jump the render window instead and leave a sentinel back to
+                // normal top-down browsing.
+                const skippedCount = targetIndex;
+                const bucket = bucketForName(targetResult.item.name);
+                container.innerHTML = '';
+                renderWindowStart = targetIndex;
+                renderedCount = targetIndex;
+                container.appendChild(buildSkippedResultsSentinel(skippedCount, bucket));
+                appendResultsUpTo(Math.min(targetIndex + RESULTS_PER_PAGE, allMatchingResults.length), scrollToTarget);
+                return;
+            }
+
+            appendResultsUpTo(targetIndex + 1, scrollToTarget);
+        }
+
+        function announceRailSortSwitch() {
+            if (!onboardingHintEl) {
+                onboardingHintEl = document.createElement('div');
+                onboardingHintEl.className = 'shortcut-hint-toast';
+                document.body.appendChild(onboardingHintEl);
+            }
+            onboardingHintEl.innerHTML = `<span>Switched to ${escapeHTML(SORT_MODE_LABELS['name-asc'])} sort</span>`;
+            onboardingHintEl.classList.add('visible');
+            clearTimeout(onboardingHintEl._hideTimer);
+            onboardingHintEl._hideTimer = setTimeout(() => onboardingHintEl.classList.remove('visible'), 2000);
         }
 
         function jumpToLetter(letter) {
             if (currentSortMode !== 'name-asc' && currentSortMode !== 'name-desc') {
                 setSortMode('name-asc', { search: false });
-                performSearch(searchInput.value, 'sort_change');
-                requestAnimationFrame(() => requestAnimationFrame(() => {
-                    jumpToTargetResult(findResultForLetter(letter));
-                }));
+                performSearch(searchInput.value, 'sort_change', { immediate: true });
+                announceRailSortSwitch();
+                jumpToTargetResult(findResultForLetter(letter));
                 return;
             }
             jumpToTargetResult(findResultForLetter(letter));
@@ -20124,6 +20399,24 @@ const freeData = [
             const railBtn = e.target.closest('.az-rail-btn');
             if (railBtn && !railBtn.disabled) jumpToLetter(railBtn.dataset.letter);
         });
+
+        function handleRailKeydown(e) {
+            const btn = e.target.closest('.az-rail-btn');
+            if (!btn) return;
+            const enabledButtons = Array.from(e.currentTarget.querySelectorAll('.az-rail-btn')).filter(b => !b.disabled);
+            const idx = enabledButtons.indexOf(btn);
+            if (idx === -1) return;
+            let nextIdx;
+            if (e.key === 'ArrowDown') nextIdx = idx + 1;
+            else if (e.key === 'ArrowUp') nextIdx = idx - 1;
+            else if (e.key === 'Home') nextIdx = 0;
+            else if (e.key === 'End') nextIdx = enabledButtons.length - 1;
+            else return;
+            e.preventDefault();
+            if (enabledButtons[nextIdx]) enabledButtons[nextIdx].focus();
+        }
+        if (document.getElementById('az-rail')) document.getElementById('az-rail').addEventListener('keydown', handleRailKeydown);
+        if (document.getElementById('az-rail-mobile')) document.getElementById('az-rail-mobile').addEventListener('keydown', handleRailKeydown);
 
         function renderInitialDOM(query, suggestions = [], hiddenByFilterCount = 0) {
             if (suggestions.length > 0) {
@@ -20191,59 +20484,161 @@ const freeData = [
             resultsList.style.display = usingTable ? 'none' : 'block';
             resultsTableWrap.style.display = usingTable ? 'block' : 'none';
 
-            const initialItemsToLoad = Math.min(RESULTS_PER_PAGE, allMatchingResults.length);
+            renderedCount = 0;
+            renderWindowStart = 0;
+            (usingTable ? resultsTableBody : resultsList).innerHTML = '';
+            appendResultsUpTo(Math.min(RESULTS_PER_PAGE, allMatchingResults.length));
+        }
 
+        function bucketForName(name) {
+            const firstChar = String(name || '').trim().charAt(0);
+            if (/[0-9]/.test(firstChar)) return '#';
+            const upper = firstChar.toUpperCase();
+            if (/[A-Z]/.test(upper)) return upper;
+            return '\u2022';
+        }
+
+        function buildLetterDividerElement(bucket, usingTable) {
             if (usingTable) {
-                resultsTableBody.innerHTML = '';
-                const fragment = document.createDocumentFragment();
-                for (let i = 0; i < initialItemsToLoad; i++) {
-                    const { item: displayItem } = allMatchingResults[i];
-                    const row = document.createElement('template');
-                    row.innerHTML = buildItemRow(displayItem, displayItem._type, displayItem._uniqueId).trim();
-                    fragment.appendChild(row.content.firstChild);
-                }
-                resultsTableBody.appendChild(fragment);
-            } else {
-                const existingItems = Array.from(resultsList.children);
-                for (let i = 0; i < initialItemsToLoad; i++) {
-                    const resultItem = allMatchingResults[i];
-                    const displayItem = resultItem.item;
-                    const itemType = displayItem._type;
-                    const fuseMatches = resultItem.matches;
-                    const uniqueItemId = displayItem._uniqueId;
-                    const innerHTML = buildItemHTML(displayItem, itemType, fuseMatches, uniqueItemId);
+                const tr = document.createElement('tr');
+                tr.className = 'letter-divider-row';
+                tr.dataset.letter = bucket;
+                tr.innerHTML = `<td colspan="6">${escapeHTML(bucket)}</td>`;
+                return tr;
+            }
+            const li = document.createElement('li');
+            li.className = 'letter-divider';
+            li.dataset.letter = bucket;
+            li.textContent = bucket;
+            return li;
+        }
 
-                    if (i < existingItems.length) {
-                        const node = existingItems[i];
-                        node.dataset.itemId = uniqueItemId;
-                        node.innerHTML = innerHTML;
-                        node.style.display = 'block';
-                        node.classList.remove('card-enter');
-                    } else {
-                        const itemLi = document.createElement('li');
-                        itemLi.className = 'result-item card-enter';
-                        itemLi.dataset.itemId = uniqueItemId;
-                        itemLi.tabIndex = 0;
-                        itemLi.style.animationDelay = `${(i - existingItems.length) * 30}ms`;
-                        itemLi.innerHTML = innerHTML;
-                        resultsList.appendChild(itemLi);
+        let letterRailObserver = null;
+        let currentActiveRailLetter = null;
+        let railLetterUpdateTimer = null;
+
+        function setActiveRailLetter(letter) {
+            if (letter === currentActiveRailLetter) return;
+            currentActiveRailLetter = letter;
+            clearTimeout(railLetterUpdateTimer);
+            railLetterUpdateTimer = setTimeout(() => {
+                document.querySelectorAll('.az-rail-btn').forEach(btn => {
+                    btn.classList.toggle('is-current', btn.dataset.letter === letter);
+                });
+                if (letter) {
+                    const mobileBtn = Array.from(document.querySelectorAll('#az-rail-mobile .az-rail-btn')).find(b => b.dataset.letter === letter);
+                    if (mobileBtn) mobileBtn.scrollIntoView({ inline: 'center', block: 'nearest' });
+                }
+            }, 100);
+        }
+
+        function setupLetterRailObserver() {
+            if (letterRailObserver) letterRailObserver.disconnect();
+            letterRailObserver = null;
+            const nameSorted = currentSortMode === 'name-asc' || currentSortMode === 'name-desc';
+            if (!nameSorted || allMatchingResults.length < 30 || typeof IntersectionObserver === 'undefined') return;
+            const container = currentDensityMode === 'table' ? resultsTableBody : resultsList;
+            const dividers = container.querySelectorAll('.letter-divider, .letter-divider-row');
+            if (!dividers.length) return;
+            letterRailObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) setActiveRailLetter(entry.target.dataset.letter);
+                });
+            }, { rootMargin: '-96px 0px -70% 0px' });
+            dividers.forEach(d => letterRailObserver.observe(d));
+        }
+
+        const RENDER_CHUNK_SIZE = 80;
+        let renderGeneration = 0;
+
+        function buildResultFragment(startIndex, endIndex, usingTable, nameSorted, isInitialBatch) {
+            const fragment = document.createDocumentFragment();
+            let prevBucket = (nameSorted && startIndex > 0) ? bucketForName(allMatchingResults[startIndex - 1].item.name) : null;
+
+            for (let i = startIndex; i < endIndex; i++) {
+                const resultItem = allMatchingResults[i];
+                const displayItem = resultItem.item;
+                const itemType = displayItem._type;
+                const uniqueItemId = displayItem._uniqueId;
+
+                if (nameSorted) {
+                    const bucket = bucketForName(displayItem.name);
+                    if (bucket !== prevBucket) {
+                        fragment.appendChild(buildLetterDividerElement(bucket, usingTable));
+                        prevBucket = bucket;
                     }
                 }
-                for (let i = initialItemsToLoad; i < existingItems.length; i++) existingItems[i].remove();
+
+                if (usingTable) {
+                    const row = document.createElement('template');
+                    row.innerHTML = buildItemRow(displayItem, itemType, uniqueItemId).trim();
+                    fragment.appendChild(row.content.firstChild);
+                } else {
+                    const itemLi = document.createElement('li');
+                    itemLi.dataset.itemId = uniqueItemId;
+                    itemLi.tabIndex = 0;
+                    if (isInitialBatch && (endIndex - startIndex) <= 40) {
+                        itemLi.className = 'result-item card-enter';
+                        itemLi.style.animationDelay = `${(i - startIndex) * 30}ms`;
+                    } else {
+                        itemLi.className = 'result-item';
+                    }
+                    itemLi.innerHTML = buildItemHTML(displayItem, itemType, resultItem.matches, uniqueItemId);
+                    fragment.appendChild(itemLi);
+                }
+            }
+            return fragment;
+        }
+
+        // Renders [renderedCount, target) in chunks of RENDER_CHUNK_SIZE across animation
+        // frames, so a far jump never builds hundreds of nodes in a single synchronous
+        // pass (that was the actual cause of the white flash, not just the rail highlight
+        // toggling). Normal cases — the initial 20-item page, a 20-item Load More — always
+        // finish within RENDER_CHUNK_SIZE and so complete synchronously, same as before.
+        // updateLoadMoreButton/updatePinButtonsInResults/updateEngineAwareGlyphs/
+        // setupLetterRailObserver each do a DOM-wide pass, so they run ONCE at the end,
+        // not per chunk (per-chunk would turn one O(n) pass into O(n^2/chunkSize)).
+        // renderGeneration guards against re-entrancy: if a new render starts before this
+        // one finishes (another jump, a new search), the stale chunk loop notices its
+        // generation is stale and abandons silently instead of corrupting the DOM with
+        // interleaved/duplicate rows.
+        function appendResultsUpTo(target, onComplete) {
+            const gen = ++renderGeneration;
+            const usingTable = currentDensityMode === 'table';
+            const container = usingTable ? resultsTableBody : resultsList;
+            const nameSorted = currentSortMode === 'name-asc' || currentSortMode === 'name-desc';
+            const isInitialBatch = renderedCount === 0;
+
+            function finish() {
+                updateLoadMoreButton();
+                updatePinButtonsInResults();
+                updateEngineAwareGlyphs();
+                setupLetterRailObserver();
+                if (onComplete) onComplete();
             }
 
-            activeDOMBatchesStartIndices = [0];
-            updateLoadMoreButton();
-            updatePinButtonsInResults();
-            updateEngineAwareGlyphs();
+            function renderNextChunk() {
+                if (gen !== renderGeneration) return;
+                if (renderedCount >= target) { finish(); return; }
+
+                const chunkEnd = Math.min(renderedCount + RENDER_CHUNK_SIZE, target);
+                const fragment = buildResultFragment(renderedCount, chunkEnd, usingTable, nameSorted, isInitialBatch);
+                container.appendChild(fragment);
+                renderedCount = chunkEnd;
+
+                if (renderedCount < target) {
+                    requestAnimationFrame(renderNextChunk);
+                } else {
+                    finish();
+                }
+            }
+
+            renderNextChunk();
         }
 
         function updateLoadMoreButton() {
-            const lastLoadedBatchStartIndex = activeDOMBatchesStartIndices.length > 0 ? activeDOMBatchesStartIndices[activeDOMBatchesStartIndices.length - 1] : -1;
-            const nextItemIndex = lastLoadedBatchStartIndex + RESULTS_PER_PAGE;
-
-            if (nextItemIndex < allMatchingResults.length) {
-                const remainingCount = allMatchingResults.length - nextItemIndex;
+            if (renderedCount < allMatchingResults.length) {
+                const remainingCount = allMatchingResults.length - renderedCount;
                 loadMoreBtn.textContent = `Load More (${remainingCount} remaining)`;
                 loadMoreBtn.style.display = 'block';
                 loadMoreBtn.disabled = false;
@@ -20255,39 +20650,7 @@ const freeData = [
         function handleLoadMore() {
             loadMoreBtn.disabled = true;
             loadMoreBtn.textContent = 'Loading...';
-
-            const lastLoadedBatchStartIndex = activeDOMBatchesStartIndices.length > 0 ? activeDOMBatchesStartIndices[activeDOMBatchesStartIndices.length - 1] : -RESULTS_PER_PAGE;
-            const nextBatchStartIndex = lastLoadedBatchStartIndex + RESULTS_PER_PAGE;
-
-            if (nextBatchStartIndex < allMatchingResults.length) {
-                const batchItems = allMatchingResults.slice(nextBatchStartIndex, nextBatchStartIndex + RESULTS_PER_PAGE);
-                const usingTable = currentDensityMode === 'table';
-                const fragment = document.createDocumentFragment();
-
-                batchItems.forEach((resultItem) => {
-                    const displayItem = resultItem.item;
-                    const itemType = displayItem._type;
-                    const uniqueItemId = displayItem._uniqueId;
-                    if (usingTable) {
-                        const row = document.createElement('template');
-                        row.innerHTML = buildItemRow(displayItem, itemType, uniqueItemId).trim();
-                        fragment.appendChild(row.content.firstChild);
-                    } else {
-                        const itemLi = document.createElement('li');
-                        itemLi.className = 'result-item';
-                        itemLi.dataset.itemId = uniqueItemId;
-                        itemLi.tabIndex = 0;
-                        itemLi.innerHTML = buildItemHTML(displayItem, itemType, resultItem.matches, uniqueItemId);
-                        fragment.appendChild(itemLi);
-                    }
-                });
-
-                (usingTable ? resultsTableBody : resultsList).appendChild(fragment);
-                activeDOMBatchesStartIndices.push(nextBatchStartIndex);
-            }
-            updateLoadMoreButton();
-            updatePinButtonsInResults();
-            updateEngineAwareGlyphs();
+            appendResultsUpTo(Math.min(renderedCount + RESULTS_PER_PAGE, allMatchingResults.length));
         }
 
         loadMoreBtn.addEventListener('click', handleLoadMore);
@@ -20783,8 +21146,10 @@ const freeData = [
             const focusedResultItem = activeEl ? activeEl.closest('.result-item') : null;
             const focusedTableRow = activeEl ? activeEl.closest('.table-row') : null;
             const focusedResult = focusedResultItem || focusedTableRow;
+            const nestedInteractiveEl = activeEl ? activeEl.closest('button, a, input, select, textarea') : null;
+            const blockedByNestedInteractive = nestedInteractiveEl && nestedInteractiveEl !== focusedResult;
 
-            if (focusedResult && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+            if (focusedResult && !blockedByNestedInteractive && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
                 e.preventDefault();
                 const container = focusedResultItem ? resultsList : resultsTableBody;
                 const siblings = Array.from(container.children).filter(el => el.tabIndex === 0 || el.hasAttribute('tabindex'));
@@ -20797,7 +21162,7 @@ const freeData = [
                 return;
             }
 
-            if (focusedResult && e.key === 'Enter') {
+            if (focusedResult && !blockedByNestedInteractive && e.key === 'Enter') {
                 e.preventDefault();
                 if (focusedTableRow) {
                     toggleTableRowExpand(focusedTableRow);
@@ -20808,7 +21173,7 @@ const freeData = [
                 return;
             }
 
-            if (focusedResult && e.code === 'KeyC' && (e.ctrlKey || e.metaKey)) {
+            if (focusedResult && !blockedByNestedInteractive && e.code === 'KeyC' && (e.ctrlKey || e.metaKey)) {
                 const itemId = focusedResult.dataset.itemId;
                 const item = allDatasetNormalized.find(d => d._uniqueId === itemId);
                 if (item) {
@@ -20823,6 +21188,17 @@ const freeData = [
                 if (typing) return;
                 e.preventDefault();
                 focusMainSearchViaShortcut();
+                return;
+            }
+
+            const azRailForTypeAhead = document.getElementById('az-rail');
+            if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey && azRailForTypeAhead && !azRailForTypeAhead.hidden && /^[a-zA-Z0-9]$/.test(e.key)) {
+                const letter = /[0-9]/.test(e.key) ? '#' : e.key.toUpperCase();
+                const railBtn = Array.from(azRailForTypeAhead.querySelectorAll('.az-rail-btn')).find(b => b.dataset.letter === letter);
+                if (railBtn && !railBtn.disabled) {
+                    e.preventDefault();
+                    jumpToLetter(letter);
+                }
             }
         });
 
@@ -20972,7 +21348,9 @@ const freeData = [
         function updateEngineAwareGlyphs() {
             const eng = SEARCH_ENGINES[preferredSearchEngine];
             document.querySelectorAll('.engine-aware-btn').forEach(btn => {
-                btn.title = `Search the web (${eng.label})`;
+                const label = `Search the web (${eng.label})`;
+                btn.dataset.tooltip = label;
+                btn.setAttribute('aria-label', label);
                 const glyph = btn.querySelector('.engine-aware-glyph');
                 if (glyph) glyph.innerHTML = engineMonogramSVG(preferredSearchEngine, 16);
             });
@@ -21026,6 +21404,153 @@ const freeData = [
             engineSwitchPopover = null;
             document.removeEventListener('click', handleOutsideEngineClick);
         }
+
+        let tableActionsPopover = null;
+        let tableActionsPopoverAnchor = null;
+
+        function openTableActionsMenu(anchorEl) {
+            closeTableActionsMenu();
+            closeEngineSwitchPopover();
+            closeShortcutsPopover();
+
+            const itemName = anchorEl.dataset.itemName || '';
+            const itemType = anchorEl.dataset.itemType || '';
+            const rawDetails = anchorEl.dataset.itemRawDetails || '';
+            const safeItemName = escapeHTML(itemName);
+
+            const pop = document.createElement('div');
+            pop.className = 'table-actions-popover';
+            pop.innerHTML = `
+                <button type="button" class="copy-details-card" data-item-name="${safeItemName}" data-item-raw-details='${rawDetails}' data-item-type="${escapeHTML(itemType)}"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>Copy details</button>
+                <button type="button" class="search-online-card engine-aware-btn" data-item-name="${safeItemName}" data-provider="web"><span class="engine-aware-glyph" aria-hidden="true"></span>Search the web</button>
+                <button type="button" class="search-online-card" data-item-name="${safeItemName}" data-provider="images"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>Search images</button>
+                <button type="button" class="search-online-card" data-item-name="${safeItemName}" data-provider="drugs.com"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 6.5C17.5 4.57 15.93 3 14 3H10C8.07 3 6.5 4.57 6.5 6.5V17.5C6.5 19.43 8.07 21 10 21H14C15.93 21 17.5 19.43 17.5 17.5V6.5ZM8.5 6.5C8.5 5.67 9.17 5 10 5H12V12H8.5V6.5ZM15.5 17.5C15.5 18.33 14.83 19 14 19H10C9.17 19 8.5 18.33 8.5 17.5V14H15.5V17.5ZM15.5 12H12V5H14C14.83 5 15.5 5.67 15.5 6.5V12Z"/></svg>Search Drugs.com</button>
+                <button type="button" class="search-online-card" data-item-name="${safeItemName}" data-provider="perplexity"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg>Search Perplexity</button>
+            `;
+            document.body.appendChild(pop);
+
+            const rect = anchorEl.getBoundingClientRect();
+            const popWidth = 190;
+            let left = rect.right - popWidth;
+            left = Math.max(10, Math.min(left, window.innerWidth - popWidth - 10));
+            pop.style.left = `${left}px`;
+            pop.style.top = `${rect.bottom + 6}px`;
+
+            requestAnimationFrame(() => pop.classList.add('open'));
+            tableActionsPopover = pop;
+            tableActionsPopoverAnchor = anchorEl;
+            anchorEl.setAttribute('aria-expanded', 'true');
+
+            const wrap = resultsTableWrap;
+            if (wrap) wrap.addEventListener('scroll', closeTableActionsMenu, { once: true });
+            window.addEventListener('resize', closeTableActionsMenu, { once: true });
+
+            setTimeout(() => {
+                document.addEventListener('click', handleOutsideTableActionsClick);
+                document.addEventListener('keydown', handleTableActionsEscape);
+            }, 0);
+        }
+
+        function handleOutsideTableActionsClick(e) {
+            if (!tableActionsPopover) return;
+            if (tableActionsPopover.contains(e.target)) return;
+            if (tableActionsPopoverAnchor && tableActionsPopoverAnchor.contains(e.target)) return;
+            closeTableActionsMenu();
+        }
+
+        function handleTableActionsEscape(e) {
+            if (e.key === 'Escape') closeTableActionsMenu();
+        }
+
+        function closeTableActionsMenu() {
+            if (!tableActionsPopover) return;
+            tableActionsPopover.remove();
+            tableActionsPopover = null;
+            if (tableActionsPopoverAnchor) {
+                tableActionsPopoverAnchor.setAttribute('aria-expanded', 'false');
+                tableActionsPopoverAnchor = null;
+            }
+            document.removeEventListener('click', handleOutsideTableActionsClick);
+            document.removeEventListener('keydown', handleTableActionsEscape);
+            const wrap = resultsTableWrap;
+            if (wrap) wrap.removeEventListener('scroll', closeTableActionsMenu);
+            window.removeEventListener('resize', closeTableActionsMenu);
+        }
+
+        // Shared portal tooltip. Replaces per-button CSS ::after tooltips, which were
+        // getting clipped by paint-containing ancestors (.result-item / tbody tr both use
+        // content-visibility:auto) and by .results-table-wrap's overflow-x:auto in table
+        // view. A single position:fixed element escapes both. Text comes from data-tooltip,
+        // falling back to aria-label for controls (like the pin button) whose accessible
+        // name already carries the right text dynamically.
+        const uiTooltipEl = document.getElementById('ui-tooltip');
+        let currentTooltipTrigger = null;
+        const TOOLTIP_TRIGGER_SELECTOR = '[data-tooltip], .pin-item-btn';
+
+        function showUiTooltip(triggerEl) {
+            if (!uiTooltipEl || !triggerEl) return;
+            const text = triggerEl.dataset.tooltip || triggerEl.getAttribute('aria-label');
+            if (!text) return;
+
+            uiTooltipEl.textContent = text;
+            uiTooltipEl.classList.add('visible');
+
+            const rect = triggerEl.getBoundingClientRect();
+            const tipRect = uiTooltipEl.getBoundingClientRect();
+            let top = rect.top - tipRect.height - 8;
+            if (top < 8) top = rect.bottom + 8;
+            let left = rect.left + (rect.width / 2) - (tipRect.width / 2);
+            left = Math.max(8, Math.min(left, window.innerWidth - tipRect.width - 8));
+
+            uiTooltipEl.style.top = `${top}px`;
+            uiTooltipEl.style.left = `${left}px`;
+
+            if (currentTooltipTrigger && currentTooltipTrigger !== triggerEl) {
+                currentTooltipTrigger.removeAttribute('aria-describedby');
+            }
+            triggerEl.setAttribute('aria-describedby', 'ui-tooltip');
+            currentTooltipTrigger = triggerEl;
+        }
+
+        function hideUiTooltip() {
+            if (!uiTooltipEl) return;
+            uiTooltipEl.classList.remove('visible');
+            if (currentTooltipTrigger) {
+                currentTooltipTrigger.removeAttribute('aria-describedby');
+                currentTooltipTrigger = null;
+            }
+        }
+
+        document.addEventListener('mouseover', (e) => {
+            const trigger = e.target.closest(TOOLTIP_TRIGGER_SELECTOR);
+            if (!trigger || trigger.disabled) return;
+            showUiTooltip(trigger);
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const trigger = e.target.closest(TOOLTIP_TRIGGER_SELECTOR);
+            if (!trigger) return;
+            if (e.relatedTarget && trigger.contains(e.relatedTarget)) return;
+            hideUiTooltip();
+        });
+
+        document.addEventListener('focusin', (e) => {
+            const trigger = e.target.closest(TOOLTIP_TRIGGER_SELECTOR);
+            if (!trigger) return;
+            showUiTooltip(trigger);
+        });
+
+        document.addEventListener('focusout', (e) => {
+            const trigger = e.target.closest(TOOLTIP_TRIGGER_SELECTOR);
+            if (!trigger) return;
+            hideUiTooltip();
+        });
+
+        window.addEventListener('scroll', hideUiTooltip, true);
+        window.addEventListener('resize', hideUiTooltip);
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') hideUiTooltip();
+        });
 
         (function setupFilterPanelDragToDismiss() {
             const handle = document.getElementById('filter-panel-drag-handle');
@@ -21243,6 +21768,16 @@ const freeData = [
                 return;
             }
 
+            const tableOverflowTrigger = event.target.closest('.table-overflow-trigger');
+            if (tableOverflowTrigger) {
+                event.preventDefault();
+                event.stopPropagation();
+                const willOpen = tableActionsPopoverAnchor !== tableOverflowTrigger;
+                closeTableActionsMenu();
+                if (willOpen) openTableActionsMenu(tableOverflowTrigger);
+                return;
+            }
+
             const bridgeBadge = event.target.closest('.bridge-badge');
             if (bridgeBadge) {
                 event.preventDefault();
@@ -21254,6 +21789,8 @@ const freeData = [
                 }
                 return;
             }
+
+            if (event.target.closest('button, a')) return;
 
             const tableRow = event.target.closest('.table-row');
             if (tableRow) {
@@ -21285,9 +21822,11 @@ const freeData = [
             const item = allDatasetNormalized.find(d => d._uniqueId === itemId);
             if (!item) return;
             const { detailsHTML, tagsHTML, bridgeHTML, reportHTML } = buildDetailAndTagsHTML(item, item._type, []);
+            const { actions } = buildItemActionsHTML(item, item._type, 'table-expand');
             const expandRow = document.createElement('tr');
             expandRow.className = 'table-expand-row';
-            expandRow.innerHTML = `<td colspan="5"><div class="table-expand-content">${detailsHTML}${tagsHTML ? `<div class="result-tags-container">${tagsHTML}</div>` : ''}${bridgeHTML}${reportHTML}</div></td>`;
+            expandRow.id = `expand-${itemId}`;
+            expandRow.innerHTML = `<td colspan="6"><div class="table-expand-content">${actions}${detailsHTML}${tagsHTML ? `<div class="result-tags-container">${tagsHTML}</div>` : ''}${bridgeHTML}${reportHTML}</div></td>`;
             tableRow.insertAdjacentElement('afterend', expandRow);
             tableRow.setAttribute('aria-expanded', 'true');
         }
@@ -21450,7 +21989,7 @@ const freeData = [
 
         function updatePinButtonsInResults() {
             const pinnedItems = getFromLocalStorage('pinnedItems', []);
-            const currentPinBtns = document.querySelectorAll('.result-item .pin-item-btn');
+            const currentPinBtns = document.querySelectorAll('#results-section .pin-item-btn');
             currentPinBtns.forEach(btn => {
                 const itemId = btn.dataset.itemId;
                 if (pinnedItems.some(pin => pin.id === itemId)) {
@@ -21477,7 +22016,6 @@ const freeData = [
             updateAvailabilityUI();
             activeSecondaryFilters = {};
             allMatchingResults = [{ item, score: 0, matches: [] }];
-            activeDOMBatchesStartIndices = [];
             if (notice) {
                 notice.innerHTML = `<div class="pinned-item-deeplink-notice"><span>Showing pinned item: <strong>${escapeHTML(item.name)}</strong></span><button type="button" id="clear-deeplink-notice">Back to search</button></div>`;
                 const dismissBtn = document.getElementById('clear-deeplink-notice');
