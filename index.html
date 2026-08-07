@@ -1897,6 +1897,10 @@ var e,t;e=this,t=function(){"use strict";function e(e,t){var n=Object.keys(e);if
             animation: cardSlideIn 0.35s var(--transition-easing) both;
         }
 
+        .table-row.row-enter {
+            animation: cardSlideIn 0.35s var(--transition-easing) both;
+        }
+
         @keyframes cardSlideIn {
             from {
                 opacity: 0;
@@ -20151,7 +20155,9 @@ const freeData = [
             return results.filter(r => itemMatchesPrefixFilters(r.item, filters));
         }
 
+        let searchCallId = 0;
         function performSearch(rawQuery, operationType = 'user_input', { immediate = false } = {}) {
+            searchCallId++;
             rawQuery = rawQuery.trim();
             const { filters: prefixFilters, remainingQuery } = parseQueryPrefixes(rawQuery);
             const query = preprocessQueryText(remainingQuery);
@@ -20237,7 +20243,11 @@ const freeData = [
             if (immediate) {
                 renderInitialDOM(rawQuery, generatedSuggestions, hiddenByFilterCount);
             } else {
-                requestAnimationFrame(() => renderInitialDOM(rawQuery, generatedSuggestions, hiddenByFilterCount));
+                const scheduledSearchCallId = searchCallId;
+                requestAnimationFrame(() => {
+                    if (scheduledSearchCallId !== searchCallId) return;
+                    renderInitialDOM(rawQuery, generatedSuggestions, hiddenByFilterCount);
+                });
             }
 
             if (rawQuery && rawQuery.length >= 2 && operationType === 'suggestion_click' && allMatchingResults.length > 0) {
@@ -20304,11 +20314,6 @@ const freeData = [
             return allMatchingResults.find(r => bucketForName(r.item.name) === letter);
         }
 
-        // renderWindowStart tracks where the CONTIGUOUS rendered run actually begins.
-        // Normally 0. A far jump (see below) skips the gap instead of rendering it,
-        // which means renderedCount alone can no longer answer "is index X in the DOM?" —
-        // an index before renderWindowStart looks "already rendered" by renderedCount's
-        // count but isn't actually there.
         let renderWindowStart = 0;
 
         function buildSkippedResultsSentinel(skippedCount, bucket) {
@@ -20355,10 +20360,6 @@ const freeData = [
             }
 
             if (targetIndex < renderWindowStart || targetIndex > renderedCount + RESULTS_PER_PAGE) {
-                // Far jump: rendering everything between here and there would mean
-                // hundreds of throwaway nodes just to reach one target (the "600 items"
-                // problem). Jump the render window instead and leave a sentinel back to
-                // normal top-down browsing.
                 const skippedCount = targetIndex;
                 const bucket = bucketForName(targetResult.item.name);
                 container.innerHTML = '';
@@ -20484,10 +20485,8 @@ const freeData = [
             resultsList.style.display = usingTable ? 'none' : 'block';
             resultsTableWrap.style.display = usingTable ? 'block' : 'none';
 
-            renderedCount = 0;
             renderWindowStart = 0;
-            (usingTable ? resultsTableBody : resultsList).innerHTML = '';
-            appendResultsUpTo(Math.min(RESULTS_PER_PAGE, allMatchingResults.length));
+            reconcileResultsWindow(Math.min(RESULTS_PER_PAGE, allMatchingResults.length));
         }
 
         function bucketForName(name) {
@@ -20549,6 +20548,7 @@ const freeData = [
         }
 
         const RENDER_CHUNK_SIZE = 80;
+        const REORDER_TRANSITION_MS = 250;
         let renderGeneration = 0;
 
         function buildResultFragment(startIndex, endIndex, usingTable, nameSorted, isInitialBatch) {
@@ -20590,18 +20590,6 @@ const freeData = [
             return fragment;
         }
 
-        // Renders [renderedCount, target) in chunks of RENDER_CHUNK_SIZE across animation
-        // frames, so a far jump never builds hundreds of nodes in a single synchronous
-        // pass (that was the actual cause of the white flash, not just the rail highlight
-        // toggling). Normal cases — the initial 20-item page, a 20-item Load More — always
-        // finish within RENDER_CHUNK_SIZE and so complete synchronously, same as before.
-        // updateLoadMoreButton/updatePinButtonsInResults/updateEngineAwareGlyphs/
-        // setupLetterRailObserver each do a DOM-wide pass, so they run ONCE at the end,
-        // not per chunk (per-chunk would turn one O(n) pass into O(n^2/chunkSize)).
-        // renderGeneration guards against re-entrancy: if a new render starts before this
-        // one finishes (another jump, a new search), the stale chunk loop notices its
-        // generation is stale and abandons silently instead of corrupting the DOM with
-        // interleaved/duplicate rows.
         function appendResultsUpTo(target, onComplete) {
             const gen = ++renderGeneration;
             const usingTable = currentDensityMode === 'table';
@@ -20635,6 +20623,152 @@ const freeData = [
 
             renderNextChunk();
         }
+
+        function getReconcileKey(node) {
+            if (!node.dataset) return null;
+            if (node.classList.contains('letter-divider') || node.classList.contains('letter-divider-row')) {
+                return node.dataset.letter ? 'd:' + node.dataset.letter : null;
+            }
+            if (node.dataset.itemId) return 'i:' + node.dataset.itemId;
+            return null;
+        }
+
+        function createSingleResultNode(displayItem, itemType, uniqueItemId, matches, usingTable) {
+            if (usingTable) {
+                const template = document.createElement('template');
+                template.innerHTML = buildItemRow(displayItem, itemType, uniqueItemId).trim();
+                return template.content.firstChild;
+            }
+            const itemLi = document.createElement('li');
+            itemLi.dataset.itemId = uniqueItemId;
+            itemLi.tabIndex = 0;
+            itemLi.className = 'result-item';
+            itemLi.innerHTML = buildItemHTML(displayItem, itemType, matches, uniqueItemId);
+            return itemLi;
+        }
+
+        function reconcileResultsWindow(targetCount) {
+            const gen = ++renderGeneration;
+            const usingTable = currentDensityMode === 'table';
+            const container = usingTable ? resultsTableBody : resultsList;
+            const nameSorted = currentSortMode === 'name-asc' || currentSortMode === 'name-desc';
+
+            Array.from(container.children).forEach(node => {
+                if (node.style.transform) {
+                    node.style.transition = 'none';
+                    node.style.transform = '';
+                }
+            });
+
+            const targets = [];
+            let prevBucket = null;
+            for (let i = 0; i < targetCount; i++) {
+                const resultItem = allMatchingResults[i];
+                const displayItem = resultItem.item;
+                if (nameSorted) {
+                    const bucket = bucketForName(displayItem.name);
+                    if (bucket !== prevBucket) {
+                        targets.push({ key: 'd:' + bucket, kind: 'divider', bucket });
+                        prevBucket = bucket;
+                    }
+                }
+                targets.push({ key: 'i:' + displayItem._uniqueId, kind: 'item', resultItem, displayItem });
+            }
+
+            const existingByKey = new Map();
+            const firstRects = new Map();
+            const staleNodes = [];
+            Array.from(container.children).forEach(node => {
+                const key = getReconcileKey(node);
+                if (key && !existingByKey.has(key)) {
+                    if (node.style.display === 'none') node.style.display = '';
+                    existingByKey.set(key, node);
+                    firstRects.set(key, node.getBoundingClientRect());
+                } else {
+                    staleNodes.push(node);
+                }
+            });
+
+            let ref = container.firstChild;
+            const usedKeys = new Set();
+            let newItemCount = 0;
+
+            targets.forEach(t => {
+                let node = existingByKey.get(t.key);
+                if (node) {
+                    usedKeys.add(t.key);
+                    node.style.display = '';
+                    if (t.kind === 'item' && !usingTable) {
+                        node.innerHTML = buildItemHTML(t.displayItem, t.displayItem._type, t.resultItem.matches, t.displayItem._uniqueId);
+                    }
+                } else if (t.kind === 'divider') {
+                    node = buildLetterDividerElement(t.bucket, usingTable);
+                } else {
+                    node = createSingleResultNode(t.displayItem, t.displayItem._type, t.displayItem._uniqueId, t.resultItem.matches, usingTable);
+                    node.classList.add(usingTable ? 'row-enter' : 'card-enter');
+                    node.style.animationDelay = `${Math.min(newItemCount, 12) * 30}ms`;
+                    newItemCount++;
+                }
+
+                if (node === ref) {
+                    ref = ref.nextSibling;
+                } else {
+                    container.insertBefore(node, ref);
+                }
+            });
+
+            staleNodes.forEach(node => {
+                if (node.parentNode === container) container.removeChild(node);
+            });
+            existingByKey.forEach((node, key) => {
+                if (!usedKeys.has(key) && node.parentNode === container) container.removeChild(node);
+            });
+
+            const moved = [];
+            existingByKey.forEach((node, key) => {
+                if (!usedKeys.has(key)) return;
+                const first = firstRects.get(key);
+                if (!first) return;
+                if (first.width === 0 && first.height === 0) return;
+                const last = node.getBoundingClientRect();
+                const dx = first.left - last.left;
+                const dy = first.top - last.top;
+                if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+                node.style.transition = 'none';
+                node.style.transform = `translate(${dx}px, ${dy}px)`;
+                moved.push(node);
+            });
+
+            if (moved.length) {
+                void container.offsetHeight;
+                requestAnimationFrame(() => {
+                    if (gen !== renderGeneration) return;
+                    moved.forEach(node => {
+                        node.style.transition = `transform ${REORDER_TRANSITION_MS}ms var(--transition-easing)`;
+                        node.style.transform = '';
+                    });
+                    setTimeout(() => {
+                        moved.forEach(node => { node.style.transition = ''; });
+                    }, REORDER_TRANSITION_MS + 30);
+                });
+            }
+
+            renderedCount = targetCount;
+
+            updateLoadMoreButton();
+            updatePinButtonsInResults();
+            updateEngineAwareGlyphs();
+            setupLetterRailObserver();
+        }
+
+        resultsSection.addEventListener('animationend', (e) => {
+            if (e.animationName !== 'cardSlideIn') return;
+            const target = e.target;
+            if (target.classList && (target.classList.contains('card-enter') || target.classList.contains('row-enter'))) {
+                target.classList.remove('card-enter', 'row-enter');
+                target.style.animationDelay = '';
+            }
+        });
 
         function updateLoadMoreButton() {
             if (renderedCount < allMatchingResults.length) {
@@ -21477,12 +21611,6 @@ const freeData = [
             window.removeEventListener('resize', closeTableActionsMenu);
         }
 
-        // Shared portal tooltip. Replaces per-button CSS ::after tooltips, which were
-        // getting clipped by paint-containing ancestors (.result-item / tbody tr both use
-        // content-visibility:auto) and by .results-table-wrap's overflow-x:auto in table
-        // view. A single position:fixed element escapes both. Text comes from data-tooltip,
-        // falling back to aria-label for controls (like the pin button) whose accessible
-        // name already carries the right text dynamically.
         const uiTooltipEl = document.getElementById('ui-tooltip');
         let currentTooltipTrigger = null;
         const TOOLTIP_TRIGGER_SELECTOR = '[data-tooltip], .pin-item-btn';
