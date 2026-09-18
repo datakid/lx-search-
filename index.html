@@ -19125,26 +19125,25 @@ const freeData = [
         function applyTheme(theme) {
             if (theme === 'light') {
                 htmlEl.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
                 lightBtn.classList.add('active');
                 darkBtn.classList.remove('active');
                 systemBtn.classList.remove('active');
             } else if (theme === 'dark') {
                 htmlEl.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
                 darkBtn.classList.add('active');
                 lightBtn.classList.remove('active');
                 systemBtn.classList.remove('active');
             } else {
                 htmlEl.removeAttribute('data-theme');
-                localStorage.setItem('theme', 'system');
                 systemBtn.classList.add('active');
                 lightBtn.classList.remove('active');
                 darkBtn.classList.remove('active');
             }
+            try { localStorage.setItem('theme', theme); } catch (e) {}
         }
 
-        const savedTheme = localStorage.getItem('theme') || 'system';
+        let savedTheme = 'system';
+        try { savedTheme = localStorage.getItem('theme') || 'system'; } catch (e) {}
         applyTheme(savedTheme);
 
         lightBtn.addEventListener('click', () => applyTheme('light'));
@@ -19156,6 +19155,7 @@ const freeData = [
         let fusePaid, fuseFree, fuseAll;
         let activeSecondaryFilters = {};
         let allDatasetNormalized = [];
+        let itemByUniqueId = new Map();
         const MAX_HISTORY_ITEMS = 10;
         const MAX_PINNED_ITEMS = 40;
         const MIN_QUERY_LENGTH_FOR_SUGGESTIONS = 3;
@@ -19231,20 +19231,25 @@ const freeData = [
             const deduped = fixed.filter(p => { const k = p.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; });
             return deduped.join(', ');
         }
+        const AUTHORITY_CODE_CORRECTIONS = { gp: 'Gp', sp: 'Sp', con: 'Con', ms: 'MS' };
         function canonicalizeAuthority(raw) {
-            return cleanPlaceholder(raw);
+            const cleaned = cleanPlaceholder(raw);
+            if (cleaned === null) return null;
+            const key = cleaned.toLowerCase();
+            return AUTHORITY_CODE_CORRECTIONS[key] || cleaned;
         }
         const TOPICAL_FORM_HINTS = /(cream|ointment|oint|gel|lotion|drop|shampoo|spray|patch|foam|scalp|topical|cutaneous|ophthalmic|otic|nasal|solution|soln)/i;
         function fixConcentrationValue(rawConc, formValue) {
             const cleaned = cleanPlaceholder(rawConc);
             if (cleaned === null) return { value: null, wasConverted: false };
             const bareDecimal = /^0*\.\d+$/;
-            if (bareDecimal.test(cleaned)) {
+            const isTopicalForm = TOPICAL_FORM_HINTS.test(String(formValue || ''));
+            if (bareDecimal.test(cleaned) && isTopicalForm) {
                 const num = parseFloat(cleaned);
                 const pct = num * 100;
                 const rounded = Math.round(pct * 10000) / 10000;
                 const pctStr = (Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')) + '%';
-                return { value: pctStr, wasConverted: true, matchedTopicalForm: TOPICAL_FORM_HINTS.test(String(formValue || '')) };
+                return { value: pctStr, wasConverted: true };
             }
             return { value: cleaned, wasConverted: false };
         }
@@ -19540,7 +19545,9 @@ const freeData = [
             whitespaceDuplicateGroups: [],
             ingredientStrengthDuplicateGroups: [],
             ingredientReviewNeeded: [],
-            classCorrections: 0
+            classCorrections: 0,
+            authorityCorrections: 0,
+            invalidPricesFound: 0
         };
 
         function trackPlaceholderClear(fieldName, rawValue, cleanedValue) {
@@ -19558,8 +19565,10 @@ const freeData = [
             item.company = cleanPlaceholder(raw.company);
             trackPlaceholderClear('company', raw.company, item.company);
 
+            const beforeAuthority = raw.authority;
             item.authority = canonicalizeAuthority(raw.authority);
             trackPlaceholderClear('authority', raw.authority, item.authority);
+            if (beforeAuthority && item.authority && normalizeWhitespace(String(beforeAuthority)) !== item.authority) dataQualityReport.authorityCorrections++;
 
             const beforeClass = raw.class;
             item.class = canonicalizeClassTaxonomy(raw.class);
@@ -19573,6 +19582,14 @@ const freeData = [
             item.concentration = concResult.value;
             trackPlaceholderClear('concentration', raw.concentration, item.concentration);
             if (concResult.wasConverted) dataQualityReport.percentagesFixed++;
+
+            if (type === 'paid') {
+                const priceNum = Number(raw.price);
+                if (Number.isFinite(priceNum) && priceNum < 0) {
+                    item.price = undefined;
+                    dataQualityReport.invalidPricesFound++;
+                }
+            }
 
             item._type = type;
             if (type === 'free') {
@@ -19633,6 +19650,7 @@ const freeData = [
             freeData.length = 0; Array.prototype.push.apply(freeData, cleanedFree);
 
             allDatasetNormalized = paidData.concat(freeData);
+            itemByUniqueId = new Map(allDatasetNormalized.map(item => [item._uniqueId, item]));
 
             paidBaseResults = paidData.map(item => ({ item, score: 0, matches: [] }));
             freeBaseResults = freeData.map(item => ({ item, score: 0, matches: [] }));
@@ -19900,11 +19918,12 @@ const freeData = [
             
             if (!fuseMatches || !keyToHighlightInFuseSearch) return escapeHTML(strText);
 
-            const relevantMatch = fuseMatches.find(m => m.key === keyToHighlightInFuseSearch);
-            if (!relevantMatch || !relevantMatch.indices || relevantMatch.indices.length === 0) return escapeHTML(strText);
+            const relevantMatches = fuseMatches.filter(m => m.key === keyToHighlightInFuseSearch);
+            const allIndices = relevantMatches.reduce((acc, m) => acc.concat(m.indices || []), []);
+            if (allIndices.length === 0) return escapeHTML(strText);
 
             let result = '', lastIndex = 0;
-            const sortedIndices = relevantMatch.indices.slice().sort((a, b) => a[0] - b[0]);
+            const sortedIndices = allIndices.slice().sort((a, b) => a[0] - b[0]);
 
             sortedIndices.forEach(pair => {
                 if (pair[0] >= lastIndex) {
@@ -19951,7 +19970,7 @@ const freeData = [
             else if (link.sameStrengthDifferentForm.length > 0) { tier = 'checkForm'; targets = link.sameStrengthDifferentForm; }
             else if (link.relatedStrengths.length > 0) { tier = 'relatedStrength'; targets = link.relatedStrengths; }
             else return '';
-            const resolved = targets.map(id => allDatasetNormalized.find(d => d._uniqueId === id)).filter(Boolean);
+            const resolved = targets.map(id => itemByUniqueId.get(id)).filter(Boolean);
             if (!resolved.length) return '';
 
             const labels = {
@@ -19982,7 +20001,7 @@ const freeData = [
                     <span class="bridge-panel-item-name">${escapeHTML(d.name)}</span>
                     <span class="bridge-panel-item-meta">${escapeHTML(d.concentration || '')}${d.form ? ' · ' + escapeHTML(d.form) : ''}${d.authority ? ' · ' + escapeHTML(d.authority) : ''}</span>
                 </div>`).join('');
-            const panelId = `bridge-panel-${escapeHTML(displayItem._uniqueId)}`;
+            const panelId = `bridge-panel-${displayItem._uniqueId}`;
             return `
                 <button type="button" class="bridge-badge${badgeClass}" data-bridge-target="${panelId}" aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
@@ -20018,7 +20037,7 @@ const freeData = [
 
         function buildItemActionsHTML(displayItem, itemType, variant) {
             const itemNameForSearch = escapeHTML(displayItem.name);
-            const safeItemId = escapeHTML(displayItem._uniqueId);
+            const safeItemId = displayItem._uniqueId;
             const safeItemType = escapeHTML(itemType);
             const rawDetailsForSharing = JSON.stringify(displayItem);
 
@@ -21276,7 +21295,7 @@ const freeData = [
 
             if (focusedResult && !blockedByNestedInteractive && e.code === 'KeyC' && (e.ctrlKey || e.metaKey)) {
                 const itemId = focusedResult.dataset.itemId;
-                const item = allDatasetNormalized.find(d => d._uniqueId === itemId);
+                const item = itemByUniqueId.get(itemId);
                 if (item) {
                     e.preventDefault();
                     const textToCopy = generateCopyText(item, item._type);
@@ -21788,6 +21807,10 @@ const freeData = [
 
 
         function copyDetailsToClipboard(textToCopy, buttonElement) {
+            if (!navigator.clipboard || !navigator.clipboard.writeText) {
+                showCustomConfirm("Copy isn't available in this browser context. Try opening the app over https:// instead of a local file.", null, { yesText: "OK", noText: null });
+                return;
+            }
             navigator.clipboard.writeText(textToCopy).then(() => {
                 const originalTitle = buttonElement.title;
                 buttonElement.setAttribute('title', 'Copied!');
@@ -21842,7 +21865,12 @@ const freeData = [
             if (copyDetailsBtn) {
                 event.preventDefault();
                 const itemType = copyDetailsBtn.dataset.itemType;
-                const itemDetails = JSON.parse(copyDetailsBtn.dataset.itemRawDetails);
+                let itemDetails = null;
+                try { itemDetails = JSON.parse(copyDetailsBtn.dataset.itemRawDetails); } catch (e) {}
+                if (!itemDetails) {
+                    showCustomConfirm("Couldn't copy this item's details. Please try again.", null, { yesText: "OK", noText: null });
+                    return;
+                }
                 const textToCopy = generateCopyText(itemDetails, itemType);
                 copyDetailsToClipboard(textToCopy, copyDetailsBtn);
                 return;
@@ -21914,7 +21942,7 @@ const freeData = [
                 if (r.nextElementSibling && r.nextElementSibling.classList.contains('table-expand-row')) r.nextElementSibling.remove();
             });
             const itemId = tableRow.dataset.itemId;
-            const item = allDatasetNormalized.find(d => d._uniqueId === itemId);
+            const item = itemByUniqueId.get(itemId);
             if (!item) return;
             const { detailsHTML, tagsHTML, bridgeHTML, reportHTML } = buildDetailAndTagsHTML(item, item._type, []);
             const { actions } = buildItemActionsHTML(item, item._type, 'table-expand');
@@ -21941,7 +21969,10 @@ const freeData = [
         function saveToLocalStorage(key, value) {
             try {
                 localStorage.setItem(key, JSON.stringify(value));
-            } catch (e) {}
+                return true;
+            } catch (e) {
+                return false;
+            }
         }
 
         function addSearchToHistory(query) {
@@ -22032,9 +22063,18 @@ const freeData = [
                 }
                 pinnedItems.unshift({ id: itemId, name: itemName, timestamp: Date.now() });
             }
-            saveToLocalStorage('pinnedItems', pinnedItems);
+            const saved = saveToLocalStorage('pinnedItems', pinnedItems);
             loadPinnedItems();
             updatePinButtonsInResults();
+            if (!saved) {
+                const notice = document.getElementById('pin-limit-notice');
+                if (notice) {
+                    notice.textContent = "Couldn't save your pins — your browser's storage may be full or disabled, so this pin won't survive a reload.";
+                    notice.classList.add('visible');
+                    clearTimeout(notice._hideTimer);
+                    notice._hideTimer = setTimeout(() => notice.classList.remove('visible'), 4200);
+                }
+            }
             return true;
         }
 
@@ -22098,7 +22138,7 @@ const freeData = [
         }
 
         function showSingleItemById(uniqueId) {
-            const item = allDatasetNormalized.find(d => d._uniqueId === uniqueId);
+            const item = itemByUniqueId.get(uniqueId);
             const notice = document.getElementById('pinned-deeplink-notice');
             if (!item) {
                 if (notice) notice.innerHTML = `<div class="pinned-item-deeplink-notice"><span>That pinned item couldn't be found — it may have been removed from the data.</span><button type="button" id="clear-deeplink-notice">Dismiss</button></div>`;
@@ -22160,7 +22200,10 @@ const freeData = [
             if (field === null || field === undefined) {
                 return '';
             }
-            const stringField = String(field);
+            let stringField = String(field);
+            if (/^[=+\-@\t\r]/.test(stringField)) {
+                stringField = "'" + stringField;
+            }
             if (stringField.search(/("|,|\n)/g) >= 0) {
                 return `"${stringField.replace(/"/g, '""')}"`;
             }
@@ -22445,7 +22488,7 @@ const freeData = [
                 return;
             }
             const resolved = pinnedItems
-                .map(pin => allDatasetNormalized.find(d => d._uniqueId === pin.id))
+                .map(pin => itemByUniqueId.get(pin.id))
                 .filter(Boolean);
             if (resolved.length === 0) {
                 compareDrawerBody.innerHTML = '<div class="compare-empty">None of your pinned items match the current data — they may have been removed or updated.</div>';
@@ -22588,6 +22631,8 @@ const freeData = [
                 <table>
                     <tr><td>Concentration values converted decimal → percent</td><td>${r.percentagesFixed}</td></tr>
                     <tr><td>Class taxonomy strings corrected</td><td>${r.classCorrections}</td></tr>
+                    <tr><td>Authority codes corrected</td><td>${r.authorityCorrections}</td></tr>
+                    <tr><td>Invalid (negative) prices found</td><td>${r.invalidPricesFound}</td></tr>
                     <tr><td>Exact duplicate rows removed</td><td>${r.exactDuplicatesRemoved}</td></tr>
                 </table>
                 <h3>Whitespace-only duplicate names (flagged, not merged — verify pack/variant)</h3>
