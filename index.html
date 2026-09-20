@@ -19239,19 +19239,28 @@ const freeData = [
             return AUTHORITY_CODE_CORRECTIONS[key] || cleaned;
         }
         const TOPICAL_FORM_HINTS = /(cream|ointment|oint|gel|lotion|drop|shampoo|spray|patch|foam|scalp|topical|cutaneous|ophthalmic|otic|nasal|solution|soln)/i;
+        const CONCENTRATION_FIXES = {};
         function fixConcentrationValue(rawConc, formValue) {
             const cleaned = cleanPlaceholder(rawConc);
-            if (cleaned === null) return { value: null, wasConverted: false };
+            if (cleaned === null) return { value: null, isSuspect: false };
             const bareDecimal = /^0*\.\d+$/;
             const isTopicalForm = TOPICAL_FORM_HINTS.test(String(formValue || ''));
-            if (bareDecimal.test(cleaned) && isTopicalForm) {
-                const num = parseFloat(cleaned);
-                const pct = num * 100;
-                const rounded = Math.round(pct * 10000) / 10000;
-                const pctStr = (Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(4).replace(/0+$/, '').replace(/\.$/, '')) + '%';
-                return { value: pctStr, wasConverted: true };
-            }
-            return { value: cleaned, wasConverted: false };
+            const isSuspect = bareDecimal.test(cleaned) && isTopicalForm;
+            return { value: cleaned, isSuspect };
+        }
+        function applyConcentrationOverrides(items) {
+            const suspects = [];
+            items.forEach(item => {
+                const hasOverride = Object.prototype.hasOwnProperty.call(CONCENTRATION_FIXES, item._uniqueId);
+                if (hasOverride) {
+                    item.concentration = CONCENTRATION_FIXES[item._uniqueId];
+                    dataQualityReport.percentagesFixed++;
+                } else if (item._concentrationSuspect) {
+                    suspects.push({ id: item._uniqueId, name: item.name, concentration: item.concentration, form: item.form });
+                }
+                delete item._concentrationSuspect;
+            });
+            dataQualityReport.concentrationSuspects = suspects;
         }
 
         function generateBaseId(item, type) {
@@ -19401,6 +19410,7 @@ const freeData = [
             free.forEach(i => register(i, 'free'));
 
             const bridge = new Map();
+            let skippedEmptyStrengthPairs = 0;
             function addLink(fromId, toId, bucket) {
                 const entry = bridge.get(fromId) || { equivalents: [], sameStrengthDifferentForm: [], relatedStrengths: [] };
                 if (entry[bucket].indexOf(toId) === -1) entry[bucket].push(toId);
@@ -19410,23 +19420,52 @@ const freeData = [
                 const paidItems = items.filter(i => i._type === 'paid');
                 const freeItems = items.filter(i => i._type === 'free');
                 if (!paidItems.length || !freeItems.length) continue;
+
+                const freeMeta = [];
+                const freeByStrength = new Map();
+                const freeByStrengthForm = new Map();
+                freeItems.forEach(f => {
+                    const fKey = strengthKey(f.concentration);
+                    if (fKey === '') return;
+                    const fForm = normalizeFormForMatching(f.form);
+                    const meta = { item: f, fKey, fForm };
+                    freeMeta.push(meta);
+                    if (!freeByStrength.has(fKey)) freeByStrength.set(fKey, []);
+                    freeByStrength.get(fKey).push(meta);
+                    const sfKey = fKey + '\u0001' + fForm;
+                    if (!freeByStrengthForm.has(sfKey)) freeByStrengthForm.set(sfKey, []);
+                    freeByStrengthForm.get(sfKey).push(meta);
+                });
+                const freeEmptyStrengthCount = freeItems.length - freeMeta.length;
+
                 for (const p of paidItems) {
                     const pKey = strengthKey(p.concentration);
+                    if (pKey === '') { skippedEmptyStrengthPairs += freeItems.length; continue; }
+                    skippedEmptyStrengthPairs += freeEmptyStrengthCount;
                     const pForm = normalizeFormForMatching(p.form);
-                    for (const f of freeItems) {
-                        const fKey = strengthKey(f.concentration);
-                        const fForm = normalizeFormForMatching(f.form);
-                        const sameStrength = pKey !== '' && pKey === fKey;
-                        const sameForm = pForm !== '' && fForm !== '' && pForm === fForm;
-                        let bucket;
-                        if (sameStrength && sameForm) bucket = 'equivalents';
-                        else if (sameStrength) bucket = 'sameStrengthDifferentForm';
-                        else bucket = 'relatedStrengths';
-                        addLink(p._uniqueId, f._uniqueId, bucket);
-                        addLink(f._uniqueId, p._uniqueId, bucket);
-                    }
+
+                    const equivalentsList = pForm !== '' ? (freeByStrengthForm.get(pKey + '\u0001' + pForm) || []) : [];
+                    const equivalentsIds = new Set(equivalentsList.map(m => m.item._uniqueId));
+                    equivalentsList.forEach(m => {
+                        addLink(p._uniqueId, m.item._uniqueId, 'equivalents');
+                        addLink(m.item._uniqueId, p._uniqueId, 'equivalents');
+                    });
+
+                    const sameStrengthList = freeByStrength.get(pKey) || [];
+                    sameStrengthList.forEach(m => {
+                        if (equivalentsIds.has(m.item._uniqueId)) return;
+                        addLink(p._uniqueId, m.item._uniqueId, 'sameStrengthDifferentForm');
+                        addLink(m.item._uniqueId, p._uniqueId, 'sameStrengthDifferentForm');
+                    });
+
+                    freeMeta.forEach(m => {
+                        if (m.fKey === pKey) return;
+                        addLink(p._uniqueId, m.item._uniqueId, 'relatedStrengths');
+                        addLink(m.item._uniqueId, p._uniqueId, 'relatedStrengths');
+                    });
                 }
             }
+            dataQualityReport.bridgePairsSkippedEmptyStrength = skippedEmptyStrengthPairs;
             return bridge;
         }
 
@@ -19547,7 +19586,9 @@ const freeData = [
             ingredientReviewNeeded: [],
             classCorrections: 0,
             authorityCorrections: 0,
-            invalidPricesFound: 0
+            invalidPricesFound: 0,
+            concentrationSuspects: [],
+            bridgePairsSkippedEmptyStrength: 0
         };
 
         function trackPlaceholderClear(fieldName, rawValue, cleanedValue) {
@@ -19581,7 +19622,7 @@ const freeData = [
             const concResult = fixConcentrationValue(raw.concentration, raw.form);
             item.concentration = concResult.value;
             trackPlaceholderClear('concentration', raw.concentration, item.concentration);
-            if (concResult.wasConverted) dataQualityReport.percentagesFixed++;
+            item._concentrationSuspect = concResult.isSuspect;
 
             if (type === 'paid') {
                 const priceNum = Number(raw.price);
@@ -19632,6 +19673,7 @@ const freeData = [
 
             assignUniqueIds(cleanedPaid, 'paid');
             assignUniqueIds(cleanedFree, 'free');
+            applyConcentrationOverrides(cleanedPaid.concat(cleanedFree));
 
             dataQualityReport.whitespaceDuplicateGroups = [
                 ...detectWhitespaceDuplicateGroups(cleanedPaid),
@@ -19746,7 +19788,14 @@ const freeData = [
         }
 
         function splitIntoWords(value) {
-            return String(value).toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(Boolean);
+            const s = String(value).toLowerCase();
+            const words = [];
+            const re = /[\p{L}\p{N}]+/gu;
+            let m;
+            while ((m = re.exec(s)) !== null) {
+                words.push({ word: m[0], index: m.index });
+            }
+            return words;
         }
 
         function escapeRegexLiteral(s) {
@@ -19815,7 +19864,7 @@ const freeData = [
                             if (rawVal === null || rawVal === undefined) continue;
                             const words = splitIntoWords(rawVal);
                             for (let w = 0; w < words.length; w++) {
-                                const word = words[w];
+                                const word = words[w].word;
                                 if (Math.abs(word.length - token.length) > maxDist) continue;
                                 const dist = boundedEditDistance(token, word, maxDist);
                                 if (dist > maxDist) continue;
@@ -19824,7 +19873,7 @@ const freeData = [
                                     bestDist = dist;
                                     bestRank = rank;
                                     bestKey = key;
-                                    bestIndex = String(rawVal).toLowerCase().indexOf(word);
+                                    bestIndex = words[w].index;
                                     bestLen = word.length;
                                     isFuzzyMatch = true;
                                 }
@@ -19926,6 +19975,7 @@ const freeData = [
             const sortedIndices = allIndices.slice().sort((a, b) => a[0] - b[0]);
 
             sortedIndices.forEach(pair => {
+                if (pair[0] < 0) return;
                 if (pair[0] >= lastIndex) {
                     result += escapeHTML(strText.substring(lastIndex, pair[0]));
                     result += `<mark>${escapeHTML(strText.substring(pair[0], pair[1] + 1))}</mark>`;
@@ -20113,17 +20163,18 @@ const freeData = [
             `;
         }
 
-        function buildItemRow(displayItem, itemType, uniqueItemId) {
-            const safeItemId = escapeHTML(uniqueItemId);
+        function buildItemRowCells(displayItem, itemType, uniqueItemId) {
             const { pin, actions } = buildItemActionsHTML(displayItem, itemType, 'table-cell');
-            return `<tr class="table-row" data-item-id="${safeItemId}" tabindex="0" aria-expanded="false" aria-controls="expand-${safeItemId}">
-                <td class="table-row-name">${pin}<span class="table-row-name-text">${escapeHTML(displayItem.name)}</span></td>
+            return `<td class="table-row-name">${pin}<span class="table-row-name-text">${escapeHTML(displayItem.name)}</span></td>
                 <td>${escapeHTML(displayItem.concentration || '—')}</td>
                 <td>${escapeHTML(displayItem.form || '—')}</td>
                 <td>${escapeHTML(displayItem.authority || '—')}</td>
                 <td class="table-row-price">${itemType === 'paid' ? formatPrice(displayItem.price) : 'Free'}</td>
-                <td class="table-row-actions">${actions}</td>
-            </tr>`;
+                <td class="table-row-actions">${actions}</td>`;
+        }
+        function buildItemRow(displayItem, itemType, uniqueItemId) {
+            const safeItemId = escapeHTML(uniqueItemId);
+            return `<tr class="table-row" data-item-id="${safeItemId}" tabindex="0" aria-expanded="false" aria-controls="expand-${safeItemId}">${buildItemRowCells(displayItem, itemType, uniqueItemId)}</tr>`;
         }
 
         function applySortToResults(results, mode) {
@@ -20158,6 +20209,9 @@ const freeData = [
             if (!rawQuery && Object.values(activeSecondaryFilters).every(v => !v) && operationType === 'user_input' && currentFilterType === 'all') {
                 renderInitialDOM(rawQuery, []);
                 searchHint.classList.toggle('visible', document.activeElement !== searchInput && !searchInput.value);
+                if (filterPanelResultCount) {
+                    filterPanelResultCount.textContent = `${allMatchingResults.length.toLocaleString()} result${allMatchingResults.length !== 1 ? 's' : ''}`;
+                }
                 return;
             }
 
@@ -20586,7 +20640,7 @@ const freeData = [
             function finish() {
                 updateLoadMoreButton();
                 updatePinButtonsInResults();
-                updateEngineAwareGlyphs();
+                updateEngineAwareGlyphs(resultsSection);
                 setupLetterRailObserver();
                 if (onComplete) onComplete();
             }
@@ -20640,7 +20694,7 @@ const freeData = [
             const nameSorted = currentSortMode === 'name-asc' || currentSortMode === 'name-desc';
 
             Array.from(container.children).forEach(node => {
-                if (node.style.transform) {
+                if (node.style.transform || node.style.transition) {
                     node.style.transition = 'none';
                     node.style.transform = '';
                 }
@@ -20684,13 +20738,20 @@ const freeData = [
                 if (node) {
                     usedKeys.add(t.key);
                     node.style.display = '';
-                    if (t.kind === 'item' && !usingTable) {
-                        node.innerHTML = buildItemHTML(t.displayItem, t.displayItem._type, t.resultItem.matches, t.displayItem._uniqueId);
+                    if (t.kind === 'item') {
+                        const sig = JSON.stringify(t.resultItem.matches || []);
+                        if (node.dataset.matchSig !== sig) {
+                            node.dataset.matchSig = sig;
+                            node.innerHTML = usingTable
+                                ? buildItemRowCells(t.displayItem, t.displayItem._type, t.displayItem._uniqueId)
+                                : buildItemHTML(t.displayItem, t.displayItem._type, t.resultItem.matches, t.displayItem._uniqueId);
+                        }
                     }
                 } else if (t.kind === 'divider') {
                     node = buildLetterDividerElement(t.bucket, usingTable);
                 } else {
                     node = createSingleResultNode(t.displayItem, t.displayItem._type, t.displayItem._uniqueId, t.resultItem.matches, usingTable);
+                    node.dataset.matchSig = JSON.stringify(t.resultItem.matches || []);
                     node.classList.add(usingTable ? 'row-enter' : 'card-enter');
                     node.style.animationDelay = `${Math.min(newItemCount, 12) * 30}ms`;
                     newItemCount++;
@@ -20743,7 +20804,7 @@ const freeData = [
 
             updateLoadMoreButton();
             updatePinButtonsInResults();
-            updateEngineAwareGlyphs();
+            updateEngineAwareGlyphs(resultsSection);
             setupLetterRailObserver();
         }
 
@@ -21465,9 +21526,9 @@ const freeData = [
             btn.setAttribute('aria-label', `Search engine: ${eng.label}. Click to change.`);
         }
 
-        function updateEngineAwareGlyphs() {
+        function updateEngineAwareGlyphs(root) {
             const eng = SEARCH_ENGINES[preferredSearchEngine];
-            document.querySelectorAll('.engine-aware-btn').forEach(btn => {
+            (root || document).querySelectorAll('.engine-aware-btn').forEach(btn => {
                 const label = `Search the web (${eng.label})`;
                 btn.dataset.tooltip = label;
                 btn.setAttribute('aria-label', label);
@@ -21548,6 +21609,7 @@ const freeData = [
                 <button type="button" class="search-online-card" data-item-name="${safeItemName}" data-provider="perplexity"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L14.4 9.6L22 12L14.4 14.4L12 22L9.6 14.4L2 12L9.6 9.6L12 2ZM12 4.8L10.8 8.4L6.8 9.6L10.8 10.8L12 14.4L13.2 10.8L17.2 9.6L13.2 8.4L12 4.8Z"/></svg>Search Perplexity</button>
             `;
             document.body.appendChild(pop);
+            updateEngineAwareGlyphs(pop);
 
             const rect = anchorEl.getBoundingClientRect();
             const popWidth = 190;
@@ -21975,9 +22037,17 @@ const freeData = [
             }
         }
 
+        function getSearchHistory() {
+            const raw = getFromLocalStorage('searchHistory', []);
+            return raw
+                .filter(item => typeof item === 'string' || typeof item === 'number')
+                .map(item => String(item))
+                .filter(Boolean);
+        }
+
         function addSearchToHistory(query) {
             if (!query || query.length < 2) return;
-            let history = getFromLocalStorage('searchHistory', []);
+            let history = getSearchHistory();
             history = history.filter(item => item.toLowerCase() !== query.toLowerCase());
             history.unshift(query);
             if (history.length > MAX_HISTORY_ITEMS) {
@@ -22002,7 +22072,7 @@ const freeData = [
         }
 
         function loadSearchHistory() {
-            const history = getFromLocalStorage('searchHistory', []);
+            const history = getSearchHistory();
             searchHistoryList.innerHTML = '';
             if (historyCountBadge) {
                 historyCountBadge.textContent = history.length;
@@ -22016,7 +22086,7 @@ const freeData = [
                 history.forEach(item => {
                     const li = document.createElement('li');
                     li.dataset.query = item;
-                    li.title = `Search for: ${escapeHTML(item)}`;
+                    li.title = `Search for: ${item}`;
                     li.innerHTML = `
                         <span class="panel-list-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5l3 2"/></svg>
@@ -22050,8 +22120,13 @@ const freeData = [
             notice._hideTimer = setTimeout(() => notice.classList.remove('visible'), 3200);
         }
 
+        function getPinnedItems() {
+            const raw = getFromLocalStorage('pinnedItems', []);
+            return raw.filter(pin => pin && typeof pin === 'object' && pin.id);
+        }
+
         function togglePinItem(itemId, itemName) {
-            let pinnedItems = getFromLocalStorage('pinnedItems', []);
+            let pinnedItems = getPinnedItems();
             const existingPinIndex = pinnedItems.findIndex(pin => pin.id === itemId);
 
             if (existingPinIndex > -1) {
@@ -22079,7 +22154,7 @@ const freeData = [
         }
 
         function loadPinnedItems() {
-            const pinnedItems = getFromLocalStorage('pinnedItems', []);
+            const pinnedItems = getPinnedItems();
             pinnedItemsList.innerHTML = '';
             if (pinnedCountBadge) {
                 pinnedCountBadge.textContent = pinnedItems.length;
@@ -22091,7 +22166,7 @@ const freeData = [
                 copyPinnedBtn.style.display = 'none';
                 if (comparePinnedBtn) comparePinnedBtn.style.display = 'none';
             } else {
-                pinnedItems.filter(pin => pin && pin.id).forEach(pin => {
+                pinnedItems.forEach(pin => {
                     const li = document.createElement('li');
                     li.dataset.itemId = pin.id;
                     li.title = `Pinned ${timeAgoLabel(pin.timestamp)}`;
@@ -22123,7 +22198,7 @@ const freeData = [
         }
 
         function updatePinButtonsInResults() {
-            const pinnedItems = getFromLocalStorage('pinnedItems', []);
+            const pinnedItems = getPinnedItems();
             const currentPinBtns = document.querySelectorAll('#results-section .pin-item-btn');
             currentPinBtns.forEach(btn => {
                 const itemId = btn.dataset.itemId;
@@ -22184,7 +22259,7 @@ const freeData = [
             if (removeButton) {
                 event.stopPropagation();
                 const queryToRemove = removeButton.dataset.query;
-                let history = getFromLocalStorage('searchHistory', []);
+                let history = getSearchHistory();
                 history = history.filter(item => item !== queryToRemove);
                 saveToLocalStorage('searchHistory', history);
                 loadSearchHistory();
@@ -22244,7 +22319,7 @@ const freeData = [
         }
 
         copyPinnedBtn.addEventListener('click', () => {
-            const pinnedItems = getFromLocalStorage('pinnedItems', []);
+            const pinnedItems = getPinnedItems();
             if (pinnedItems.length > 0) {
                 const textToCopy = pinnedItems.map(item => item.name).join('\n');
                 navigator.clipboard.writeText(textToCopy).then(() => {
@@ -22256,7 +22331,7 @@ const freeData = [
         });
 
         copyHistoryBtn.addEventListener('click', () => {
-            const history = getFromLocalStorage('searchHistory', []);
+            const history = getSearchHistory();
             if (history.length > 0) {
                 const textToCopy = history.join('\n');
                 navigator.clipboard.writeText(textToCopy).then(() => {
@@ -22482,7 +22557,7 @@ const freeData = [
         const compareDrawerBody = document.getElementById('compare-drawer-body');
         function renderCompareDrawer() {
             if (!compareDrawerBody) return;
-            const pinnedItems = getFromLocalStorage('pinnedItems', []);
+            const pinnedItems = getPinnedItems();
             if (pinnedItems.length === 0) {
                 compareDrawerBody.innerHTML = '<div class="compare-empty">Pin a few items to compare them side by side.</div>';
                 return;
@@ -22524,7 +22599,14 @@ const freeData = [
         if (compareDrawerOverlay) compareDrawerOverlay.addEventListener('click', closeCompareDrawer);
 
         function _writeURLState(push) {
-            const params = new URLSearchParams();
+            const params = new URLSearchParams(window.location.search);
+            params.delete('q');
+            params.delete('avail');
+            params.delete('sort');
+            params.delete('density');
+            params.delete('item');
+            Array.from(params.keys()).forEach(key => { if (key.startsWith('f_')) params.delete(key); });
+
             const q = searchInput.value.trim();
             if (q) params.set('q', q);
             if (currentFilterType !== 'all') params.set('avail', currentFilterType);
@@ -22536,7 +22618,6 @@ const freeData = [
             const newSearch = params.toString();
             const url = new URL(window.location.href);
             url.search = newSearch;
-            url.searchParams.delete('item');
             const method = push ? 'pushState' : 'replaceState';
             try { window.history[method]({}, '', url); } catch (e) {}
         }
@@ -22619,6 +22700,8 @@ const freeData = [
             const ingStrengthRows = r.ingredientStrengthDuplicateGroups.map(group =>
                 `<tr><td>${escapeHTML(group.map(g => `"${g.name}" (${g._type})`).join(' vs '))}</td><td>${group.length}</td></tr>`).join('');
             const reviewRows = r.ingredientReviewNeeded.map(name => `<tr><td>${escapeHTML(name)}</td></tr>`).join('');
+            const concSuspectRows = r.concentrationSuspects.map(s =>
+                `<tr><td><code>${escapeHTML(s.id)}</code></td><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.form || '')}</td><td>${escapeHTML(s.concentration || '')}</td></tr>`).join('');
             panel.innerHTML = `
                 <button type="button" class="shortcuts-popover-close" id="data-quality-close" aria-label="Close" style="position:absolute; top:1.5rem; right:1.5rem;">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
@@ -22641,8 +22724,11 @@ const freeData = [
                 <table><tr><th>Names</th><th>Count</th></tr>${ingStrengthRows || '<tr><td colspan="2">None found</td></tr>'}</table>
                 <h3>Free-list ingredient parse needs manual review</h3>
                 <table><tr><th>Name</th></tr>${reviewRows || '<tr><td>None</td></tr>'}</table>
+                <h3>Concentration values needing human confirmation (bare decimal on a topical/solution form — possible fraction stored where a percent was meant)</h3>
+                <p>No conversion is applied automatically. Confirm each one against the source, then add <code>"id": "correct value"</code> to <code>CONCENTRATION_FIXES</code>.</p>
+                <table><tr><th>ID</th><th>Name</th><th>Form</th><th>Current value</th></tr>${concSuspectRows || '<tr><td colspan="4">None</td></tr>'}</table>
                 <h3>Generic bridge index</h3>
-                <p>${genericBridgeIndex.size} item(s) have at least one equivalence or related-strength link.</p>
+                <p>${genericBridgeIndex.size} item(s) have at least one equivalence or related-strength link. ${r.bridgePairsSkippedEmptyStrength} paid/free pair(s) skipped for having no parseable strength on one side (not linked as "related strengths").</p>
             `;
             const closeBtn = document.getElementById('data-quality-close');
             if (closeBtn) closeBtn.addEventListener('click', () => panel.classList.remove('open'));
