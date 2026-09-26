@@ -13,6 +13,7 @@
     html = html.replace('lenientFuse.search(query)', 'lenientFuse.search(query, { limit: 60 })');
     html = html.replace('Lx Search a2</h1>', 'Lx Search <span class="title-version">2.5</span></h1>')
       .replace('app-version-tag">a2<', 'app-version-tag">v2.5<')
+      .replace('<link rel="icon" type="image/x-icon" href="favicon.ico">', '<link rel="icon" href="favicon.ico" sizes="32x32"><link rel="icon" type="image/svg+xml" href="favicon.svg">')
       .replace('content="#0d1117"', 'content="#0a0911"').replace('content="#fafbfc"', 'content="#f7f5f1"');
     html = html.replace('</head>', '<link rel="stylesheet" href="css/polish.css"></head>');
     document.open();

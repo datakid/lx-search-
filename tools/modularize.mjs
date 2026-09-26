@@ -48,6 +48,7 @@ const bridge = (tail.match(/<script>([\s\S]*?)<\/script>/) || [, ''])[1].trim();
 const headInner = html.slice(html.indexOf('<head>') + 6, html.indexOf('</head>'))
   .replace(/\s*<script>\/\*\*[\s\S]*?Fuse\.js[\s\S]*?<\/script>/, '')
   .replace(/\s*<style>[\s\S]*?<\/style>/, '')
+  .replace('<link rel="icon" type="image/x-icon" href="favicon.ico">', '<link rel="icon" href="favicon.ico" sizes="32x32">\n    <link rel="icon" type="image/svg+xml" href="favicon.svg">')
   .replace('content="#0d1117"', 'content="#0a0911"')
   .replace('content="#fafbfc"', 'content="#f7f5f1"')
   .replace(/\s+$/, '');

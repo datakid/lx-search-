@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .tile { fill: url(#g); }
+    .edge { fill: none; stroke: #fff; stroke-opacity: .18; }
+    .front { stroke: #fff; }
+    .back { stroke: #fff; stroke-opacity: .42; }
+    @media (prefers-color-scheme: dark) {
+      .tile { fill: #1b1828; }
+      .edge { stroke: #ab9bf7; stroke-opacity: .35; }
+      .front { stroke: #c9bfff; }
+      .back { stroke: #c9bfff; stroke-opacity: .38; }
+    }
+  </style>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7d6ae2"/>
+      <stop offset="1" stop-color="#5541c2"/>
+    </linearGradient>
+  </defs>
+  <rect class="tile" width="32" height="32" rx="8"/>
+  <rect class="edge" x=".5" y=".5" width="31" height="31" rx="7.5"/>
+  <g fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path class="back" d="M22.5 10.5 9.5 14M22.5 16.5 9.5 20"/>
+    <path class="front" d="M13 6.5h-3.5l13 4M9.5 14l13 2.5M9.5 20l13 2.5V25.5H19"/>
+  </g>
+</svg>
