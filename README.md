@@ -36,7 +36,3 @@ Until that first build, `index.html` + `js/bootstrap.js` run the original file w
 
 ## Tests
 `tests/search.html` benchmarks the engine against the real data.
-
-## Not included
-- Brand names that aren't in the data (e.g. Panadol, Augmentin) still rely on the existing synonym map
-- `sw.js` is referenced but not in the upload (gives a harmless 404)
