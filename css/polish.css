@@ -1,0 +1,67 @@
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; scroll-behavior: smooth; }
+body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; -webkit-tap-highlight-color: transparent; }
+::selection { background: rgba(var(--accent-color-rgb), 0.28); color: inherit; }
+
+.title { text-wrap: balance; letter-spacing: -0.02em; }
+.result-title, .table-row-name-text { text-wrap: pretty; overflow-wrap: anywhere; }
+.result-price, .table-row-price, .filter-chip-count, .availability-card-count, .result-count strong { font-variant-numeric: tabular-nums; }
+
+mark {
+  background: linear-gradient(transparent 12%, rgba(var(--accent-color-rgb), 0.24) 12%, rgba(var(--accent-color-rgb), 0.24) 88%, transparent 88%);
+  color: inherit;
+  border-radius: 3px;
+  padding: 0 1px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.search-input { caret-color: var(--accent-color); }
+.search-input::placeholder { opacity: 0.85; transition: opacity 0.2s ease; }
+.search-input:focus::placeholder { opacity: 0.45; }
+.search-input::-webkit-search-cancel-button { display: none; }
+
+:where(button, a, [tabindex]:not(input), .table-row):focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+:where(button, a, .table-row):focus:not(:focus-visible) { outline: none; }
+.search-input:focus, .search-input:focus-visible,
+.filter-panel-search-input:focus, .filter-panel-search-input:focus-visible { outline: none; }
+
+:where(button, .filter-chip, .availability-card, .card-action-btn) { touch-action: manipulation; }
+:where(button, .filter-chip, .availability-card):active:not(:disabled) { transform: scale(0.97); }
+
+.result-item { contain: layout style; transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease; }
+@media (hover: hover) and (pointer: fine) {
+  .result-item:hover { transform: translateY(-1px); }
+}
+
+#suggestions-container:not(:empty), #no-results-container:not(:empty) { animation: lx-fade-in 0.22s ease both; }
+@keyframes lx-fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+.load-more-btn { min-height: 44px; }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(var(--accent-color-rgb), 0.35) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: rgba(var(--accent-color-rgb), 0.3); border-radius: 10px; border: 3px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--accent-color-rgb), 0.5); }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (max-width: 640px) {
+  .search-input, .filter-panel-search-input { font-size: 16px; }
+  .card-action-btn, .pin-item-btn { min-width: 40px; min-height: 40px; }
+  .results-section { scroll-margin-top: 12px; }
+}
+
+@supports (padding: max(0px)) {
+  .app-disclaimer { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}
+
+@media (forced-colors: active) {
+  mark { background: Mark; color: MarkText; }
+}
