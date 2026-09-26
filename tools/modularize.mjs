@@ -20,7 +20,9 @@ const bodyOpen = html.indexOf('<body>');
 const dataScript = html.match(/<script>\s*(const paidData = \[[\s\S]*?)<\/script>\s*<\/body>/);
 if (bodyOpen < 0 || !dataScript) fail('body or main script not found');
 
-const markup = html.slice(bodyOpen + 6, dataScript.index).replace(/\s+$/, '');
+const markup = html.slice(bodyOpen + 6, dataScript.index).replace(/\s+$/, '')
+  .replace('Lx Search a2</h1>', 'Lx Search <span class="title-version">2.5</span></h1>')
+  .replace('app-version-tag">a2<', 'app-version-tag">v2.5<');
 const mainJs = dataScript[1];
 
 const freeStart = mainJs.indexOf('\nconst freeData = [');
@@ -46,6 +48,8 @@ const bridge = (tail.match(/<script>([\s\S]*?)<\/script>/) || [, ''])[1].trim();
 const headInner = html.slice(html.indexOf('<head>') + 6, html.indexOf('</head>'))
   .replace(/\s*<script>\/\*\*[\s\S]*?Fuse\.js[\s\S]*?<\/script>/, '')
   .replace(/\s*<style>[\s\S]*?<\/style>/, '')
+  .replace('content="#0d1117"', 'content="#0a0911"')
+  .replace('content="#fafbfc"', 'content="#f7f5f1"')
   .replace(/\s+$/, '');
 
 const index = `<!DOCTYPE html>

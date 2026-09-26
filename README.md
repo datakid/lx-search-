@@ -34,5 +34,16 @@ Until that first build, `index.html` + `js/bootstrap.js` run the original file w
 - Ranking: exact name > name prefix > field weight > typo cost > shorter name
 - Fuse 7 is still used as the fallback, for suggestions (`limit: 60`, heap-based) and for filter search, with `ignoreDiacritics`
 
+## Visual system (v2.5)
+`css/polish.css` re-tokens the palette without touching `styles.css`:
+- Light: warm off-white base, low-chroma violet accent `#6c58d4`, frosted white glass, soft neumorphic raise and inset shadows
+- Dark: violet-tinted ink `#0a0911`, muted accent `#ab9bf7`, low-opacity glass with a thin top highlight edge
+- The blurred animated orb is replaced by a static radial gradient (no ongoing GPU animation), and blur is lighter on phones
+- Respects reduced transparency, reduced motion and forced colors
+
 ## Tests
 `tests/search.html` benchmarks the engine against the real data.
+
+## Not included
+- Brand names that aren't in the data (e.g. Panadol, Augmentin) still rely on the existing synonym map
+- `sw.js` is referenced but not in the upload (gives a harmless 404)

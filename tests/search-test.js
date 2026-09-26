@@ -2,7 +2,10 @@
   const out = document.getElementById('out');
   const log = (s) => { out.textContent += s + '\n'; console.log(s); };
   let paid, free;
-  {
+  if (typeof paidData !== 'undefined') {
+    paid = paidData;
+    free = typeof freeData !== 'undefined' ? freeData : [];
+  } else {
     const html = await (await fetch('../src/original.html')).text();
     const grab = (name) => {
       const s = html.indexOf('const ' + name + ' = [');

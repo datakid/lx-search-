@@ -11,6 +11,9 @@
     html = html.replace('function tokenSearch(query, dataset)', 'function legacyTokenSearch(query, dataset)');
     html = html.replace('useExtendedSearch: true,', 'useExtendedSearch: true, ignoreDiacritics: true,');
     html = html.replace('lenientFuse.search(query)', 'lenientFuse.search(query, { limit: 60 })');
+    html = html.replace('Lx Search a2</h1>', 'Lx Search <span class="title-version">2.5</span></h1>')
+      .replace('app-version-tag">a2<', 'app-version-tag">v2.5<')
+      .replace('content="#0d1117"', 'content="#0a0911"').replace('content="#fafbfc"', 'content="#f7f5f1"');
     html = html.replace('</head>', '<link rel="stylesheet" href="css/polish.css"></head>');
     document.open();
     document.write(html);
