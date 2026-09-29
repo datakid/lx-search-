@@ -1,4 +1,4 @@
-const CACHE = 'lx-search-v3-1';
+const CACHE = 'lx-search-v3-2';
 const SHELL = [
   './',
   './index.html',
@@ -12,8 +12,8 @@ const SHELL = [
   './css/polish.css',
   './css/v3.css',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  './favicon.svg',
+  './icon-spring.jpg'
 ];
 
 self.addEventListener('install', (event) => {
