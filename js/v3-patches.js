@@ -4,7 +4,7 @@
     ['function tokenSearch(query, dataset)', 'function legacyTokenSearch(query, dataset)'],
     ['useExtendedSearch: true,', 'useExtendedSearch: true, ignoreDiacritics: true,'],
     ['lenientFuse.search(query)', 'lenientFuse.search(query, { limit: 60 })'],
-    ['<h1 class="title">Lx Search a2</h1>', '<h1 class="title"><img class="brand-mark" src="favicon.svg" alt="" width="44" height="44" decoding="async"><span class="title-text">Lx Search</span><span class="title-version">3</span></h1>'],
+    ['<h1 class="title">Lx Search a2</h1>', '<h1 class="title"><svg class="brand-mark" viewBox="0 0 150 150" aria-hidden="true" focusable="false"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="15"><path class="brand-mark-back" d="M112 44L38 68M112 80L38 104"/><path class="brand-mark-front" d="M38 22H62L112 44M38 68L112 80M38 104L112 116Q124 124 110 132L88 134"/></g></svg><span class="title-text">Lx Search</span><span class="title-version">3</span></h1>'],
     ['app-version-tag">a2<', 'app-version-tag">v3<'],
     ['<link rel="icon" type="image/x-icon" href="favicon.ico">', '<link rel="icon" type="image/svg+xml" href="favicon.svg">'],
     ['<link rel="apple-touch-icon" href="icon-192.png">', '<link rel="apple-touch-icon" href="icon-spring.jpg">'],

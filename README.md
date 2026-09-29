@@ -36,8 +36,8 @@ js/v3-ui.js              Refresh button, data-source label, toasts
 css/polish.css           v2.5 visual system
 css/v3.css               v3 refinements and mobile performance
 vendor/fuse.min.js       Fuse.js 7.2.0
-favicon.svg              spring logo (favicon, title mark, PWA icon)
-icon-spring.jpg          spring logo raster (apple-touch-icon)
+favicon.svg              transparent spring favicon, recolours for light/dark browser UI
+icon-spring.jpg          spring app icon with background (home screen / PWA)
 sw.js                    offline service worker (cache lx-search-v3-2)
 data/formulary.json      your editable data file (create it, see below)
 tools/export-json.mjs    node tools/export-json.mjs [version]  -> writes data/formulary.json

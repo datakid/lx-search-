@@ -1,7 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
-  <rect x="3" y="3" width="144" height="144" rx="34" fill="#1b1827" stroke="#3a3258" stroke-width="6"/>
-  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="13">
-    <path d="M105 48L45 66M105 76L45 94" stroke="#564c7d"/>
-    <path d="M45 30H65L105 48M45 66L105 76M45 94L105 104Q116 110 104 118L85 120" stroke="#c2b3ff"/>
+  <style>
+    .b { stroke: #b9aee6; }
+    .f { stroke: #6c58d4; }
+    @media (prefers-color-scheme: dark) {
+      .b { stroke: #5d5390; }
+      .f { stroke: #c2b3ff; }
+    }
+  </style>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="15">
+    <path class="b" d="M112 44L38 68M112 80L38 104"/>
+    <path class="f" d="M38 22H62L112 44M38 68L112 80M38 104L112 116Q124 124 110 132L88 134"/>
   </g>
 </svg>

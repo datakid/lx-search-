@@ -1,4 +1,4 @@
-const CACHE = 'lx-search-v3-2';
+const CACHE = 'lx-search-v3-3';
 const SHELL = [
   './',
   './index.html',

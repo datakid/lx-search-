@@ -9,7 +9,6 @@
   "background_color": "#0a0911",
   "theme_color": "#0a0911",
   "icons": [
-    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
     { "src": "icon-spring.jpg", "sizes": "150x150", "type": "image/jpeg", "purpose": "any" }
   ]
 }
