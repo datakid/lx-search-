@@ -1,57 +1,52 @@
-const CACHE_NAME = 'lx-search-v2-cache-1';
-const APP_SHELL = [
-  './lx-search-v2.html',
+const CACHE = 'lx-search-v3-1';
+const SHELL = [
+  './',
+  './index.html',
+  './src/original.html',
+  './js/v3-patches.js',
+  './js/bootstrap.js',
+  './js/search-engine.js',
+  './js/data-store.js',
+  './js/v3-ui.js',
+  './vendor/fuse.min.js',
+  './css/polish.css',
+  './css/v3.css',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap',
-  'https://cdn.jsdelivr.net/npm/fuse.js@6.6.2/dist/fuse.min.js'
+  './icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return Promise.all(
-        APP_SHELL.map((url) =>
-          fetch(url, { mode: url.startsWith('http') ? 'cors' : 'same-origin' })
-            .then((response) => {
-              if (response && (response.ok || response.type === 'opaque')) {
-                return cache.put(url, response);
-              }
-              return null;
-            })
-            .catch(() => null)
-        )
-      );
-    })
-  );
+  event.waitUntil(caches.open(CACHE).then((cache) => Promise.all(SHELL.map((u) => cache.add(new Request(u, { cache: 'reload' })).catch(() => null)))));
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((names) =>
-      Promise.all(names.filter((n) => n !== CACHE_NAME).map((n) => caches.delete(n)))
-    ).then(() => self.clients.claim())
-  );
+  event.waitUntil(caches.keys().then((names) => Promise.all(names.filter((n) => n !== CACHE).map((n) => caches.delete(n)))).then(() => self.clients.claim()));
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
-
+  const req = event.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  if (url.pathname.endsWith('/data/formulary.json')) return;
+  const sameOrigin = url.origin === self.location.origin;
+  if (sameOrigin) {
+    event.respondWith(
+      fetch(req).then((res) => {
+        if (res && res.ok) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
+        return res;
+      }).catch(() => caches.match(req, { ignoreSearch: true }).then((hit) => hit || caches.match('./index.html')))
+    );
+    return;
+  }
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      const networkFetch = fetch(event.request)
-        .then((response) => {
-          if (response && (response.ok || response.type === 'opaque')) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
-          }
-          return response;
-        })
-        .catch(() => cached);
-
-      return cached || networkFetch;
+    caches.match(req).then((hit) => {
+      const net = fetch(req).then((res) => {
+        if (res && (res.ok || res.type === 'opaque')) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(req, copy)); }
+        return res;
+      }).catch(() => hit);
+      return hit || net;
     })
   );
 });
